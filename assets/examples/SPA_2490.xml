@@ -1,0 +1,251 @@
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+   <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title level="s" xml:lang="en">Proko24, Digital Edition</title>
+            <title level="s" xml:lang="fr">Proko24, Édition Numérique</title>
+            <title level="a">Paul Demasy to Sergei Prokofiev <lb/>Paris, France, 14 January
+               1924</title>
+            <author ref="https://viaf.org/viaf/61551884/">Demasy, Paul</author>
+            <editor role="resp"><persName xml:id="NclsMrn">Moron, Nicolas</persName></editor>
+            <respStmt>
+               <resp>Transcription, encodage et édition</resp>
+               <name ref="https://orcid.org/0000-0001-7861-3382">Nicolas Moron <affiliation>
+                     <orgName type="institution">Université de Rouen-Normandie</orgName>
+                     <orgName type="laboratory">GRHis - Groupe de Recherche d'Histoire</orgName>
+                  </affiliation>
+               </name>
+            </respStmt>
+         </titleStmt>
+         <editionStmt>
+            <edition n="1">First transcription edition - Version of December 12, 2023</edition>
+         </editionStmt>
+         <publicationStmt>
+            <publisher>
+               <name>Prokorrespondence</name>
+            </publisher>
+            <date when="2023">2023</date>
+            <idno type="SPArchive_ID">SPA_2490</idno>
+            <availability status="restricted">
+               <licence target="http://creativecommons.org/licenses/by-nc-sa/4.0/">This work is
+                  licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+                  International License. </licence>
+               <p>The digitized letter is available for educational and research purposes,
+                  accessible upon request to qualified individuals or institutions.</p>
+            </availability>
+         </publicationStmt>
+         <notesStmt>
+            <note type="summary">Paul Demasy donne des nouvelles de la pièce de théâtre <title
+                  type="work">Judith</title> à un Prokofiev qui commence à douter de l'engagement
+                  d'<persName xml:id="IdaRubinstein" ref="https://viaf.org/viaf/29614722/">Ida
+                  Rubinstein</persName></note>
+            <note type="incipit">J’ai vu cet après-midi une personne qui connait fort bien <persName
+                  ref="#IdaRubinstein">Mme Ida Rubinstein</persName></note>
+         </notesStmt>
+         <sourceDesc>
+            <!--
+               @rmq je ne placerais pas cette information ici, afin de ne garder uniquement dans le sourceDesc les informations bibliographiques
+               <listPlace>
+               <place>
+                  <placeName>28, rue du printemps, Paris</placeName>
+                  <location>
+                     <geo>48.87985 2.30983</geo>
+                  </location>
+               </place>
+            </listPlace>-->
+            <msDesc>
+               <msIdentifier>
+                  <country>USA</country>
+                  <settlement>New York</settlement>
+                  <repository>Rare Book &amp; Manuscript Library, Columbia University</repository>
+                  <idno type="Box">Box II.2</idno>
+                  <idno type="SPA_ID">SPA_2490</idno>
+               </msIdentifier>
+               <msContents>
+                  <msItem>
+                     <title>Lettre à Sergei Prokofiev</title>
+                     <author ref="https://viaf.org/viaf/39088295/" xml:id="Demasy">Paul
+                        Demasy</author>
+                  </msItem>
+               </msContents>
+               <physDesc>
+                  <objectDesc form="letter">
+                     <supportDesc>
+                        <support>
+                           <p>Papier</p>
+                        </support>
+                        <extent>
+                           <measure unit="pages">2</measure>
+                        </extent>
+                     </supportDesc>
+                  </objectDesc>
+                  <handDesc>
+                     <handNote>
+                        <note type="sourceType">Original</note>
+                     </handNote>
+                     <handNote script="Latin">Manuscrite</handNote>
+                     <!-- @rmq l'idéal serait de constituer un index et d'utiliser @scribeRef pour pointer vers une entrée. Car si tu constitues un corpus, tu risques d'avoir des répétitions d'@xml:id, qui doivent être part définition uniquement. -->
+                     <handNote xml:id="DemasyHand">Écriture de Paul Demasy, à l'encre
+                        noire.</handNote>
+                     <handNote xml:id="ProkofievHand">Annotations de Sergei Prokofiev, réalisées au
+                        crayon.</handNote>
+                  </handDesc>
+               </physDesc>
+               <history>
+                  <provenance>Transféré de la Bibliothèque Nationale de France, dépôt
+                     Châlon-Prokofiev</provenance>
+               </history>
+            </msDesc>
+         </sourceDesc>
+      </fileDesc>
+      <encodingDesc>
+         <projectDesc>
+            <p>Prokofiev 1924, Complete correspondence</p>
+         </projectDesc>
+         <editorialDecl>
+            <p>Transcription and coding follows the Editorial Guidelines of Proko24</p>
+         </editorialDecl>
+      </encodingDesc>
+      <profileDesc>
+         <langUsage>
+            <language ident="fre">French</language>
+         </langUsage>
+         <correspDesc>
+            <correspAction type="sent">
+               <persName ref="#Demasy">Demasy, Paul</persName>
+               <address>
+                  <street>28, rue du Printemps</street>
+                  <settlement>Paris</settlement>
+                  <country>France</country>
+               </address>
+               <location>
+                  <geo>48.87985, 2.30983</geo>
+               </location>
+               <date when="1924-01-14">14 January 1924</date>
+            </correspAction>
+            <correspAction type="received">
+               <!-- @rmq l'établissement d'un index type <listPerson/> permettra de centraliser les infos du type identifiant viaf/wikidata, etc. -->
+               <persName ref="https://viaf.org/viaf/71579098/">Prokofiev, Sergei</persName>
+               <!-- @rmq on peut ajouter ici les références à la date de réception inscrite par Prokofiev "Jan. 15"-->
+               <date when="1924-01-15">Jan. 15 [1924]</date>
+            </correspAction>
+         </correspDesc>
+         <textClass>
+            <keywords>
+               <term>Sergei Prokofiev</term>
+               <term>Paul Demasy</term>
+               <term>1924</term>
+               <term>Ida Rubinstein</term>
+               <term>Judith</term>
+            </keywords>
+         </textClass>
+         <!--
+            @rmq idem concernant la création d'un index général. 
+            <particDesc>
+            <listPerson>
+               <person xml:id="SSProkofiev">
+                  <persName>Sergei Prokofiev</persName>
+                  <idno type="VIAF">71579098</idno>
+               </person>
+               <person>
+                  <persName ref="#Demasy">Paul Demasy</persName>
+                  <idno type="VIAF">39088295</idno>
+               </person>
+               <person>
+                  <persName ref="#IdaRubinstein">Ida Rubinstein</persName>
+                  <idno type="VIAF">29614722</idno>
+               </person>
+               <!-\- Additional person elements for other key individuals in the letter -\->
+            </listPerson>
+         </particDesc>-->
+      </profileDesc>
+      <revisionDesc>
+         <change when="2023-11-05" who="NclsMrn"> Initial TEI encoding based on the letter's
+            transcription and historical context.</change>
+         <change when="2023-12-21" who="NclsMrn"> Refining TEI encoding base on WeGA, Grimoire and
+            my trained GPT.</change>
+      </revisionDesc>
+   </teiHeader>
+   <facsimile>
+      <!-- @rmq pour plus de souplesse dans le post traitement, il est préférable d'indiquer uniquement l'id de la donnée et celui de l'image 10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6-->
+      <graphic n="1" xml:id="SPA_2490_1"
+         url="https://api.nakala.fr/embed/10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6"/>
+      <graphic n="2" xml:id="SPA_2490_2"
+         url="https://api.nakala.fr/embed/10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb"/>
+   </facsimile>
+   <!-- @rmq le @type est peut être un peu redondant avec la div du dessous-->
+   <text type="letter">
+      <body>
+         <div type="letter" xml:id="SPA_2490" ana="#correspondence" hand="#DemasyHand">
+            <note type="physicalDescription">
+               <!-- @rmq prévoir plutôt une note dans le <handDesc/> -->
+               Lettre écrite à l'encre noire
+            </note>
+            <opener>
+               <!-- @rmq si tu souhaites respecter le placement, il pourrait être intéressant d'ajouter un @rend='topLeft/topRight'. Pour la note libre à toi de la laisser ou non si tu souhaites afficher quelque chose en sortie.  -->
+               <address>
+                  <addrLine>28, rue du printemps.</addrLine>
+                  <!-- @rmq que souhaites-tu indiquer avec les @place et @type ? -->
+                  <note place="layout" type="header">Écrit en haut à gauche</note>
+               </address>
+               <dateline>
+                  <date when="1924-01-14">Paris, 14 janvier 1924.</date>
+                  <note place="layout" type="header">Écrit en haut à droite</note>
+               </dateline>
+               <!-- @rmq je ne sais pas si j'aurais utilisé <note/> pour les mentions allographes, quel statut souhaites-tu leur donner ? -->
+               <note type="handwritten" hand="#ProkofievHand">Jan. 15 [au crayon, entouré, main de
+                  Prokofiev]</note>
+               <salute><!-- @rend="alignCenter" -->Cher monsieur,</salute>
+            </opener>
+            <p>J’ai vu cet après-midi une personne qui connait fort bien <persName
+                  ref="#IdaRubinstein">Mme R.</persName> ; aussi bien du point de vue de ses
+               affaires que de son caractère. C’est d’ailleurs ce monsieur qui m’a présenté à elle,
+               voici exactement un an. Comme il me demandait où nous en étions avec <app><!-- @rmq pour les notes, l'utilisation de <app><lem/><note/></app> autorise plus de souplesse pour le post traitement et permet de se passer du couple @xml:id/@ref --><lem><title
+                  type="work" xml:id="Judith"><!-- @rmq @rend="underline" ? -->Judith</title></lem><note type="biblRef">Paul Demasy. <hi rend="latintype">Judith</hi> : mystère biblique en
+                     1 acte et en prose, 1920. 1 fascicule en 2 exemplaires (83, 99 feuillets). <ref
+                        target="https://archivesetmanuscrits.bnf.fr/ark:/12148/cc1254961/cb1410">Cote BnF :
+                        4-COL-376(143,1)</ref>
+                  </note></app><!--<note type="biblRef" target="#note01"/>-->,
+               je lui ai dit que <persName ref="#IdaRubinstein">M<hi rend="superscript">me<!-- @rmq pour le texte en exposant, tu peux créer une liste de valeur pour @rend en fonction des cas que tu rencontres 'underline' ou 'doubleUnderline' pour le souligné ou double soulignement, 'dotted', etc.,  --></hi> R.</persName> me paraissait très
+               décidée à jouer cette pièce et qu’elle comptait sur vous pour la musique. Ce monsieur
+               me dit qu’il savait en effet que <persName ref="#IdaRubinstein">Mme R.</persName>
+               vous avait reçu et je lui résumai la conversation. J’ajoutai que vous attendiez une
+               lettre de <persName ref="#IdaRubinstein">Mme R.</persName> pour vous mettre au
+               travail.</p>
+            <p><q>M. Prokofieff a tort d’hésiter, me dit cette personne. <persName
+                     ref="#IdaRubinstein">Mme R.</persName> est très loyale et du moment qu’elle
+                  affirme qu’elle jouera l’œuvre et qu’elle a verbalement demandé la musique à M.
+                  Prokofieff, absolument rien ne s’oppose à ce qu’il commence à travailler.</q><pb/>
+               Et il ajouta qu’il lui paraissait douteux que <persName ref="#IdaRubinstein">Mme
+                  R.</persName> voulût ou pût signer un engagement quelconque étant donné la
+               multiplicité de ses projets et l’impossibilité de prévoir six mois à l’avance ce que
+               l’on fera. Qu’au surplus, toute insistance sur ce point, de ma part ou de la vôtre,
+               risquerait de paraître déplacé et de compromettre le succès de l’affaire. <q>Même,
+                  ajouta-t-il, connaissant <persName ref="#IdaRubinstein">Mme R.</persName> comme je
+                  la connais, je vous avoue que je suis surpris, très favorablement d’ailleurs,
+                  qu’elle ait parlé aussi catégoriquement à M. Prokofieff. Ce n’est pas à son
+                  habitude ; voyez-là une preuve certaine de sa volonté et n’en demandez pas
+                  davantage.</q></p>
+            <p>Il me dit encore beaucoup d’autres choses que je vous répèterai de vive voix dès
+               votre prochain passage à Paris, si vous voulez que nous nous rencontrions.</p>
+            <p>J’ai revu aussi la secrétaire de <persName ref="#IdaRubinstein">Mme R.</persName> qui
+               m’a répété quel avait été l’ennui de <persName ref="#IdaRubinstein">Mme R.</persName>
+               le jour où malade, il lui avait été impossible de vous recevoir.</p>
+            <p>Voulez-vous que nous nous rencontrions un de ces après-midi avant votre départ ? Nous
+               causerons de tout cela. Je puis en tout cas vous attendre chez moi le jour qu’il vous
+               plaira.</p>
+            <closer>
+               <salute>Croyez, cher monsieur, à mes sentiments très cordiaux.</salute>
+               <signed>
+                  <name ref="#Demasy">Paul Demasy</name>
+               </signed>
+            </closer>
+         </div>
+         <!--<note xml:id="note01"> Paul Demasy. <hi rend="latintype">Judith</hi> : mystère biblique en
+            1 acte et en prose, 1920. 1 fascicule en 2 exemplaires (83, 99 feuillets). <ref
+               target="https://archivesetmanuscrits.bnf.fr/ark:/12148/cc1254961/cb1410">Cote BnF :
+               4-COL-376(143,1)</ref>
+         </note>-->
+      </body>
+   </text>
+</TEI>
