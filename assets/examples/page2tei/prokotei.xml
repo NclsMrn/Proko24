@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0">
+   <teiHeader>
+      <fileDesc>
+         <titleStmt/>
+         <seriesStmt/>
+         <sourceDesc>
+            <bibl/>
+         </sourceDesc>
+      </fileDesc>
+      <profileDesc>
+      </profileDesc>
+   </teiHeader>
+   <facsimile>
+      <surface ulx="0" uly="0" lrx="2479" lry="3508" xml:id="facs_25">
+         <graphic url="61809372.jpg" width="2479px" height="3508px"/>
+         <graphic url="https://files.transkribus.eu/Get?id=SDXXEVNGSHLVCZWJQKVCBFPB&amp;fileType=view" width="2479px" height="3508px"/>
+         <zone points="245,48 1145,48 1145,329 245,329" rendition="TextRegion" xml:id="facs_25_r_2">
+            <zone points="231,55 1091,55 1091,226 231,226" rendition="Line" xml:id="facs_25_r_2_tl_1"/>
+            <zone points="492,176 903,176 903,357 492,357" rendition="Line" xml:id="facs_25_r_2_tl_2"/>
+         </zone>
+         <zone points="1024,380 1986,380 1986,490 1024,490" rendition="TextRegion" xml:id="facs_25_r_3">
+            <zone points="1034,335 1959,335 1959,518 1034,518" rendition="Line" xml:id="facs_25_r_3_tl_1"/>
+         </zone>
+         <zone points="691,669 1884,669 1884,786 691,786" rendition="TextRegion" xml:id="facs_25_r_4">
+            <zone points="670,647 1864,647 1864,811 670,811" rendition="Line" xml:id="facs_25_r_4_tl_1"/>
+         </zone>
+         <zone points="395,827 2315,827 2315,3292 395,3292" rendition="TextRegion" xml:id="facs_25_r_5">
+            <zone points="552,796 2171,796 2171,927 552,927" rendition="Line" xml:id="facs_25_r_5_tl_1"/>
+            <zone points="383,880 2104,880 2104,980 383,980" rendition="Line" xml:id="facs_25_r_5_tl_2"/>
+            <zone points="383,963 2130,963 2130,1079 383,1079" rendition="Line" xml:id="facs_25_r_5_tl_3"/>
+            <zone points="388,1048 2085,1048 2085,1134 388,1134" rendition="Line" xml:id="facs_25_r_5_tl_4"/>
+            <zone points="376,1120 2211,1120 2211,1222 376,1222" rendition="Line" xml:id="facs_25_r_5_tl_5"/>
+            <zone points="383,1184 2294,1184 2294,1310 383,1310" rendition="Line" xml:id="facs_25_r_5_tl_6"/>
+            <zone points="388,1260 2183,1260 2183,1374 388,1374" rendition="Line" xml:id="facs_25_r_5_tl_7"/>
+            <zone points="385,1334 2194,1334 2194,1450 385,1450" rendition="Line" xml:id="facs_25_r_5_tl_8"/>
+            <zone points="380,1417 2030,1417 2030,1512 380,1512" rendition="Line" xml:id="facs_25_r_5_tl_9"/>
+            <zone points="388,1453 2166,1453 2166,1600 388,1600" rendition="Line" xml:id="facs_25_r_5_tl_10"/>
+            <zone points="397,1567 2166,1567 2166,1662 397,1662" rendition="Line" xml:id="facs_25_r_5_tl_11"/>
+            <zone points="392,1631 2211,1631 2211,1740 392,1740" rendition="Line" xml:id="facs_25_r_5_tl_12"/>
+            <zone points="390,1707 2211,1707 2211,1816 390,1816" rendition="Line" xml:id="facs_25_r_5_tl_13"/>
+            <zone points="399,1790 2190,1790 2190,1892 399,1892" rendition="Line" xml:id="facs_25_r_5_tl_14"/>
+            <zone points="383,1859 2111,1859 2111,1985 383,1985" rendition="Line" xml:id="facs_25_r_5_tl_15"/>
+            <zone points="390,1940 2106,1940 2106,2045 390,2045" rendition="Line" xml:id="facs_25_r_5_tl_16"/>
+            <zone points="397,1969 2204,1969 2204,2111 397,2111" rendition="Line" xml:id="facs_25_r_5_tl_17"/>
+            <zone points="399,2076 2175,2076 2175,2211 399,2211" rendition="Line" xml:id="facs_25_r_5_tl_18"/>
+            <zone points="404,2147 2130,2147 2130,2287 404,2287" rendition="Line" xml:id="facs_25_r_5_tl_19"/>
+            <zone points="376,2216 2154,2216 2154,2354 376,2354" rendition="Line" xml:id="facs_25_r_5_tl_20"/>
+            <zone points="399,2282 2240,2282 2240,2413 399,2413" rendition="Line" xml:id="facs_25_r_5_tl_21"/>
+            <zone points="404,2380 2242,2380 2242,2501 404,2501" rendition="Line" xml:id="facs_25_r_5_tl_22"/>
+            <zone points="404,2444 2187,2444 2187,2627 404,2627" rendition="Line" xml:id="facs_25_r_5_tl_23"/>
+            <zone points="390,2563 892,2563 892,2682 390,2682" rendition="Line" xml:id="facs_25_r_5_tl_24"/>
+            <zone points="1602,2613 2175,2613 2175,2782 1602,2782" rendition="Line" xml:id="facs_25_r_5_tl_25"/>
+            <zone points="578,2658 1579,2658 1579,2789 578,2789" rendition="Line" xml:id="facs_25_r_5_tl_26"/>
+            <zone points="404,2722 2149,2722 2149,2893 404,2893" rendition="Line" xml:id="facs_25_r_5_tl_27"/>
+            <zone points="414,2810 2164,2810 2164,2955 414,2955" rendition="Line" xml:id="facs_25_r_5_tl_28"/>
+            <zone points="409,2898 2159,2898 2159,3027 409,3027" rendition="Line" xml:id="facs_25_r_5_tl_29"/>
+            <zone points="407,2960 2164,2960 2164,3105 407,3105" rendition="Line" xml:id="facs_25_r_5_tl_30"/>
+            <zone points="411,3024 2087,3024 2087,3176 411,3176" rendition="Line" xml:id="facs_25_r_5_tl_31"/>
+            <zone points="418,3100 2085,3100 2085,3286 418,3286" rendition="Line" xml:id="facs_25_r_5_tl_32"/>
+         </zone>
+      </surface>
+   </facsimile>
+   <text>
+      <body>
+         <div>
+            <pb facs="#facs_25" n="25" xml:id="img_0025"/>
+            <ab facs="#facs_25_r_2" type="">
+               <lb facs="#facs_25_r_2_tl_1" n="N001"/>Н. Я. Мясковскому,
+               <lb facs="#facs_25_r_2_tl_2" n="N002"/>Москва
+
+            </ab>
+            <ab facs="#facs_25_r_3" type="">
+               <lb facs="#facs_25_r_3_tl_1" n="N001"/>Сэвръ, 3 Января Іэза¬
+            </ab>
+            <ab facs="#facs_25_r_4" type="">
+               <lb facs="#facs_25_r_4_tl_1" n="N001"/>Дорогой ѣйкечай аповиовичѣ,
+            </ab>
+            <ab facs="#facs_25_r_5" type="">
+               <lb facs="#facs_25_r_5_tl_1" n="N001"/>Нашияхъ Боровскїи и я, продваригольно
+               <lb facs="#facs_25_r_5_tl_2" n="N002"/>сропогпровавчись, иррали въ чогыро руки
+               <lb facs="#facs_25_r_5_tl_3" n="N003"/>Вашу тгую силѣонїю Нусовицкому, когорый
+               <lb facs="#facs_25_r_5_tl_4" n="N004"/>слѣдихъ по паргигурѣ. Наснольно горячо
+               <lb facs="#facs_25_r_5_tl_5" n="N005"/>Нусевшкїй очносся къ Причудамъ, насгольно
+               <lb facs="#facs_25_r_5_tl_6" n="N006"/>холотюо онъ пршялѣ стлфонїю. находя; чго ее
+               <lb facs="#facs_25_r_5_tl_7" n="N007"/>совсѣмъ но счѣдуочъ играгъ въ Парихѣ. Ни
+               <lb facs="#facs_25_r_5_tl_8" n="N008"/>дяя кого но сокрогѣ, чго на внусъ Нусовиц¬
+               <lb facs="#facs_25_r_5_tl_9" n="N009"/>наго полагачься нользя; одїано въ Щохъ
+               <lb facs="#facs_25_r_5_tl_10" n="N010"/>ойу огназывагъ но приходигся: одо въ Рос¬
+               <lb facs="#facs_25_r_5_tl_11" n="N011"/>сїи онъ внявяяхъ нодурной Нохъ, и гопоръ,
+               <lb facs="#facs_25_r_5_tl_12" n="N012"/>въ Парихѣ, оглично освѣцойнойъ о гомъ, чго
+               <lb facs="#facs_25_r_5_tl_13" n="N013"/>дѣпабТся съ музыной. Онъ но тггаѳгси вос¬
+               <lb facs="#facs_25_r_5_tl_14" n="N014"/>ги музыку, накъ ого во чго бы го ги сгало
+               <lb facs="#facs_25_r_5_tl_15" n="N015"/>хочегъ Сгравшскїй, онъ но пыгаргся сум¬
+               <lb facs="#facs_25_r_5_tl_16" n="N016"/>мировагъ и подхпосТывагъ всѣхъ водущхъ
+               <lb facs="#facs_25_r_5_tl_17" n="N017"/>90, накъ Лягиповъ, но онъ провосхояюо она¬
+               <lb facs="#facs_25_r_5_tl_18" n="N018"/>оТъ, Его нуда зашолъ и накъ къ чену огно¬
+               <lb facs="#facs_25_r_5_tl_19" n="N019"/>сягся гѣ ипи шыо круги слушагодой и цѣ¬
+               <lb facs="#facs_25_r_5_tl_20" n="N020"/>ниголой, а погому ого огїощонїо къ пягой
+               <lb facs="#facs_25_r_5_tl_21" n="N021"/>стдїонїи не приходигся приншр4агъ Меь накъ
+               <lb facs="#facs_25_r_5_tl_22" n="N022"/>случайши огназъ отого изъ дирихоровъ, но
+               <lb facs="#facs_25_r_5_tl_23" n="N023"/>накъ ограженїо нгѣнїя довольно оначиголь¬
+               <lb facs="#facs_25_r_5_tl_24" n="N024"/>наго круга:
+               <lb facs="#facs_25_r_5_tl_25" n="N025"/>Ннїойъ огѣ па¬
+               <lb facs="#facs_25_r_5_tl_26" n="N026"/>Ноночно, съ ого впочагу
+               <lb facs="#facs_25_r_5_tl_27" n="N027"/>гой я горячо спорихъ, но гопоръ, осгава¬
+               <lb facs="#facs_25_r_5_tl_28" n="N028"/>ясь съ Вами съ рпазу на гпазѣ, я цолхойъ
+               <lb facs="#facs_25_r_5_tl_29" n="N029"/>на Васъ обруивься; ибо я, говоря прпмю,
+               <lb facs="#facs_25_r_5_tl_30" n="N030"/>но гольно но въ восгоргѣ огъ ноя, Но огъ
+               <lb facs="#facs_25_r_5_tl_31" n="N031"/>шїогаго просго вѣ ухасѣ. Да1овѣ огой
+               <lb facs="#facs_25_r_5_tl_32" n="N032"/>старонїи поскладюе, моргѣндоо вяїянїе
+            </ab>
+         </div>
+      </body>
+   </text>
+</TEI>
