@@ -68,10 +68,10 @@
                      </supportDesc>
                   </objectDesc>
                   <handDesc>
-                     <handNote xml:id="DemasyHand">Écriture de Paul Demasy, à l'encre
-                        noire.</handNote>
-                     <handNote xml:id="ProkofievHand">Annotations de Sergei Prokofiev, réalisées au
-                        crayon.</handNote>
+                     <handNote xml:id="DemasyHand" scribeRef="#Demasy">Écriture de Paul Demasy, à
+                        l'encre noire.</handNote>
+                     <handNote xml:id="ProkofievHand" scribeRef="#Prokofiev">Annotations de Sergei
+                        Prokofiev, réalisées au crayon.</handNote>
                   </handDesc>
                </physDesc>
                <history>
@@ -180,20 +180,23 @@
          </listChange>
       </revisionDesc>
    </teiHeader>
+   <facsimile>
+      <graphic n="1" xml:id="SPA_2490_1" url="10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6"/>
+      <graphic n="2" xml:id="SPA_2490_2" url="10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb"/>
+   </facsimile>
    <text type="letter">
       <body>
          <div type="#letter" xml:id="SPA_2490" hand="#DemasyHand">
             <opener>
-               <address>
+               <address rend="topLeft">
                   <addrLine>28, rue du printemps.</addrLine>
-                  <note type="#layout" subtype="header">Écrit en haut à gauche</note>
                </address>
-               <dateline>
+               <dateline rend="topRight">
                   <date when="1924-01-14">Paris, 14 janvier 1924.</date>
-                  <note type="#layout" subtype="header">Écrit en haut à droite</note>
                </dateline>
-               <note type="#handwritten" hand="#ProkofievHand">
-                  <date when="1924-01-15">Jan. 15</date> [au crayon, entouré, main de Prokofiev] </note>
+               <add hand="#ProkofievHand" type="pencil" rend="encircled">
+                  <date when="1924-01-15">Jan. 15</date>
+               </add>
                <salute>Cher monsieur,</salute>
             </opener>
             <p>J’ai vu cet après-midi une personne qui connait fort bien <persName
