@@ -8,16 +8,19 @@
          <titleStmt>
             <title level="s" xml:lang="en" type="main">Proko24, Digital Edition</title>
             <title level="s" xml:lang="fr" type="trl">Proko24, Édition Numérique</title>
-            <title level="a">Paul Demasy to Sergei Prokofiev, Paris, France, 14 January 1924</title>
-            <author ref="#NclsMrn" role="aut">Nicolas Moron</author>
+            <title level="a" xml:lang="fr" type="sub">Paul Demasy à Sergei Prokofiev, Paris, France,
+               14 janvier 1924</title>
+            <title level="a" xml:lang="en" type="sub">Paul Demasy to Sergei Prokofiev, Paris,
+               France, 14 January 1924</title>
+            <author ref="#NclsMrn" role="aut">Moron, Nicolas</author>
             <editor role="transcriber" ref="#NclsMrn">Moron, Nicolas</editor>
          </titleStmt>
          <editionStmt>
-            <edition n="1">First transcription edition - Version of December 12, 2023</edition>
+            <edition n="1">Première transcription et édition - Version du 12 décembre 2023</edition>
          </editionStmt>
          <publicationStmt>
             <publisher>
-               <name>Prokorrespondence</name>
+               <name>Prokorresp</name>
             </publisher>
             <date when="2023">2023</date>
             <idno type="SPArchive_ID">SPA_2490</idno>
@@ -33,11 +36,14 @@
             </availability>
          </publicationStmt>
          <notesStmt>
-            <note type="summary">Paul Demasy donne des nouvelles de la pièce de théâtre <title
-                  type="work">Judith</title> à un Prokofiev qui commence à douter de l'engagement
-                  d'<persName ref="#IdaRubinstein"><abbr>Ida Rubinstein</abbr></persName></note>
+            <note type="summary" xml:lang="fr"><persName ref="#Demasy_Paul">Paul Demasy</persName> donne des nouvelles de la pièce de théâtre <title
+               type="work">Judith</title> à un <persName ref="#SSP">Prokofiev</persName> qui commence à douter de l'engagement
+                  d'<persName ref="#Rubinstein_Ida">Ida Rubinstein</persName></note>
             <note type="incipit">J’ai vu cet après-midi une personne qui connait fort bien <persName
-                  ref="#IdaRubinstein"><abbr>Mme Ida Rubinstein</abbr></persName></note>
+                  ref="#Rubinstein_Ida"><abbr>Mme R.</abbr></persName></note>
+            <note type="summary" xml:lang="en">
+               <persName ref="#Demasy_Paul">Paul Demasy</persName> gives news about the play <title type="work">Judith</title> to <persName ref="#SSP">Prokofiev</persName>, who is beginning to doubt <persName ref="#Rubinstein_Ida">Ida Rubinstein</persName>'s commitment.
+            </note>
          </notesStmt>
          <sourceDesc>
             <msDesc>
@@ -50,8 +56,9 @@
                </msIdentifier>
                <msContents>
                   <msItem>
-                     <title>Lettre à Sergei Prokofiev</title>
-                     <docAuthor ref="#Demasy">
+                     <title xml:lang="fr">Lettre de Paul Demasy à Sergei Prokofiev</title>
+                     <title xml:lang="en">Letter from Paul Demasy to Sergei Prokofiev</title>
+                     <docAuthor ref="#Demasy_Paul">
                         <persName>Paul Demasy</persName>
                      </docAuthor>
                   </msItem>
@@ -68,25 +75,30 @@
                      </supportDesc>
                   </objectDesc>
                   <handDesc>
-                     <handNote xml:id="DemasyHand" scribeRef="#Demasy">Écriture de Paul Demasy, à
-                        l'encre noire.</handNote>
-                     <handNote xml:id="ProkofievHand" scribeRef="#Prokofiev">Annotations de Sergei
-                        Prokofiev, réalisées au crayon.</handNote>
+                     <handNote xml:id="DemasyHand" scribeRef="#Demasy_Paul">Écriture de Paul Demasy, à
+                        l'encre noire</handNote>
+                     <handNote xml:id="SSPHand" scribeRef="#SSP">Annotations de Sergei
+                        Prokofiev, au crayon</handNote>
                   </handDesc>
                </physDesc>
                <history>
-                  <provenance>Transféré de la Bibliothèque Nationale de France, dépôt
-                     Châlon-Prokofiev</provenance>
+                  <provenance>Transféré du dépôt Châlon-Prokofiev, depuis la Bibliothèque Nationale de France, Paris</provenance>
                </history>
             </msDesc>
             <listPlace>
-               <place xml:id="place1">
+               <place xml:id="Sender_Address">
                   <placeName>28, rue du Printemps, Paris</placeName>
                   <location>
                      <geo>48.87985 2.30983</geo>
                   </location>
                </place>
-               <place xml:id="place2">
+               <place xml:id="Recipient_Address">
+                  <placeName>Unknown</placeName>
+                  <location>
+                     <geo>Unknown</geo>
+                  </location>
+               </place>
+               <place xml:id="Holding_place">
                   <placeName>Rare Book &amp; Manuscript Library, Columbia University</placeName>
                   <location>
                      <geo>40.8075 -73.9626</geo>
@@ -122,6 +134,9 @@
                <category xml:id="incipit">
                   <catDesc>Incipit of the letter</catDesc>
                </category>
+               <category xml:id="Work">
+                  <catDesc>Identifies any art work</catDesc>
+               </category>
             </taxonomy>
          </classDecl>
       </encodingDesc>
@@ -131,7 +146,7 @@
          </langUsage>
          <correspDesc>
             <correspAction type="sent">
-               <persName ref="#Demasy">Demasy, Paul</persName>
+               <persName ref="#Demasy_Paul">Demasy, Paul</persName>
                <address>
                   <street>28, rue du Printemps</street>
                   <settlement>Paris</settlement>
@@ -153,11 +168,11 @@
                   <persName>Sergei Prokofiev</persName>
                   <idno type="VIAF">71579098</idno>
                </person>
-               <person xml:id="Demasy">
+               <person xml:id="Demasy_Paul">
                   <persName>Paul Demasy</persName>
                   <idno type="VIAF">39088295</idno>
                </person>
-               <person xml:id="IdaRubinstein">
+               <person xml:id="Rubinstein_Ida">
                   <persName>Ida Rubinstein</persName>
                   <idno type="VIAF">29614722</idno>
                </person>
@@ -175,14 +190,19 @@
          </listChange>
          <listChange type="publication">
             <change when="2023-12-21" who="#NclsMrn">Affinage de l'encodage TEI basé sur les modèles
-               de WeGA et Grimoire, avec l'assistance de ProKorresp, un GPT personnalisé développé
-               sur ChatGPT.</change>
+               de WeGA, avec l'assistance du GPT Grimoire, de ProKorresp, un GPT personnel développé
+               sur ChatGPT, et les recommandations du consortium Cahier (https://cahier.hypotheses.org/).</change>
+         </listChange>
+         <listChange type="publication">
+            <change when="2024-11-28" who="#NclsMrn">Affinage de l'encodage TEI, sous les conseils de Josselin Morvan. Suivi du versionnage sur GitHub Proko24</change>
          </listChange>
       </revisionDesc>
    </teiHeader>
    <facsimile>
-      <graphic n="1" xml:id="SPA_2490_1" url="10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6"/>
-      <graphic n="2" xml:id="SPA_2490_2" url="10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb"/>
+      <graphic n="1" xml:id="SPA_2490_1"
+         url="10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6"/>
+      <graphic n="2" xml:id="SPA_2490_2"
+         url="10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb"/>
    </facsimile>
    <text type="letter">
       <body>
@@ -194,42 +214,42 @@
                <dateline rend="topRight">
                   <date when="1924-01-14">Paris, 14 janvier 1924.</date>
                </dateline>
-               <add hand="#ProkofievHand" type="pencil" rend="encircled">
+               <add hand="#SSPHand" type="pencil" rend="encircled">
                   <date when="1924-01-15">Jan. 15</date>
                </add>
                <salute>Cher monsieur,</salute>
             </opener>
             <p>J’ai vu cet après-midi une personne qui connait fort bien <persName
-                  ref="#IdaRubinstein"><abbr>Mme R.</abbr></persName> ; aussi bien du point de vue
+                  ref="#Rubinstein_Ida"><abbr>Mme R.</abbr></persName> ; aussi bien du point de vue
                de ses affaires que de son caractère. C’est d’ailleurs ce monsieur qui m’a présenté à
                elle, voici exactement un an. Comme il me demandait où nous en étions avec <title
                   type="work" xml:id="Judith">Judith</title><note type="#biblRef" target="#note01"
-               />, je lui ai dit que <persName ref="#IdaRubinstein"><abbr>Mme R.</abbr></persName>
+               />, je lui ai dit que <persName ref="#Rubinstein_Ida"><abbr>Mme R.</abbr></persName>
                me paraissait très décidée à jouer cette pièce et qu’elle comptait sur vous pour la
-               musique. Ce monsieur me dit qu’il savait en effet que <persName ref="#IdaRubinstein"
+               musique. Ce monsieur me dit qu’il savait en effet que <persName ref="#Rubinstein_Ida"
                      ><abbr>Mme R.</abbr></persName> vous avait reçu et je lui résumai la
                conversation. J’ajoutai que vous attendiez une lettre de <persName
-                  ref="#IdaRubinstein"><abbr>Mme R.</abbr></persName> pour vous mettre au
+                  ref="#Rubinstein_Ida"><abbr>Mme R.</abbr></persName> pour vous mettre au
                travail.</p>
             <p><q>M. Prokofieff a tort d’hésiter, me dit cette personne. <persName
-                     ref="#IdaRubinstein"><abbr>Mme R.</abbr></persName> est très loyale et du
+                     ref="#Rubinstein_Ida"><abbr>Mme R.</abbr></persName> est très loyale et du
                   moment qu’elle affirme qu’elle jouera l’œuvre et qu’elle a verbalement demandé la
                   musique à M. Prokofieff, absolument rien ne s’oppose à ce qu’il commence à
                   travailler.</q><pb/> Et il ajouta qu’il lui paraissait douteux que <persName
-                  ref="#IdaRubinstein"><abbr>Mme R.</abbr></persName> voulût ou pût signer un
+                  ref="#Rubinstein_Ida"><abbr>Mme R.</abbr></persName> voulût ou pût signer un
                engagement quelconque étant donné la multiplicité de ses projets et l’impossibilité
                de prévoir six mois à l’avance ce que l’on fera. Qu’au surplus, toute insistance sur
                ce point, de ma part ou de la vôtre, risquerait de paraître déplacé et de
                compromettre le succès de l’affaire. <q>Même, ajouta-t-il, connaissant <persName
-                     ref="#IdaRubinstein"><abbr>Mme R.</abbr></persName> comme je la connais, je
+                     ref="#Rubinstein_Ida"><abbr>Mme R.</abbr></persName> comme je la connais, je
                   vous avoue que je suis surpris, très favorablement d’ailleurs, qu’elle ait parlé
                   aussi catégoriquement à M. Prokofieff. Ce n’est pas à son habitude ; voyez-là une
                   preuve certaine de sa volonté et n’en demandez pas davantage.</q></p>
             <p>Il me dit encore beaucoup d’autres choses que je vous répèterai de vive voix dès
                votre prochain passage à Paris, si vous voulez que nous nous rencontrions.</p>
-            <p>J’ai revu aussi la secrétaire de <persName ref="#IdaRubinstein"><abbr>Mme
+            <p>J’ai revu aussi la secrétaire de <persName ref="#Rubinstein_Ida"><abbr>Mme
                   R.</abbr></persName> qui m’a répété quel avait été l’ennui de <persName
-                  ref="#IdaRubinstein"><abbr>Mme R.</abbr></persName> le jour où malade, il lui
+                  ref="#Rubinstein_Ida"><abbr>Mme R.</abbr></persName> le jour où malade, il lui
                avait été impossible de vous recevoir.</p>
             <p>Voulez-vous que nous nous rencontrions un de ces après-midi avant votre départ ? Nous
                causerons de tout cela. Je puis en tout cas vous attendre chez moi le jour qu’il vous
@@ -237,7 +257,7 @@
             <closer>
                <salute>Croyez, cher monsieur, à mes sentiments très cordiaux.</salute>
                <signed>
-                  <name ref="#Demasy">Paul Demasy</name>
+                  <name ref="#Demasy_Paul">Paul Demasy</name>
                </signed>
             </closer>
          </div>
