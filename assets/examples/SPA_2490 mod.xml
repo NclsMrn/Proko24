@@ -114,28 +114,53 @@
          <editorialDecl>
             <p>Transcription and coding follows the Editorial Guidelines of Proko24</p>
          </editorialDecl>
+         <tagsDecl partial="false">
+            <rendition xml:id="pencil" scheme="css">
+               <label>Texte ajouté au crayon</label>
+            </rendition>
+            <rendition xml:id="encircled" scheme="css">
+               <label>Texte entouré</label>
+            </rendition>
+            <rendition xml:id="topLeft" scheme="css">
+               <label>Positionné en haut à gauche</label>
+            </rendition>
+            <rendition xml:id="topRight" scheme="css">
+               <label>Positionné en haut à droite</label>
+            </rendition>
+            <namespace name="http://www.tei-c.org/ns/1.0">
+               <tagUsage gi="add" ana="Texte ajouté par une autre main, souvent une annotation ou une correction."/>
+               <tagUsage gi="persName" ana="Noms de personnes référencées dans le texte."/>
+               <tagUsage gi="placeName" ana="Noms de lieux mentionnés ou pertinents pour le texte."/>
+               <tagUsage gi="handNote" ana="Description de l'écriture d'un scribe ou annotateur."/>
+               <tagUsage gi="note" ana="Notes ajoutées pour fournir des informations supplémentaires telles que des résumés, des incipits ou des références."/>
+               <tagUsage gi="ref" ana="Référence à une ressource externe ou à une cible interne au document."/>
+               <tagUsage gi="title" ana="Titres d'œuvres ou de sections au sein du document."/>
+               <tagUsage gi="date" ana="Dates indiquées dans le texte, soit du document original, soit en tant qu'annotations."/>
+               <tagUsage gi="measure" ana="Mesures, pour indiquer l'étendue physique, telle que le nombre de pages."/>
+            </namespace>
+         </tagsDecl>
          <classDecl>
             <taxonomy xml:id="noteTypes">
                <category xml:id="handwritten">
-                  <catDesc>Handwritten annotations</catDesc>
+                  <catDesc>Annotations manuscrites</catDesc>
                </category>
                <category xml:id="editorial">
-                  <catDesc>Editorial notes added by the transcriber or editor</catDesc>
+                  <catDesc>Notes éditoriales ajoutées par l'éditeur</catDesc>
                </category>
                <category xml:id="explanatory">
-                  <catDesc>Explanatory notes providing clarifications</catDesc>
+                  <catDesc>Notes explicatives apportant des clarifications</catDesc>
                </category>
                <category xml:id="layout">
-                  <catDesc>Layout Information</catDesc>
+                  <catDesc>Informations de mise en page</catDesc>
                </category>
                <category xml:id="summary">
-                  <catDesc>Summary of content</catDesc>
+                  <catDesc>Résummé du contenu de la lettre</catDesc>
                </category>
                <category xml:id="incipit">
-                  <catDesc>Incipit of the letter</catDesc>
+                  <catDesc>Incipit de la lettre</catDesc>
                </category>
                <category xml:id="Work">
-                  <catDesc>Identifies any art work</catDesc>
+                  <catDesc>Identifie une oeuvre</catDesc>
                </category>
             </taxonomy>
          </classDecl>
@@ -185,8 +210,7 @@
       </profileDesc>
       <revisionDesc>
          <listChange type="research">
-            <change when="2023-11-05" who="#NclsMrn">Initial TEI encoding based on letter
-               transcription and historical context.</change>
+            <change when="2023-11-05" who="#NclsMrn">Encodage TEI initial après transcription et étude du contexte historique.</change>
          </listChange>
          <listChange type="publication">
             <change when="2023-12-21" who="#NclsMrn">Affinage de l'encodage TEI basé sur les modèles
