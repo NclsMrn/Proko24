@@ -14,13 +14,11 @@
             <publisher>Prokorresp</publisher>
             <date when="2023">2023</date>
             <availability status="restricted">
-               <licence target="https://creativecommons.org/licenses/by-nc-sa/4.0/">This corpus is
-                  licensed under Creative Commons BY-NC-SA 4.0</licence>
+               <licence target="https://creativecommons.org/licenses/by-nc-sa/4.0/">This corpus is licensed under Creative Commons BY-NC-SA 4.0</licence>
             </availability>
          </publicationStmt>
          <sourceDesc>
-            <p>This TEI Corpus gathers and encodes correspondence from Sergei Prokofiev during the
-               year 1924. Each letter is transcribed and annotated according to TEI guidelines.</p>
+            <p>This TEI Corpus gathers and encodes correspondence from Sergei Prokofiev during the year 1924. Each letter is transcribed and annotated according to TEI guidelines.</p>
          </sourceDesc>
       </fileDesc>
    </teiHeader>

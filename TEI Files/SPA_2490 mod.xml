@@ -36,14 +36,17 @@
             </availability>
          </publicationStmt>
          <notesStmt>
-            <note type="summary" xml:lang="fr"><persName ref="#Demasy_Paul">Paul Demasy</persName> donne des nouvelles de la pièce de théâtre <title
-               type="work">Judith</title> à un <persName ref="#SSP">Prokofiev</persName> qui commence à douter de l'engagement
+            <note type="summary" xml:lang="fr"><persName ref="#Demasy_Paul">Paul Demasy</persName>
+               donne des nouvelles de la pièce de théâtre <title type="work">Judith</title> à un
+                  <persName ref="#SSP">Prokofiev</persName> qui commence à douter de l'engagement
                   d'<persName ref="#Rubinstein_Ida">Ida Rubinstein</persName></note>
             <note type="incipit">J’ai vu cet après-midi une personne qui connait fort bien <persName
                   ref="#Rubinstein_Ida"><abbr>Mme R.</abbr></persName></note>
             <note type="summary" xml:lang="en">
-               <persName ref="#Demasy_Paul">Paul Demasy</persName> gives news about the play <title type="work">Judith</title> to <persName ref="#SSP">Prokofiev</persName>, who is beginning to doubt <persName ref="#Rubinstein_Ida">Ida Rubinstein</persName>'s commitment.
-            </note>
+               <persName ref="#Demasy_Paul">Paul Demasy</persName> gives news about the play <title
+                  type="work">Judith</title> to <persName ref="#SSP">Prokofiev</persName>, who is
+               beginning to doubt <persName ref="#Rubinstein_Ida">Ida Rubinstein</persName>'s
+               commitment. </note>
          </notesStmt>
          <sourceDesc>
             <msDesc>
@@ -75,14 +78,15 @@
                      </supportDesc>
                   </objectDesc>
                   <handDesc>
-                     <handNote xml:id="DemasyHand" scribeRef="#Demasy_Paul">Écriture de Paul Demasy, à
-                        l'encre noire</handNote>
-                     <handNote xml:id="SSPHand" scribeRef="#SSP">Annotations de Sergei
-                        Prokofiev, au crayon</handNote>
+                     <handNote xml:id="DemasyHand" scribeRef="#Demasy_Paul">Écriture de Paul Demasy,
+                        à l'encre noire</handNote>
+                     <handNote xml:id="SSPHand" scribeRef="#SSP">Annotations de Sergei Prokofiev, au
+                        crayon</handNote>
                   </handDesc>
                </physDesc>
                <history>
-                  <provenance>Transféré du dépôt Châlon-Prokofiev, depuis la Bibliothèque Nationale de France, Paris</provenance>
+                  <provenance>Transféré du dépôt Châlon-Prokofiev, depuis la Bibliothèque Nationale
+                     de France, Paris</provenance>
                </history>
             </msDesc>
             <listPlace>
@@ -128,15 +132,20 @@
                <label>Positionné en haut à droite</label>
             </rendition>
             <namespace name="http://www.tei-c.org/ns/1.0">
-               <tagUsage gi="add" ana="Texte ajouté par une autre main, souvent une annotation ou une correction."/>
+               <tagUsage gi="add"
+                  ana="Texte ajouté par une autre main, souvent une annotation ou une correction."/>
                <tagUsage gi="persName" ana="Noms de personnes référencées dans le texte."/>
                <tagUsage gi="placeName" ana="Noms de lieux mentionnés ou pertinents pour le texte."/>
                <tagUsage gi="handNote" ana="Description de l'écriture d'un scribe ou annotateur."/>
-               <tagUsage gi="note" ana="Notes ajoutées pour fournir des informations supplémentaires telles que des résumés, des incipits ou des références."/>
-               <tagUsage gi="ref" ana="Référence à une ressource externe ou à une cible interne au document."/>
+               <tagUsage gi="note"
+                  ana="Notes ajoutées pour fournir des informations supplémentaires telles que des résumés, des incipits ou des références."/>
+               <tagUsage gi="ref"
+                  ana="Référence à une ressource externe ou à une cible interne au document."/>
                <tagUsage gi="title" ana="Titres d'œuvres ou de sections au sein du document."/>
-               <tagUsage gi="date" ana="Dates indiquées dans le texte, soit du document original, soit en tant qu'annotations."/>
-               <tagUsage gi="measure" ana="Mesures, pour indiquer l'étendue physique, telle que le nombre de pages."/>
+               <tagUsage gi="date"
+                  ana="Dates indiquées dans le texte, soit du document original, soit en tant qu'annotations."/>
+               <tagUsage gi="measure"
+                  ana="Mesures, pour indiquer l'étendue physique, telle que le nombre de pages."/>
             </namespace>
          </tagsDecl>
          <classDecl>
@@ -210,15 +219,18 @@
       </profileDesc>
       <revisionDesc>
          <listChange type="research">
-            <change when="2023-11-05" who="#NclsMrn">Encodage TEI initial après transcription et étude du contexte historique.</change>
+            <change when="2023-11-05" who="#NclsMrn">Encodage TEI initial après transcription et
+               étude du contexte historique.</change>
          </listChange>
          <listChange type="publication">
             <change when="2023-12-21" who="#NclsMrn">Affinage de l'encodage TEI basé sur les modèles
                de WeGA, avec l'assistance du GPT Grimoire, de ProKorresp, un GPT personnel développé
-               sur ChatGPT, et les recommandations du consortium Cahier (https://cahier.hypotheses.org/).</change>
+               sur ChatGPT, et les recommandations du consortium Cahier
+               (https://cahier.hypotheses.org/).</change>
          </listChange>
          <listChange type="publication">
-            <change when="2024-11-28" who="#NclsMrn">Affinage de l'encodage TEI, sous les conseils de Josselin Morvan. Suivi du versionnage sur GitHub Proko24</change>
+            <change when="2024-11-28" who="#NclsMrn">Affinage de l'encodage TEI, sous les conseils
+               de Josselin Morvan. Suivi du versionnage sur GitHub Proko24</change>
          </listChange>
       </revisionDesc>
    </teiHeader>
