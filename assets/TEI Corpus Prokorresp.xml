@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml"
+	schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<teiCorpus xmlns="http://www.tei-c.org/ns/1.0">
+   <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title>Proko24 Correspondence - TEI Corpus</title>
+            <author>Nicolas Moron</author>
+            <editor role="projectManager">Prokorresp</editor>
+         </titleStmt>
+         <publicationStmt>
+            <publisher>Prokorresp</publisher>
+            <date when="2023">2023</date>
+            <availability status="restricted">
+               <licence target="https://creativecommons.org/licenses/by-nc-sa/4.0/">This corpus is
+                  licensed under Creative Commons BY-NC-SA 4.0</licence>
+            </availability>
+         </publicationStmt>
+         <sourceDesc>
+            <p>This TEI Corpus gathers and encodes correspondence from Sergei Prokofiev during the
+               year 1924. Each letter is transcribed and annotated according to TEI guidelines.</p>
+         </sourceDesc>
+      </fileDesc>
+   </teiHeader>
+   <TEI xml:id="SPA_2490">
+      <teiHeader>
+         <fileDesc>
+            <titleStmt>
+               <title>Paul Demasy to Sergei Prokofiev</title>
+               <author>Paul Demasy</author>
+            </titleStmt>
+            <publicationStmt>
+               <publisher>Prokorresp</publisher>
+               <date when="2023">2023</date>
+            </publicationStmt>
+            <sourceDesc>
+               <msDesc>
+                  <msIdentifier>
+                     <country>France</country>
+                     <settlement>Paris</settlement>
+                     <repository>Bibliothèque Nationale de France</repository>
+                     <idno type="SPA_ID">SPA_2490</idno>
+                  </msIdentifier>
+                  <physDesc>
+                     <objectDesc form="letter">
+                        <supportDesc>
+                           <support>Paper</support>
+                           <extent>
+                              <measure unit="pages">2</measure>
+                           </extent>
+                        </supportDesc>
+                     </objectDesc>
+                  </physDesc>
+               </msDesc>
+            </sourceDesc>
+         </fileDesc>
+         <profileDesc>
+            <langUsage>
+               <language ident="fre">French</language>
+            </langUsage>
+            <correspDesc>
+               <correspAction type="sent">
+                  <persName>Paul Demasy</persName>
+                  <date when="1924-01-14">14 January 1924</date>
+                  <address>
+                     <street>28, rue du printemps</street>
+                     <settlement>Paris</settlement>
+                     <country>France</country>
+                  </address>
+               </correspAction>
+               <correspAction type="received">
+                  <persName>Sergei Prokofiev</persName>
+               </correspAction>
+            </correspDesc>
+         </profileDesc>
+      </teiHeader>
+      <text>
+         <body>
+            <opener>
+               <address rend="topLeft">
+                  <addrLine>28, rue du printemps.</addrLine>
+               </address>
+               <dateline rend="topRight">
+                  <date when="1924-01-14">Paris, 14 janvier 1924.</date>
+               </dateline>
+               <salute>Cher monsieur,</salute>
+            </opener>
+            <p>J’ai vu cet après-midi une personne qui connait fort bien Ida Rubinstein...</p>
+            <closer>
+               <salute>Croyez, cher monsieur, à mes sentiments très cordiaux.</salute>
+               <signed>Paul Demasy</signed>
+            </closer>
+         </body>
+      </text>
+   </TEI>
+</teiCorpus>
