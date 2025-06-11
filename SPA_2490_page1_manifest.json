@@ -1,16 +1,19 @@
 {
   "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/manifest-page1",
+  "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/manifest",
   "@type": "sc:Manifest",
-  "label": "Lettre SPA_2490 (page 1)",
+  "label": "Lettre SPA_2490",
+  "attribution": "Nicolas Moron / NAKALA",
+  "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+  "logo": "https://nakala.fr/logo/",
   "metadata": [
     {
       "label": "Id",
-      "value": "SPA_2490_1"
+      "value": "SPA_2490"
     },
     {
       "label": "Title",
-      "value": "SPA_2490_1"
+      "value": "Lettre SPA_2490"
     },
     {
       "label": "Creator",
@@ -22,32 +25,33 @@
     },
     {
       "label": "Type",
-      "value": "image"
+      "value": "manuscript"
     }
   ],
-  "license": "http://creativecommons.org/licenses/by-nc/4.0/",
-  "attribution": "Nicolas Moron / NAKALA",
   "sequences": [
     {
-      "@context": "http://iiif.io/api/presentation/2/context.json",
       "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/sequence/normal",
       "@type": "sc:Sequence",
-      "viewingDirection": "left-to-right",
-      "viewingHint": "individuals",
+      "label": "Lettre SPA_2490",
+      "viewingHint": "paged",
+      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/page1",
       "canvases": [
         {
-          "@context": "http://iiif.io/api/presentation/2/context.json",
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/00000001",
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/page1",
           "@type": "sc:Canvas",
-          "label": "00000001",
+          "label": "Page 1",
           "height": 3390,
           "width": 2665,
+          "thumbnail": {
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb/full/,150/0/default.jpg",
+            "@type": "dctypes:Image"
+          },
           "images": [
             {
-              "@context": "http://iiif.io/api/presentation/2/context.json",
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/annotation/00000001",
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/annotation/page1",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/page1",
               "resource": {
                 "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb/full/full/0/default.jpg",
                 "@type": "dctypes:Image",
@@ -59,8 +63,7 @@
                   "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb",
                   "profile": "http://iiif.io/api/image/2/level2.json"
                 }
-              },
-              "on": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/00000001"
+              }
             }
           ]
         }
