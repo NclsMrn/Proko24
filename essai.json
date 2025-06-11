@@ -55,8 +55,12 @@
                 "height": 3390,
                 "width": 2665,
                 "service": {
-                  "@context": "http://iiif.io/api/image/2/context.json",
-"profile": "http://iiif.io/api/image/2/level2.json"
+"service": {
+  "@context": "http://iiif.io/api/image/2/context.json",
+  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb",
+  "profile": "http://iiif.io/api/image/2/level2.json"
+}
+
                 }
               },
               "on": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/00000001"
