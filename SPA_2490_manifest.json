@@ -2,7 +2,7 @@
   "@context": "http://iiif.io/api/presentation/2/context.json",
   "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/manifest",
   "@type": "sc:Manifest",
-  "label": "Lettre SPA_2490",
+  "label": "SPA_2490",
   "attribution": "Nicolas Moron / NAKALA",
   "license": "http://creativecommons.org/licenses/by-nc/4.0/",
   "logo": "https://nakala.fr/logo/",
@@ -13,7 +13,7 @@
     },
     {
       "label": "Title",
-      "value": "Lettre SPA_2490"
+      "value": "SPA_2490"
     },
     {
       "label": "Creator",
@@ -32,7 +32,7 @@
     {
       "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/sequence/normal",
       "@type": "sc:Sequence",
-      "label": "Lettre SPA_2490",
+      "label": "SPA_2490",
       "viewingHint": "paged",
       "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/page1",
       "canvases": [
