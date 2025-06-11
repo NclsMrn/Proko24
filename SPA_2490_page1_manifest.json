@@ -40,10 +40,10 @@
           "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/page1",
           "@type": "sc:Canvas",
           "label": "Page 1",
-          "height": 3390,
-          "width": 2665,
+          "height": 3430,
+          "width": 2692,
           "thumbnail": {
-            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb/full/,150/0/default.jpg",
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6/full/,150/0/default.jpg",
             "@type": "dctypes:Image"
           },
           "images": [
@@ -52,6 +52,37 @@
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
               "on": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/page1",
+              "resource": {
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "height": 3430,
+                "width": 2692,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/page2",
+          "@type": "sc:Canvas",
+          "label": "Page 2",
+          "height": 3390,
+          "width": 2665,
+          "thumbnail": {
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb/full/,150/0/default.jpg",
+            "@type": "dctypes:Image"
+          },
+          "images": [
+            {
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/annotation/page2",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.ca86te47/canvas/page2",
               "resource": {
                 "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb/full/full/0/default.jpg",
                 "@type": "dctypes:Image",
