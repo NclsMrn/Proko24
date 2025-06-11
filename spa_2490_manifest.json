@@ -43,33 +43,6 @@
           },
           "on": "https://ton-serveur.org/iiif/spa_2490/canvas/1"
         }]
-      },
-
-      /* ----------  page 2  ---------- */
-      {
-        "@id": "https://ton-serveur.org/iiif/spa_2490/canvas/2",
-        "@type": "sc:Canvas",
-        "label": "Page 2",
-        "height": 3430,
-        "width": 2692,
-        "images": [{
-          "@id": "https://ton-serveur.org/iiif/spa_2490/annotation/2",
-          "@type": "oa:Annotation",
-          "motivation": "sc:painting",
-          "resource": {
-            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6/full/full/0/default.jpg",
-            "@type": "dctypes:Image",
-            "format": "image/jpeg",
-            "height": 3430,
-            "width": 2692,
-            "service": {
-              "@context": "http://iiif.io/api/image/2/context.json",
-              "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6",
-              "profile": "http://iiif.io/api/image/2/level2.json"
-            }
-          },
-          "on": "https://ton-serveur.org/iiif/spa_2490/canvas/2"
-        }]
       }
 
     ]
