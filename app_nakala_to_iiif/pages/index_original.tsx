@@ -2,13 +2,6 @@ import React, { useState, useRef } from 'react';
 import { Download, Upload, Plus, Minus, FileText, ExternalLink, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import * as Papa from 'papaparse';
 
-const parseCombined = (input: string) => {
-  const parts = input.trim().split('/');
-  const hash = parts.pop()!;
-  const doi  = parts.join('/');
-  return { doi, hash };
-};
-
 const IIIFManifestGenerator = () => {
   const [csvData, setCsvData] = useState([]);
   const [selectedLetter, setSelectedLetter] = useState('');
@@ -28,28 +21,6 @@ const IIIFManifestGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAutoFetching, setIsAutoFetching] = useState(false);
   const fileInputRef = useRef(null);
-  const [combined, setCombined] = useState('');   // champ collé DOI+hash
-
-const handleCombinedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const val = e.target.value;
-  setCombined(val);
-
-  // On essaye de parser (si l’utilisateur colle bien “DOI/hash”)
-  if (val.includes('/')) {
-    try {
-      const { doi, hash } = parseCombined(val);
-      setManifestData(md => ({
-        ...md,
-        doi,
-        pages: md.pages.map((p, i) =>
-          i === 0 ? { ...p, hash } : p
-        )
-      }));
-    } catch {
-      /* laisse l’utilisateur continuer à taper */
-    }
-  }
-};
 
   // Fonction pour récupérer automatiquement les dimensions d'une image
   const fetchImageDimensions = async (doi, hash) => {
@@ -116,30 +87,34 @@ const handleCombinedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     for (let i = 0; i < newPages.length; i++) {
       const page = newPages[i];
       
-  if (page.hash && validateHash(page.hash)) {
-  // ► on demande réellement les dimensions
-  const result = await fetchImageDimensions(manifestData.doi, page.hash);
-
-  if (result.success) {
-    newPages[i] = {
-      ...page,
-      width:  result.width,
-      height: result.height,
-      loading: false,
-      validated: true,
-      error: null
-    };
-  } else {
-    newPages[i] = {
-      ...page,
-      loading: false,
-      error: result.error || 'Erreur lors de la récupération'
-    };
-  }
-
-  setManifestData({ ...manifestData, pages: [...newPages] });
-  if (i < newPages.length - 1) await new Promise(r => setTimeout(r, 500));
-} else {
+      if (page.hash && validateHash(page.hash)) {
+        const result = await fetchImageDimensions(manifestData.doi, page.hash);
+        
+        if (result.success) {
+          newPages[i] = {
+            ...page,
+            width: result.width,
+            height: result.height,
+            loading: false,
+            validated: true,
+            error: null
+          };
+        } else {
+          newPages[i] = {
+            ...page,
+            loading: false,
+            error: result.error || 'Erreur lors de la récupération'
+          };
+        }
+        
+        // Mettre à jour l'état après chaque page
+        setManifestData({ ...manifestData, pages: [...newPages] });
+        
+        // Délai pour éviter de surcharger l'API
+        if (i < newPages.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      } else {
         newPages[i] = {
           ...page,
           loading: false,
@@ -216,45 +191,38 @@ const handleCombinedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     return hashRegex.test(hash);
   };
 
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  Papa.parse(file, {
-    header: true,
-    skipEmptyLines: true,
-    complete: (results) => {
-      // ► on ajoute la colonne letterId à chaque ligne
-      const rows = results.data.map((row) => {
-        const title = row['http://nakala.fr/terms#title'] || '';
-        const match = title.match(/(SPA_\d+)/);
-        return { ...row, letterId: match ? match[1] : '' };
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      Papa.parse(file, {
+        complete: (results) => {
+          setCsvData(results.data);
+        },
+        header: true,
+        skipEmptyLines: true
       });
-      setCsvData(rows);
     }
-  });
-};
+  };
 
+  const handleLetterSelect = (letterItem) => {
+    const letterData = csvData.find(item =>
+      item['Linked in item'] === letterItem
+    );
 
-const handleLetterSelect = (letterItem) => {
-  const letterData = csvData.find(item => item['Linked in item'] === letterItem);
-  if (!letterData) return;
+    if (letterData) {
+      const titleMatch = letterData['http://nakala.fr/terms#title']?.match(/\^(SPA_\d+)/);
+      const letterId = titleMatch ? titleMatch[1] : '';
 
-  // On prend en priorité la colonne préparée, sinon on retente depuis le titre
-  const letterId =
-    letterData.letterId ||
-    (letterData['http://nakala.fr/terms#title']?.match(/(SPA_\d+)/)?.[1] ?? '');
-
-  setManifestData({
-    ...manifestData,
-    letterId,
-    title:  letterData['http://nakala.fr/terms#title']   || '',
-    creator: letterData['http://nakala.fr/terms#creator'] || '',
-    dateIssued: letterData['http://nakala.fr/terms#created'] || ''
-  });
-  setSelectedLetter(letterItem);
-};
-
+      setManifestData({
+        ...manifestData,
+        letterId: letterId,
+        title: letterData['http://nakala.fr/terms#title'] || '',
+        creator: letterData['http://nakala.fr/terms#creator'] || '',
+        dateIssued: letterData['http://nakala.fr/terms#created'] || ''
+      });
+      setSelectedLetter(letterItem);
+    }
+  };
 
   const addPage = () => {
     setManifestData({
@@ -471,21 +439,7 @@ const handleLetterSelect = (letterItem) => {
           {/* Basic Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800">Informations de base</h3>
-            {/* Champ combiné DOI + hash */}
-<div className="mb-6">
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-    Coller DOI + hash complet
-  </label>
-
-  <input
-    type="text"
-    value={combined}              // ← l’état que tu as ajouté
-    onChange={handleCombinedChange}
-    placeholder="10.34847/nkl.xxxxxxxx/aaaaaaaaaa..."
-    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-  />
-</div>
-
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 DOI Nakala *
