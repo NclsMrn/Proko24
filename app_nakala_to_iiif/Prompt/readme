@@ -1,1 +1,637 @@
 Quelques exemples de prompts utilisés dans ChatGPT et Claude. Claude a été beaucoup plus performant que ChatGPT.
+
+J’aimerais une petite application qui me permette de générer des manifests en fonction du DOI et de l’ID d’un fichier Nakala.
+
+L’application me demanderait les informations nécessaires : DOI, ID de chaque page, identifiant de la lettre, et génèrerait un manifest iiif exactement sur le modèle de celui que je viens de te donner.
+j’aimerais que l’application puisse récupérer les dimensions des images automatiquement. Par exemple, pour la lettre SPA_2490, pour obtenir les dimensions exactes de chaque page, on peut consulter le fichier info.json de chaque image via l’API IIIF de Nakala.
+
+Voici des exemples d’URLs à utiliser :
+Pour la Page 1 :
+https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/58b91ba17fb30e3d27881f56105322dfee65f1a6/info.json
+Pour la Page 2 :
+https://api.nakala.fr/iiif/10.34847/nkl.ca86te47/e17b90833eec6f131a1934d8d772b621143a0efb/info.json
+
+Dans la réponse JSON, on trouve les propriétés width et height qui donneront les dimensions exactes de chaque image.
+
+J’aimerais aussi que le titre soit le même que l’ID Lettre, soit SPA_XXXX et qu’il reprenne le début du titre global de la lettre. Voici un exemple : dans la colonne F «http://nakala.fr/terms#title» de mon CSV je peux lire des données qui ont toutes les même schéma comme par exemple «SPA_2469 Letter from Sergey Sergeevich Prokofiev to Grzegorz Fitelberg». J’aimerais que l’ID Lettre et le Titre soient alors «SPA_2469», pré-remplis, avec possibilité de les modifier si besoin. Voici ma clef d’API : 607d230a-347b-2b03-2000-eee194bf74de
+
+Concernant les dimensions de chaque image, j’obtiens un «NetworkError when attempting to fetch resource.» Même si la lettre est en statut Public. En statut Privé, le info.json n’est même pas accessible.
+
+J’ai pensé que le problème principal pouvait être lié aux politiques CORS (Cross-Origin Resource Sharing) de l'API Nakala. Quand je tentais d'accéder à l'API depuis le navigateur, celle-ci bloquait probablement les requêtes cross-origin, même avec une clé API valide. Mais si l’application essaie plusieurs proxies publics dans l'ordre, j’obtiens l'erreur lorsque j’appuies sur le bouton « récupérer les dimensions » "Impossible de récupérer les dimensions. Dernière erreur: NetworkError when attempting to fetch resource." :
+	•	cors-anywhere.herokuapp.com
+	•	api.allorigins.win
+	•	corsproxy.io
+
+C’est le cas par exemple pour la lettre SPA_2475 au DOI 10.34847/nkl.29dbr70s/ et hash 3faf8d4f836f02954280b9c499680bf853ab8296
+Pourtant, lorsque j'accède à l'adresse suivante dans mon navigateur, le json s'affiche bien : https://api.nakala.fr/iiif/10.34847/nkl.29dbr70s/986cb5b2a5be5f50dd2f4dff51730d404c0264bd/info.json
+Mais peut-être as-tu une approche très différente. Sens-toi libre.
+
+Voici la version du code que j’ai essayée :
+
+import React, { useState, useRef } from ‘react’;
+import { Download, Upload, Plus, Minus, FileText, RefreshCw, CheckCircle, XCircle, AlertCircle } from ‘lucide-react’;
+import * as Papa from ‘papaparse’;
+
+const IIIFManifestGenerator = () => {
+  const [csvData, setCsvData] = useState([]);
+  const [selectedLetter, setSelectedLetter] = useState(‘’);
+  const [manifestData, setManifestData] = useState({
+    doi: ‘’,
+    letterId: ‘’,
+    title: ‘’,
+    creator: ‘’,
+    dateIssued: ‘’,
+    attribution: ‘Nicolas Moron / NAKALA’,
+    license: ‘http://creativecommons.org/licenses/by-nc/4.0/’,
+    pages: [
+      { hash: ‘’, width: 2692, height: 3430, status: ‘manual’, error: null }
+    ]
+  });
+  const [generatedManifest, setGeneratedManifest] = useState(‘’);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const fileInputRef = useRef(null);
+
+  // Validation functions
+  const validateDOI = (doi) => {
+    const doiPattern = /^10\.\d{4,}\/[-._;()\/:A-Za-z0-9]+$/;
+    return doiPattern.test(doi);
+  };
+
+  const validateHash = (hash) => {
+    const hashPattern = /^[a-fA-F0-9]{40}$/;
+    return hashPattern.test(hash);
+  };
+
+  // Fetch image dimensions from IIIF API
+  const fetchImageDimensions = async (doi, hash) => {
+    if (!doi || !hash || !validateDOI(doi) || !validateHash(hash)) {
+      throw new Error(‘DOI ou hash invalide’);
+    }
+
+    const infoUrl = `https://api.nakala.fr/iiif/${doi}/${hash}/info.json`;
+    
+    const response = await fetch(infoUrl, {
+      headers: {
+        ‘X-API-KEY’: ‘607d230a-347b-2b03-2000-eee194bf74de’
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Erreur API: ${response.status}`);
+    }
+    
+    const info = await response.json();
+    return {
+      width: info.width,
+      height: info.height
+    };
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      Papa.parse(file, {
+        complete: (results) => {
+          setCsvData(results.data);
+        },
+        header: true,
+        skipEmptyLines: true
+      });
+    }
+  };
+
+  const handleLetterSelect = (letterItem) => {
+    const letterData = csvData.find(item =>
+      item[‘Linked in item’] === letterItem
+    );
+
+    if (letterData) {
+      const fullTitle = letterData[‘http://nakala.fr/terms#title’] || ‘’;
+      
+      // Extract SPA ID from title - more robust extraction
+      const titleMatch = fullTitle.match(/^(SPA_\d+)/);
+      const letterId = titleMatch ? titleMatch[1] : ‘’;
+
+      setManifestData({
+        ...manifestData,
+        letterId: letterId,
+        title: letterId, // Use SPA_XXXX as title
+        creator: letterData[‘http://nakala.fr/terms#creator’] || ‘’,
+        dateIssued: letterData[‘http://nakala.fr/terms#created’] || ‘’
+      });
+      setSelectedLetter(letterItem);
+    }
+  };
+
+  const addPage = () => {
+    setManifestData({
+      ...manifestData,
+      pages: [...manifestData.pages, { hash: ‘’, width: 2692, height: 3430, status: ‘manual’, error: null }]
+    });
+  };
+
+  const removePage = (index) => {
+    if (manifestData.pages.length > 1) {
+      const newPages = manifestData.pages.filter((_, i) => i !== index);
+      setManifestData({ ...manifestData, pages: newPages });
+    }
+  };
+
+  const updatePage = (index, field, value) => {
+    const newPages = [...manifestData.pages];
+    newPages[index][field] = value;
+    
+    // Reset status when hash changes
+    if (field === ‘hash’) {
+      newPages[index].status = ‘manual’;
+      newPages[index].error = null;
+    }
+    
+    setManifestData({ ...manifestData, pages: newPages });
+  };
+
+  const fetchDimensionsForPage = async (index) => {
+    const newPages = [...manifestData.pages];
+    const page = newPages[index];
+    
+    if (!page.hash || !manifestData.doi) {
+      return;
+    }
+
+    newPages[index].status = ‘loading’;
+    newPages[index].error = null;
+    setManifestData({ ...manifestData, pages: newPages });
+
+    try {
+      const dimensions = await fetchImageDimensions(manifestData.doi, page.hash);
+      newPages[index].width = dimensions.width;
+      newPages[index].height = dimensions.height;
+      newPages[index].status = ‘success’;
+    } catch (error) {
+      newPages[index].status = ‘error’;
+      newPages[index].error = error.message;
+    }
+
+    setManifestData({ ...manifestData, pages: newPages });
+  };
+
+  const fetchAllDimensions = async () => {
+    if (!manifestData.doi || !validateDOI(manifestData.doi)) {
+      alert(‘Veuillez saisir un DOI valide avant de récupérer les dimensions’);
+      return;
+    }
+
+    const newPages = [...manifestData.pages];
+    
+    // Set all pages to loading
+    newPages.forEach(page => {
+      if (page.hash && validateHash(page.hash)) {
+        page.status = ‘loading’;
+        page.error = null;
+      }
+    });
+    setManifestData({ ...manifestData, pages: newPages });
+
+    // Fetch dimensions for all pages
+    for (let i = 0; i < newPages.length; i++) {
+      const page = newPages[i];
+      if (page.hash && validateHash(page.hash)) {
+        try {
+          const dimensions = await fetchImageDimensions(manifestData.doi, page.hash);
+          newPages[i].width = dimensions.width;
+          newPages[i].height = dimensions.height;
+          newPages[i].status = ‘success’;
+        } catch (error) {
+          newPages[i].status = ‘error’;
+          newPages[i].error = error.message;
+        }
+        setManifestData({ ...manifestData, pages: [...newPages] });
+      }
+    }
+  };
+
+  const generateManifest = () => {
+    setIsGenerating(true);
+    
+    setTimeout(() => {
+      const manifest = {
+        «@context»: «http://iiif.io/api/presentation/2/context.json»,
+        «@id»: `https://nakala.fr/iiif/${manifestData.doi}/manifest`,
+        «@type»: «sc:Manifest»,
+        «label»: manifestData.letterId,
+        «attribution»: manifestData.attribution,
+        «license»: manifestData.license,
+        «logo»: «https://nakala.fr/logo/»,
+        «metadata»: [
+          {
+            «label»: «Id»,
+            «value»: manifestData.letterId
+          },
+          {
+            «label»: «Title»,
+            «value»: manifestData.title
+          },
+          {
+            «label»: «Creator»,
+            «value»: manifestData.creator
+          },
+          {
+            «label»: «Date Issued»,
+            «value»: manifestData.dateIssued
+          },
+          {
+            «label»: «Type»,
+            «value»: «manuscript»
+          }
+        ],
+        «sequences»: [
+          {
+            «@id»: `https://nakala.fr/iiif/${manifestData.doi}/sequence/normal`,
+            «@type»: «sc:Sequence»,
+            «label»: manifestData.letterId,
+            «viewingHint»: «paged»,
+            «startCanvas»: `https://nakala.fr/iiif/${manifestData.doi}/canvas/page1`,
+            «canvases»: manifestData.pages.map((page, index) => ({
+              «@id»: `https://nakala.fr/iiif/${manifestData.doi}/canvas/page${index + 1}`,
+              «@type»: «sc:Canvas»,
+              «label»: `Page ${index + 1}`,
+              «height»: page.height,
+              «width»: page.width,
+              «thumbnail»: {
+                «@id»: `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}/full/,150/0/default.jpg`,
+                «@type»: «dctypes:Image»
+              },
+              «images»: [
+                {
+                  «@id»: `https://nakala.fr/iiif/${manifestData.doi}/annotation/page${index + 1}`,
+                  «@type»: «oa:Annotation»,
+                  «motivation»: «sc:painting»,
+                  «on»: `https://nakala.fr/iiif/${manifestData.doi}/canvas/page${index + 1}`,
+                  «resource»: {
+                    «@id»: `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}/full/full/0/default.jpg`,
+                    «@type»: «dctypes:Image»,
+                    «format»: «image/jpeg»,
+                    «height»: page.height,
+                    «width»: page.width,
+                    «service»: {
+                      «@context»: «http://iiif.io/api/image/2/context.json»,
+                      «@id»: `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}`,
+                      «profile»: «http://iiif.io/api/image/2/level2.json»
+                    }
+                  }
+                }
+              ]
+            }))
+          }
+        ]
+      };
+
+      const manifestJson = JSON.stringify(manifest, null, 2);
+      setGeneratedManifest(manifestJson);
+      setIsGenerating(false);
+    }, 500);
+  };
+
+  const downloadManifest = () => {
+    const blob = new Blob([generatedManifest], { type: ‘application/json’ });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement(‘a’);
+    a.href = url;
+    a.download = `manifest_${manifestData.letterId || ‘document’}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case ‘loading’:
+        return <RefreshCw className=»h-4 w-4 text-blue-500 animate-spin» />;
+      case ‘success’:
+        return <CheckCircle className=»h-4 w-4 text-green-500» />;
+      case ‘error’:
+        return <XCircle className=»h-4 w-4 text-red-500» />;
+      default:
+        return null;
+    }
+  };
+
+  const isFormValid = () => {
+    return (
+      validateDOI(manifestData.doi) &&
+      manifestData.letterId &&
+      manifestData.pages.every(p => validateHash(p.hash)) &&
+      manifestData.pages.length > 0
+    );
+  };
+
+  return (
+    <div className=»max-w-6xl mx-auto p-6 bg-white»>
+      <h1 className=»text-3xl font-bold text-gray-800 mb-8»>
+        Générateur de Manifests IIIF Nakala - Version Améliorée
+      </h1>
+
+      {/* CSV Upload Section */}
+      <div className=»mb-8 p-6 border-2 border-dashed border-gray-300 rounded-lg»>
+        <div className=»text-center»>
+          <Upload className=»mx-auto h-12 w-12 text-gray-400 mb-4» />
+          <div className=»flex flex-col items-center gap-4»>
+            <input
+              type=»file»
+              accept=».csv»
+              onChange={handleFileUpload}
+              ref={fileInputRef}
+              className=»hidden»
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className=»bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors»
+            >
+              Charger le CSV myNKL
+            </button>
+            {csvData.length > 0 && (
+              <p className=»text-green-600 font-semibold»>
+                ✓ {csvData.length} lettres chargées
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className=»grid grid-cols-1 lg:grid-cols-2 gap-8»>
+        {/* Form Section */}
+        <div className=»space-y-6»>
+          {/* Letter Selection */}
+          {csvData.length > 0 && (
+            <div>
+              <label className=»block text-sm font-medium text-gray-700 mb-2»>
+                Sélectionner une lettre
+              </label>
+              <select
+                value={selectedLetter}
+                onChange={(e) => handleLetterSelect(e.target.value)}
+                className=»w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500»
+              >
+                <option value=»»>-- Choisir une lettre --</option>
+                {csvData.map((item, index) => (
+                  <option key={index} value={item[‘Linked in item’]}>
+                    {item[‘http://nakala.fr/terms#title’]}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Basic Information */}
+          <div className=»space-y-4»>
+            <h3 className=»text-lg font-semibold text-gray-800»>Informations de base</h3>
+
+            <div>
+              <label className=»block text-sm font-medium text-gray-700 mb-1»>
+                DOI Nakala *
+              </label>
+              <div className=»relative»>
+                <input
+                  type=»text»
+                  value={manifestData.doi}
+                  onChange={(e) => setManifestData({...manifestData, doi: e.target.value})}
+                  placeholder=»10.34847/nkl.xxxxxxxx»
+                  className={`w-full p-3 pr-10 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+                    manifestData.doi && !validateDOI(manifestData.doi) 
+                      ? ‘border-red-300 bg-red-50’ 
+                      : manifestData.doi && validateDOI(manifestData.doi)
+                      ? ‘border-green-300 bg-green-50’
+                      : ‘border-gray-300’
+                  }`}
+                />
+                <div className=»absolute inset-y-0 right-0 pr-3 flex items-center»>
+                  {manifestData.doi && (
+                    validateDOI(manifestData.doi) 
+                      ? <CheckCircle className=»h-5 w-5 text-green-500» />
+                      : <XCircle className=»h-5 w-5 text-red-500» />
+                  )}
+                </div>
+              </div>
+              {manifestData.doi && !validateDOI(manifestData.doi) && (
+                <p className=»text-red-600 text-sm mt-1»>Format DOI invalide</p>
+              )}
+            </div>
+
+            <div className=»grid grid-cols-2 gap-4»>
+              <div>
+                <label className=»block text-sm font-medium text-gray-700 mb-1»>
+                  ID Lettre *
+                </label>
+                <input
+                  type=»text»
+                  value={manifestData.letterId}
+                  onChange={(e) => setManifestData({...manifestData, letterId: e.target.value})}
+                  placeholder=»SPA_2469»
+                  className=»w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500»
+                />
+              </div>
+              <div>
+                <label className=»block text-sm font-medium text-gray-700 mb-1»>
+                  Date
+                </label>
+                <input
+                  type=»date»
+                  value={manifestData.dateIssued}
+                  onChange={(e) => setManifestData({...manifestData, dateIssued: e.target.value})}
+                  className=»w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500»
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className=»block text-sm font-medium text-gray-700 mb-1»>
+                Titre
+              </label>
+              <input
+                type=»text»
+                value={manifestData.title}
+                onChange={(e) => setManifestData({...manifestData, title: e.target.value})}
+                className=»w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500»
+              />
+            </div>
+
+            <div>
+              <label className=»block text-sm font-medium text-gray-700 mb-1»>
+                Créateur
+              </label>
+              <input
+                type=»text»
+                value={manifestData.creator}
+                onChange={(e) => setManifestData({...manifestData, creator: e.target.value})}
+                className=»w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500»
+              />
+            </div>
+          </div>
+
+          {/* Pages Section */}
+          <div className=»space-y-4»>
+            <div className=»flex items-center justify-between»>
+              <h3 className=»text-lg font-semibold text-gray-800»>Pages</h3>
+              <div className=»flex gap-2»>
+                <button
+                  onClick={fetchAllDimensions}
+                  disabled={!validateDOI(manifestData.doi)}
+                  className=»bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white px-3 py-2 rounded-md transition-colors text-sm»
+                  title=»Récupérer toutes les dimensions»
+                >
+                  <RefreshCw className=»h-4 w-4» />
+                </button>
+                <button
+                  onClick={addPage}
+                  className=»bg-green-500 hover:bg-green-600 text-white p-2 rounded-md transition-colors»
+                >
+                  <Plus className=»h-4 w-4» />
+                </button>
+              </div>
+            </div>
+
+            {manifestData.pages.map((page, index) => (
+              <div key={index} className=»p-4 bg-gray-50 rounded-md»>
+                <div className=»flex items-center justify-between mb-3»>
+                  <h4 className=»font-medium»>Page {index + 1}</h4>
+                  <div className=»flex items-center gap-2»>
+                    {getStatusIcon(page.status)}
+                    {manifestData.pages.length > 1 && (
+                      <button
+                        onClick={() => removePage(index)}
+                        className=»text-red-500 hover:text-red-700 p-1»
+                      >
+                        <Minus className=»h-4 w-4» />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className=»space-y-3»>
+                  <div>
+                    <label className=»block text-sm font-medium text-gray-700 mb-1»>
+                      Hash de l’image *
+                    </label>
+                    <div className=»flex gap-2»>
+                      <div className=»relative flex-1»>
+                        <input
+                          type=»text»
+                          value={page.hash}
+                          onChange={(e) => updatePage(index, ‘hash’, e.target.value)}
+                          placeholder=»e69e975a11ecbdbf8ca3c64556c9f626ea183393»
+                          className={`w-full p-2 pr-10 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+                            page.hash && !validateHash(page.hash) 
+                              ? ‘border-red-300 bg-red-50’ 
+                              : page.hash && validateHash(page.hash)
+                              ? ‘border-green-300 bg-green-50’
+                              : ‘border-gray-300’
+                          }`}
+                        />
+                        <div className=»absolute inset-y-0 right-0 pr-3 flex items-center»>
+                          {page.hash && (
+                            validateHash(page.hash) 
+                              ? <CheckCircle className=»h-5 w-5 text-green-500» />
+                              : <XCircle className=»h-5 w-5 text-red-500» />
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => fetchDimensionsForPage(index)}
+                        disabled={!page.hash || !validateHash(page.hash) || !validateDOI(manifestData.doi) || page.status === ‘loading’}
+                        className=»bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white px-3 py-2 rounded-md transition-colors»
+                        title=»Récupérer les dimensions»
+                      >
+                        <RefreshCw className={`h-4 w-4 ${page.status === ‘loading’ ? ‘animate-spin’ : ‘’}`} />
+                      </button>
+                    </div>
+                    {page.hash && !validateHash(page.hash) && (
+                      <p className=»text-red-600 text-sm mt-1»>Hash invalide (40 caractères hexadécimaux attendus)</p>
+                    )}
+                    {page.error && (
+                      <p className=»text-red-600 text-sm mt-1 flex items-center gap-1»>
+                        <AlertCircle className=»h-4 w-4» />
+                        {page.error}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className=»grid grid-cols-2 gap-3»>
+                    <div>
+                      <label className=»block text-sm font-medium text-gray-700 mb-1»>
+                        Largeur
+                      </label>
+                      <input
+                        type=»number»
+                        value={page.width}
+                        onChange={(e) => updatePage(index, ‘width’, parseInt(e.target.value))}
+                        className=»w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500»
+                      />
+                    </div>
+                    <div>
+                      <label className=»block text-sm font-medium text-gray-700 mb-1»>
+                        Hauteur
+                      </label>
+                      <input
+                        type=»number»
+                        value={page.height}
+                        onChange={(e) => updatePage(index, ‘height’, parseInt(e.target.value))}
+                        className=»w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500»
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Generate Button */}
+          <button
+            onClick={generateManifest}
+            disabled={!isFormValid() || isGenerating}
+            className=»w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 px-6 rounded-lg transition-colors»
+          >
+            {isGenerating ? (
+              <>
+                <RefreshCw className=»inline-block mr-2 h-5 w-5 animate-spin» />
+                Génération en cours...
+              </>
+            ) : (
+              <>
+                <FileText className=»inline-block mr-2 h-5 w-5» />
+                Générer le Manifest IIIF
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Preview Section */}
+        <div className=»space-y-4»>
+          <h3 className=»text-lg font-semibold text-gray-800»>Aperçu du Manifest</h3>
+
+          {generatedManifest ? (
+            <div className=»space-y-4»>
+              <div className=»bg-gray-100 p-4 rounded-md»>
+                <pre className=»text-sm overflow-x-auto max-h-96 text-gray-800»>
+                  {generatedManifest}
+                </pre>
+              </div>
+
+              <button
+                onClick={downloadManifest}
+                className=»w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors»
+              >
+                <Download className=»inline-block mr-2 h-5 w-5» />
+                Télécharger le Manifest
+              </button>
+            </div>
+          ) : (
+            <div className=»bg-gray-50 p-8 rounded-md text-center text-gray-500»>
+              Le manifest généré apparaîtra ici...
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
