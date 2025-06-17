@@ -21,7 +21,7 @@ const IIIFManifestGenerator = () => {
     attribution: 'Nicolas Moron / NAKALA',
     license: 'http://creativecommons.org/licenses/by-nc/4.0/',
     pages: [
-      { hash: '', width: 2692, height: 3430, loading: false, validated: false, error: null, dimensionsInput: '' }
+      { hash: '', width: 2692, height: 3430, loading: false, validated: false, error: null, dimensionsInput: '', combinedId: ''}
     ]
   });
   const [generatedManifest, setGeneratedManifest] = useState('');
@@ -51,6 +51,38 @@ const handleCombinedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   }
 };
 
+// Fonction pour gérer le changement du champ combiné pour chaque page
+const handlePageCombinedChange = (pageIndex: number, value: string) => {
+  const newPages = [...manifestData.pages];
+  newPages[pageIndex].combinedId = value;
+
+  // Essayer de parser si ça ressemble à un DOI/hash
+  if (value.includes('/')) {
+    try {
+      const { doi, hash } = parseCombined(value);
+      
+      // Mettre à jour le DOI principal s'il n'est pas encore défini ou si c'est différent
+      if (!manifestData.doi || manifestData.doi !== doi) {
+        setManifestData(prev => ({
+          ...prev,
+          doi: doi,
+          pages: newPages.map((p, i) => 
+            i === pageIndex ? { ...p, hash, combinedId: value } : p
+          )
+        }));
+      } else {
+        // Juste mettre à jour le hash de cette page
+        newPages[pageIndex].hash = hash;
+        setManifestData({ ...manifestData, pages: newPages });
+      }
+    } catch {
+      // Laisser l'utilisateur continuer à taper
+      setManifestData({ ...manifestData, pages: newPages });
+    }
+  } else {
+    setManifestData({ ...manifestData, pages: newPages });
+  }
+};
   // Fonction pour récupérer automatiquement les dimensions d'une image
   const fetchImageDimensions = async (doi, hash) => {
     const infoUrl = `https://api.nakala.fr/iiif/${doi}/${hash}/info.json`;
@@ -256,20 +288,21 @@ const handleLetterSelect = (letterItem) => {
 };
 
 
-  const addPage = () => {
-    setManifestData({
-      ...manifestData,
-      pages: [...manifestData.pages, {
-        hash: '',
-        width: 2692,
-        height: 3430,
-        loading: false,
-        validated: false,
-        error: null,
-        dimensionsInput: ''
-      }]
-    });
-  };
+ const addPage = () => {
+  setManifestData({
+    ...manifestData,
+    pages: [...manifestData.pages, {
+      hash: '',
+      width: 2692,
+      height: 3430,
+      loading: false,
+      validated: false,
+      error: null,
+      dimensionsInput: '',
+      combinedId: ''
+    }]
+  });
+};
 
   const removePage = (index) => {
     if (manifestData.pages.length > 1) {
@@ -627,51 +660,71 @@ const handleLetterSelect = (letterItem) => {
                   )}
                 </div>
 
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Hash de l'image *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={page.hash}
-                        onChange={(e) => updatePage(index, 'hash', e.target.value)}
-                        placeholder="e69e975a11ecbdbf8ca3c64556c9f626ea183393"
-                        className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                          page.hash && !validateHash(page.hash)
-                            ? 'border-red-300 bg-red-50'
-                            : page.hash && validateHash(page.hash)
-                            ? 'border-green-300 bg-green-50'
-                            : 'border-gray-300'
-                        }`}
-                      />
-                      <div className="absolute right-2 top-2 flex gap-1">
-                        {page.hash && validateHash(page.hash) && manifestData.doi && validateDoi(manifestData.doi) && (
-                          <button
-                            onClick={() => openInfoUrl(manifestData.doi, page.hash)}
-                            className="text-blue-500 hover:text-blue-700 p-1"
-                            title="Ouvrir l'URL info.json"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </button>
-                        )}
-                        {page.hash && (
-                          validateHash(page.hash) ? (
-                            <CheckCircle className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <AlertCircle className="h-4 w-4 text-red-500" />
-                          )
-                        )}
-                      </div>
-                    </div>
-                    {page.error && (
-                      <p className="text-red-600 text-sm mt-1">{page.error}</p>
-                    )}
-                    {page.hash && !validateHash(page.hash) && (
-                      <p className="text-red-600 text-sm mt-1">Format hash invalide (40 caractères hexadécimaux)</p>
-                    )}
-                  </div>
+<div className="space-y-3">
+  {/* Champ DOI/Hash combiné pour chaque page */}
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      ID Fichier complet (DOI/Hash) *
+    </label>
+    <input
+      type="text"
+      value={page.combinedId || ''}
+      onChange={(e) => handlePageCombinedChange(index, e.target.value)}
+      placeholder="10.34847/nkl.xxxxxxxx/e69e975a11ecbdbf8ca3c64556c9f626ea183393"
+      className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 mb-2"
+    />
+    <p className="text-xs text-gray-500 mb-2">
+      Collez l'ID fichier complet depuis Nakala (bouton "Copier l'ID fichier")
+    </p>
+  </div>
+
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      Hash de l'image (extrait automatiquement)
+    </label>
+    <div className="relative">
+      <input
+        type="text"
+        value={page.hash}
+        onChange={(e) => updatePage(index, 'hash', e.target.value)}
+        placeholder="e69e975a11ecbdbf8ca3c64556c9f626ea183393"
+        className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+          page.hash && !validateHash(page.hash)
+            ? 'border-red-300 bg-red-50'
+            : page.hash && validateHash(page.hash)
+            ? 'border-green-300 bg-green-50'
+            : 'border-gray-300'
+        }`}
+      />
+      <div className="absolute right-2 top-2 flex gap-1">
+        {page.hash && validateHash(page.hash) && manifestData.doi && validateDoi(manifestData.doi) && (
+          <button
+            onClick={() => openInfoUrl(manifestData.doi, page.hash)}
+            className="text-blue-500 hover:text-blue-700 p-1"
+            title="Ouvrir l'URL info.json"
+          >
+            <ExternalLink className="h-4 w-4" />
+          </button>
+        )}
+        {page.hash && (
+          validateHash(page.hash) ? (
+            <CheckCircle className="h-4 w-4 text-green-500" />
+          ) : (
+            <AlertCircle className="h-4 w-4 text-red-500" />
+          )
+        )}
+      </div>
+    </div>
+    {page.error && (
+      <p className="text-red-600 text-sm mt-1">{page.error}</p>
+    )}
+    {page.hash && !validateHash(page.hash) && (
+      <p className="text-red-600 text-sm mt-1">Format hash invalide (40 caractères hexadécimaux)</p>
+    )}
+    <p className="text-xs text-gray-500 mt-1">
+      Ou saisissez le hash manuellement si nécessaire
+    </p>
+  </div>
 
                   {/* Nouveau champ pour saisie assistée des dimensions */}
                   <div>
