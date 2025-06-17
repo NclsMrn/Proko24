@@ -429,7 +429,7 @@ const handleLetterSelect = (letterItem) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `manifest_${manifestData.letterId || 'document'}.json`;
+    a.download = `${manifestData.letterId || 'document'}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
