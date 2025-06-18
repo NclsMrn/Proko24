@@ -1,0 +1,876 @@
+{
+  "generatedAt": "2025-06-18T21:58:41.412Z",
+  "totalCount": 29,
+  "manifests": [
+    {
+      "letterId": "SPA_2469",
+      "title": "SPA_2469 Letter from Sergey Sergeevich Prokofiev to Grzegorz Fitelberg",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2469",
+        "@type": "sc:Manifest",
+        "label": "SPA_2469",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2469"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2469 Letter from Sergey Sergeevich Prokofiev to Grzegorz Fitelberg"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-01"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2475",
+      "title": "SPA_2475 Letter from Sergei Sergeevich Prokofiev to Lucien Chevaillier",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2475",
+        "@type": "sc:Manifest",
+        "label": "SPA_2475",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2475"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2475 Letter from Sergei Sergeevich Prokofiev to Lucien Chevaillier"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergei Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-04-11"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2480",
+      "title": "SPA_2480 Letter from Moiseii Davidovich Shereshevsky to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2480",
+        "@type": "sc:Manifest",
+        "label": "SPA_2480",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2480"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2480 Letter from Moiseii Davidovich Shereshevsky to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Moiseii Davidovich Shereshevsky"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-02"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2481",
+      "title": "SPA_2481 Letter from Sergey Sergeevich Prokofiev to Moiseii Davidovich Shereshevsky",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2481",
+        "@type": "sc:Manifest",
+        "label": "SPA_2481",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2481"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2481 Letter from Sergey Sergeevich Prokofiev to Moiseii Davidovich Shereshevsky"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-20"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2482",
+      "title": "SPA_2482 Letter from Clerical assistant to Clerical assistant",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2482",
+        "@type": "sc:Manifest",
+        "label": "SPA_2482",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2482"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2482 Letter from Clerical assistant to Clerical assistant"
+          },
+          {
+            "label": "Creator",
+            "value": "Clerical assistant"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-03"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2483",
+      "title": "SPA_2483 Letter from Sergey Sergeevich Prokofiev to Nikolai Iakovlevich Miaskovsky",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2483",
+        "@type": "sc:Manifest",
+        "label": "SPA_2483",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2483"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2483 Letter from Sergey Sergeevich Prokofiev to Nikolai Iakovlevich Miaskovsky"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-03"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2484",
+      "title": "SPA_2484 Letter from Nikolai Titovich Kucheriavy to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2484",
+        "@type": "sc:Manifest",
+        "label": "SPA_2484",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2484"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2484 Letter from Nikolai Titovich Kucheriavy to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Nikolai Titovich Kucheriavy"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-04"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2485",
+      "title": "SPA_2485 Letter from Vladimir Nikolaevich Bashkirov to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2485",
+        "@type": "sc:Manifest",
+        "label": "SPA_2485",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2485"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2485 Letter from Vladimir Nikolaevich Bashkirov to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Vladimir Nikolaevich Bashkirov"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-05"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2486",
+      "title": "SPA_2486 Letter from Sergey Sergeevich Prokofiev to Paul Demasy",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2486",
+        "@type": "sc:Manifest",
+        "label": "SPA_2486",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2486"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2486 Letter from Sergey Sergeevich Prokofiev to Paul Demasy"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-07"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2487",
+      "title": "SPA_2487 Letter from Moiseii Davidovich Shereshevsky to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2487",
+        "@type": "sc:Manifest",
+        "label": "SPA_2487",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2487"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2487 Letter from Moiseii Davidovich Shereshevsky to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Moiseii Davidovich Shereshevsky"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-08"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2488",
+      "title": "SPA_2488 Letter from Ernest Alexandrovich Oeberg to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2488",
+        "@type": "sc:Manifest",
+        "label": "SPA_2488",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2488"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2488 Letter from Ernest Alexandrovich Oeberg to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Ernest Alexandrovich Oeberg"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-09"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2489",
+      "title": "SPA_2489 Letter from Sergey Sergeevich Prokofiev to Aron Minster",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2489",
+        "@type": "sc:Manifest",
+        "label": "SPA_2489",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2489"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2489 Letter from Sergey Sergeevich Prokofiev to Aron Minster"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-10"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2490",
+      "title": "SPA_2490 Letter from Paul Demasy to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2490",
+        "@type": "sc:Manifest",
+        "label": "SPA_2490",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2490"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2490 Letter from Paul Demasy to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Paul Demasy"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-14"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2491",
+      "title": "SPA_2491 Letter from Nina Pavlovna Koshetz to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2491",
+        "@type": "sc:Manifest",
+        "label": "SPA_2491",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2491"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2491 Letter from Nina Pavlovna Koshetz to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Nina Pavlovna Koshetz"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-14"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2492",
+      "title": "SPA_2492 Letter from Sonia Brichant to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2492",
+        "@type": "sc:Manifest",
+        "label": "SPA_2492",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2492"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2492 Letter from Sonia Brichant to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Sonia Brichant"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-19"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2493",
+      "title": "SPA_2493 Letter from Alexander Kirillovich Borovsky to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2493",
+        "@type": "sc:Manifest",
+        "label": "SPA_2493",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2493"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2493 Letter from Alexander Kirillovich Borovsky to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Alexander Kirillovich Borovsky"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-19"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2494",
+      "title": "SPA_2494 Letter from Joseph Holbrooke to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2494",
+        "@type": "sc:Manifest",
+        "label": "SPA_2494",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2494"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2494 Letter from Joseph Holbrooke to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Joseph Holbrooke"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-23"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2495",
+      "title": "SPA_2495 Letter from Ekaterina Ignatieva to Not stated",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2495",
+        "@type": "sc:Manifest",
+        "label": "SPA_2495",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2495"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2495 Letter from Ekaterina Ignatieva to Not stated"
+          },
+          {
+            "label": "Creator",
+            "value": "Ekaterina Ignatieva"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-23"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2496",
+      "title": "SPA_2496 Letter from Ekaterina Grigorevna Raevskaya to Maria Grigorievna Prokofieva",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2496",
+        "@type": "sc:Manifest",
+        "label": "SPA_2496",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2496"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2496 Letter from Ekaterina Grigorevna Raevskaya to Maria Grigorievna Prokofieva"
+          },
+          {
+            "label": "Creator",
+            "value": "Ekaterina Grigorevna Raevskaya"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-23"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2497",
+      "title": "SPA_2497 Letter from Alexander Kirillovich Borovsky to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2497",
+        "@type": "sc:Manifest",
+        "label": "SPA_2497",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2497"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2497 Letter from Alexander Kirillovich Borovsky to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Alexander Kirillovich Borovsky"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-23"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2498",
+      "title": "SPA_2498 Letter from Sergey Sergeevich Prokofiev to H.B. Schaad",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2498",
+        "@type": "sc:Manifest",
+        "label": "SPA_2498",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2498"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2498 Letter from Sergey Sergeevich Prokofiev to H.B. Schaad"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-24"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2499",
+      "title": "SPA_2499 Letter from Fitzhugh Haensel to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2499",
+        "@type": "sc:Manifest",
+        "label": "SPA_2499",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2499"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2499 Letter from Fitzhugh Haensel to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Fitzhugh Haensel"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-25"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2500",
+      "title": "SPA_2500 Letter from Sergey Sergeevich Prokofiev to Fitzhugh Haensel",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2500",
+        "@type": "sc:Manifest",
+        "label": "SPA_2500",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2500"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2500 Letter from Sergey Sergeevich Prokofiev to Fitzhugh Haensel"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-03-18"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2502",
+      "title": "SPA_2502 Letter from Sergey Sergeevich Prokofiev to Joseph Holbrooke",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2502",
+        "@type": "sc:Manifest",
+        "label": "SPA_2502",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2502"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2502 Letter from Sergey Sergeevich Prokofiev to Joseph Holbrooke"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-28"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2503",
+      "title": "SPA_2503 Letter from Sergey Sergeevich Prokofiev to Director",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2503",
+        "@type": "sc:Manifest",
+        "label": "SPA_2503",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2503"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2503 Letter from Sergey Sergeevich Prokofiev to Director"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-28"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2504",
+      "title": "SPA_2504 Letter from Sergey Sergeevich Prokofiev to H. Le Boeuf",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2504",
+        "@type": "sc:Manifest",
+        "label": "SPA_2504",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2504"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2504 Letter from Sergey Sergeevich Prokofiev to H. Le Boeuf"
+          },
+          {
+            "label": "Creator",
+            "value": "Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-28"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2505",
+      "title": "SPA_2505 Letter from Grzegorz Fitelberg to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2505",
+        "@type": "sc:Manifest",
+        "label": "SPA_2505",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2505"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2505 Letter from Grzegorz Fitelberg to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Grzegorz Fitelberg"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-28"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2507",
+      "title": "SPA_2507 Letter from Moiseii Davidovich Shereshevsky to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2507",
+        "@type": "sc:Manifest",
+        "label": "SPA_2507",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2507"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2507 Letter from Moiseii Davidovich Shereshevsky to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Moiseii Davidovich Shereshevsky"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-30"
+          }
+        ]
+      }
+    },
+    {
+      "letterId": "SPA_2508",
+      "title": "SPA_2508 Letter from Clerical assistant to Sergey Sergeevich Prokofiev",
+      "manifest": {
+        "@context": "http://iiif.io/api/presentation/2/context.json",
+        "@id": "https://nakala.fr/iiif/manifest-SPA_2508",
+        "@type": "sc:Manifest",
+        "label": "SPA_2508",
+        "attribution": "Nicolas Moron / NAKALA",
+        "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+        "metadata": [
+          {
+            "label": "Id",
+            "value": "SPA_2508"
+          },
+          {
+            "label": "Title",
+            "value": "SPA_2508 Letter from Clerical assistant to Sergey Sergeevich Prokofiev"
+          },
+          {
+            "label": "Creator",
+            "value": "Clerical assistant"
+          },
+          {
+            "label": "Date Issued",
+            "value": "1924-01-31"
+          }
+        ]
+      }
+    }
+  ]
+}
