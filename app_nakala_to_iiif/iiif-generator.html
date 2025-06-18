@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Manifests IIIF Nakala</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: #f9fafb;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        .title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .upload-section {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .upload-area {
+            text-align: center;
+        }
+        
+        .upload-icon {
+            margin: 0 auto 0.75rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            color: #9ca3af;
+        }
+        
+        .upload-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: #50aad4;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #216e87;
+        }
+        
+        .btn-primary:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .btn-success {
+            background-color: #fc9b5a;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #41b936;
+        }
+        
+        .btn-purple {
+            background-color: #50aad4;
+            color: white;
+        }
+        
+        .btn-purple:hover {
+            background-color: #216e87;
+        }
+        
+        .btn-green {
+            background-color: #fc9b5a;
+            color: white;
+            padding: 0.25rem;
+        }
+        
+        .btn-green:hover {
+            background-color: #41b936;
+        }
+        
+        .btn-red {
+            color: #ef4444;
+            background: none;
+            border: none;
+            padding: 0.25rem;
+        }
+        
+        .btn-red:hover {
+            color: #dc2626;
+        }
+        
+        .success-message {
+            color: #059669;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .form-section {
+            background-color: white;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 0.75rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 1px #3b82f6;
+        }
+        
+        .form-input.valid {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        
+        .form-input.invalid {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icons {
+            position: absolute;
+            right: 0.5rem;
+            top: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+        }
+        
+        .icon {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        .icon-success {
+            color: #10b981;
+        }
+        
+        .icon-error {
+            color: #ef4444;
+        }
+        
+        .icon-link {
+            color: #3b82f6;
+            cursor: pointer;
+        }
+        
+        .icon-link:hover {
+            color: #2563eb;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        
+        .section-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 0.75rem;
+        }
+        
+        .pages-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .pages-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .page-card {
+            padding: 0.75rem;
+            background-color: #f9fafb;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 0.75rem;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .page-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .spinner {
+            width: 0.75rem;
+            height: 0.75rem;
+            border: 2px solid #3b82f6;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .dimensions-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .dimensions-input input {
+            flex: 1;
+        }
+        
+        .dimensions-help {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .generate-section {
+            padding-top: 1rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            background-color: #50aad4;
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .generate-btn:hover {
+            background-color: #216e87;
+        }
+        
+        .generate-btn:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .preview-section {
+            background-color: white;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+        }
+        
+        .preview-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .preview-content {
+            background-color: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .preview-json {
+            overflow-x: auto;
+            max-height: 20rem;
+            color: #374151;
+            white-space: pre;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .download-btn {
+            width: 100%;
+            background-color: #50aad4;  
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .download-btn:hover {
+            background-color: #216e87;
+        }
+
+        /* Icônes SVG simples */
+        .icon-upload::before { content: "📁"; }
+        .icon-plus::before { content: "➕"; }
+        .icon-minus::before { content: "➖"; }
+        .icon-file::before { content: "📄"; }
+        .icon-external::before { content: "🔗"; }
+        .icon-check::before { content: "✅"; }
+        .icon-alert::before { content: "⚠️"; }
+        .icon-download::before { content: "💾"; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef } = React;
+
+        // Composants d'icônes simples
+        const Upload = () => React.createElement('span', { className: 'icon-upload' });
+        const Plus = () => React.createElement('span', { className: 'icon-plus' });
+        const Minus = () => React.createElement('span', { className: 'icon-minus' });
+        const FileText = () => React.createElement('span', { className: 'icon-file' });
+        const ExternalLink = () => React.createElement('span', { className: 'icon-external' });
+        const CheckCircle = () => React.createElement('span', { className: 'icon-check' });
+        const AlertCircle = () => React.createElement('span', { className: 'icon-alert' });
+        const Download = () => React.createElement('span', { className: 'icon-download' });
+
+        const parseCombined = (input) => {
+            const parts = input.trim().split('/');
+            const hash = parts.pop();
+            const doi = parts.join('/');
+            return { doi, hash };
+        };
+
+        const IIIFManifestGenerator = () => {
+            const [csvData, setCsvData] = useState([]);
+            const [selectedLetter, setSelectedLetter] = useState('');
+            const [manifestData, setManifestData] = useState({
+                doi: '',
+                letterId: '',
+                title: '',
+                creator: '',
+                dateIssued: '',
+                attribution: 'Nicolas Moron / NAKALA',
+                license: 'http://creativecommons.org/licenses/by-nc/4.0/',
+                pages: [
+                    { hash: '', width: 2692, height: 3430, loading: false, validated: false, error: null, dimensionsInput: '', combinedId: ''}
+                ]
+            });
+            const [generatedManifest, setGeneratedManifest] = useState('');
+            const [isGenerating, setIsGenerating] = useState(false);
+            const [combined, setCombined] = useState('');
+            const fileInputRef = useRef(null);
+
+            const validateDoi = (doi) => {
+                const doiRegex = /^10\.\d{4,}\/.*$/;
+                return doiRegex.test(doi);
+            };
+
+            const validateHash = (hash) => {
+                const hashRegex = /^[a-f0-9]{40}$/i;
+                return hashRegex.test(hash);
+            };
+
+            // Fonction pour gérer le changement du champ combiné global
+            const handleCombinedChange = (e) => {
+                const val = e.target.value;
+                setCombined(val);
+
+                // On essaye de parser (si l'utilisateur colle bien "DOI/hash")
+                if (val.includes('/')) {
+                    try {
+                        const { doi, hash } = parseCombined(val);
+                        setManifestData(md => ({
+                            ...md,
+                            doi,
+                            pages: md.pages.map((p, i) =>
+                                i === 0 ? { ...p, hash, combinedId: val } : p
+                            )
+                        }));
+                    } catch {
+                        /* laisse l'utilisateur continuer à taper */
+                    }
+                }
+            };
+
+            // Fonction pour gérer le changement du champ combiné pour chaque page
+            const handlePageCombinedChange = (pageIndex, value) => {
+                const newPages = [...manifestData.pages];
+                newPages[pageIndex].combinedId = value;
+
+                // Essayer de parser si ça ressemble à un DOI/hash
+                if (value.includes('/')) {
+                    try {
+                        const { doi, hash } = parseCombined(value);
+                        
+                        // Mettre à jour le DOI principal s'il n'est pas encore défini ou si c'est différent
+                        if (!manifestData.doi || manifestData.doi !== doi) {
+                            setManifestData(prev => ({
+                                ...prev,
+                                doi: doi,
+                                pages: newPages.map((p, i) => 
+                                    i === pageIndex ? { ...p, hash, combinedId: value } : p
+                                )
+                            }));
+                        } else {
+                            // Juste mettre à jour le hash de cette page
+                            newPages[pageIndex].hash = hash;
+                            setManifestData({ ...manifestData, pages: newPages });
+                        }
+                    } catch {
+                        // Laisser l'utilisateur continuer à taper
+                        setManifestData({ ...manifestData, pages: newPages });
+                    }
+                } else {
+                    setManifestData({ ...manifestData, pages: newPages });
+                }
+            };
+
+            // Fonction pour récupérer automatiquement les dimensions d'une image
+            const fetchImageDimensions = async (doi, hash) => {
+                const infoUrl = `https://api.nakala.fr/iiif/${doi}/${hash}/info.json`;
+                
+                try {
+                    // Tentative directe (peut échouer à cause de CORS)
+                    const response = await fetch(infoUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        return {
+                            width: data.width,
+                            height: data.height,
+                            success: true
+                        };
+                    }
+                } catch (error) {
+                    console.log('Tentative directe échouée, utilisation du proxy:', error);
+                }
+                
+                // Si la tentative directe échoue, utiliser un proxy CORS
+                try {
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(infoUrl)}`;
+                    const response = await fetch(proxyUrl);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        return {
+                            width: data.width,
+                            height: data.height,
+                            success: true
+                        };
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la récupération des dimensions:', error);
+                }
+                
+                return {
+                    error: 'Impossible de récupérer les dimensions automatiquement',
+                    success: false
+                };
+            };
+
+            // Fonction pour récupérer les dimensions de toutes les pages
+            const fetchAllDimensions = async () => {
+                if (!manifestData.doi) {
+                    alert('Veuillez d\'abord saisir le DOI');
+                    return;
+                }
+
+                const newPages = [...manifestData.pages];
+                
+                // Marquer toutes les pages comme en cours de chargement
+                newPages.forEach(page => {
+                    page.loading = true;
+                    page.error = null;
+                });
+                setManifestData({ ...manifestData, pages: newPages });
+                
+                // Récupérer les dimensions pour chaque page
+                for (let i = 0; i < newPages.length; i++) {
+                    const page = newPages[i];
+                    
+                    if (page.hash && validateHash(page.hash)) {
+                        // Demander réellement les dimensions
+                        const result = await fetchImageDimensions(manifestData.doi, page.hash);
+
+                        if (result.success) {
+                            newPages[i] = {
+                                ...page,
+                                width: result.width,
+                                height: result.height,
+                                loading: false,
+                                validated: true,
+                                error: null
+                            };
+                        } else {
+                            newPages[i] = {
+                                ...page,
+                                loading: false,
+                                error: result.error || 'Erreur lors de la récupération'
+                            };
+                        }
+
+                        setManifestData({ ...manifestData, pages: [...newPages] });
+                        if (i < newPages.length - 1) await new Promise(r => setTimeout(r, 500));
+                    } else {
+                        newPages[i] = {
+                            ...page,
+                            loading: false,
+                            error: 'Hash invalide'
+                        };
+                    }
+                }
+            };
+
+            const openInfoUrl = (doi, hash) => {
+                const infoUrl = `https://api.nakala.fr/iiif/${doi}/${hash}/info.json`;
+                window.open(infoUrl, '_blank');
+            };
+
+            const openAllInfoUrls = () => {
+                if (!manifestData.doi) {
+                    alert('Veuillez d\'abord saisir le DOI');
+                    return;
+                }
+
+                manifestData.pages.forEach((page, index) => {
+                    if (page.hash && validateHash(page.hash)) {
+                        setTimeout(() => {
+                            openInfoUrl(manifestData.doi, page.hash);
+                        }, index * 500);
+                    }
+                });
+
+                alert(`${manifestData.pages.filter(p => p.hash && validateHash(p.hash)).length} onglets vont s'ouvrir. Copiez-collez les dimensions dans les champs ci-dessous.`);
+            };
+
+            const handleFileUpload = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: (results) => {
+                        const rows = results.data.map((row) => {
+                            const title = row['http://nakala.fr/terms#title'] || '';
+                            const match = title.match(/(SPA_\d+)/);
+                            return { ...row, letterId: match ? match[1] : '' };
+                        });
+                        setCsvData(rows);
+                    }
+                });
+            };
+
+            const handleLetterSelect = (letterItem) => {
+                const letterData = csvData.find(item => item['Linked in item'] === letterItem);
+                if (!letterData) return;
+
+                const letterId = letterData.letterId || 
+                    (letterData['http://nakala.fr/terms#title']?.match(/(SPA_\d+)/)?.[1] ?? '');
+
+                setManifestData({
+                    ...manifestData,
+                    letterId,
+                    title: letterData['http://nakala.fr/terms#title'] || '',
+                    creator: letterData['http://nakala.fr/terms#creator'] || '',
+                    dateIssued: letterData['http://nakala.fr/terms#created'] || ''
+                });
+                setSelectedLetter(letterItem);
+            };
+
+            const addPage = () => {
+                setManifestData({
+                    ...manifestData,
+                    pages: [...manifestData.pages, {
+                        hash: '',
+                        width: 2692,
+                        height: 3430,
+                        loading: false,
+                        validated: false,
+                        error: null,
+                        dimensionsInput: '',
+                        combinedId: ''
+                    }]
+                });
+            };
+
+            const removePage = (index) => {
+                if (manifestData.pages.length > 1) {
+                    const newPages = manifestData.pages.filter((_, i) => i !== index);
+                    setManifestData({ ...manifestData, pages: newPages });
+                }
+            };
+
+            const updatePage = (index, field, value) => {
+                const newPages = [...manifestData.pages];
+                newPages[index][field] = value;
+
+                if (field === 'hash') {
+                    newPages[index].validated = false;
+                    newPages[index].error = null;
+                }
+
+                setManifestData({ ...manifestData, pages: newPages });
+            };
+
+            const parseDimensions = (input, pageIndex) => {
+                if (!input.trim()) return;
+
+                try {
+                    const jsonData = JSON.parse(input);
+                    if (jsonData.width && jsonData.height) {
+                        updatePageDimensions(pageIndex, jsonData.width, jsonData.height);
+                        return;
+                    }
+                } catch (e) {
+                    // Si ce n'est pas du JSON, essayer d'autres formats
+                }
+
+                const dimensionRegex = /(\d+)[\s,x×](\d+)/;
+                const match = input.match(dimensionRegex);
+                if (match) {
+                    const width = parseInt(match[1]);
+                    const height = parseInt(match[2]);
+                    updatePageDimensions(pageIndex, width, height);
+                    return;
+                }
+
+                const numbers = input.match(/\d+/g);
+                if (numbers && numbers.length >= 2) {
+                    const width = parseInt(numbers[0]);
+                    const height = parseInt(numbers[1]);
+                    updatePageDimensions(pageIndex, width, height);
+                }
+            };
+
+            const updatePageDimensions = (pageIndex, width, height) => {
+                const newPages = [...manifestData.pages];
+                newPages[pageIndex] = {
+                    ...newPages[pageIndex],
+                    width: width,
+                    height: height,
+                    validated: true,
+                    error: null,
+                    dimensionsInput: ''
+                };
+                setManifestData({ ...manifestData, pages: newPages });
+            };
+
+            const generateManifest = () => {
+                setIsGenerating(true);
+
+                setTimeout(() => {
+                    const manifest = {
+                        "@context": "http://iiif.io/api/presentation/2/context.json",
+                        "@id": `https://nakala.fr/iiif/${manifestData.doi}/manifest`,
+                        "@type": "sc:Manifest",
+                        "label": manifestData.letterId,
+                        "attribution": manifestData.attribution,
+                        "license": manifestData.license,
+                        "logo": "https://nakala.fr/logo/",
+                        "metadata": [
+                            {
+                                "label": "Id",
+                                "value": manifestData.letterId
+                            },
+                            {
+                                "label": "Title",
+                                "value": manifestData.title
+                            },
+                            {
+                                "label": "Creator",
+                                "value": manifestData.creator
+                            },
+                            {
+                                "label": "Date Issued",
+                                "value": manifestData.dateIssued
+                            },
+                            {
+                                "label": "Type",
+                                "value": "manuscript"
+                            }
+                        ],
+                        "sequences": [
+                            {
+                                "@id": `https://nakala.fr/iiif/${manifestData.doi}/sequence/normal`,
+                                "@type": "sc:Sequence",
+                                "label": manifestData.letterId,
+                                "viewingHint": "paged",
+                                "startCanvas": `https://nakala.fr/iiif/${manifestData.doi}/canvas/page1`,
+                                "canvases": manifestData.pages.map((page, index) => ({
+                                    "@id": `https://nakala.fr/iiif/${manifestData.doi}/canvas/page${index + 1}`,
+                                    "@type": "sc:Canvas",
+                                    "label": `Page ${index + 1}`,
+                                    "height": page.height,
+                                    "width": page.width,
+                                    "thumbnail": {
+                                        "@id": `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}/full/,150/0/default.jpg`,
+                                        "@type": "dctypes:Image"
+                                    },
+                                    "images": [
+                                        {
+                                            "@id": `https://nakala.fr/iiif/${manifestData.doi}/annotation/page${index + 1}`,
+                                            "@type": "oa:Annotation",
+                                            "motivation": "sc:painting",
+                                            "on": `https://nakala.fr/iiif/${manifestData.doi}/canvas/page${index + 1}`,
+                                            "resource": {
+                                                "@id": `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}/full/full/0/default.jpg`,
+                                                "@type": "dctypes:Image",
+                                                "format": "image/jpeg",
+                                                "height": page.height,
+                                                "width": page.width,
+                                                "service": {
+                                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                                    "@id": `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}`,
+                                                    "profile": "http://iiif.io/api/image/2/level2.json"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }))
+                            }
+                        ]
+                    };
+
+                    const manifestJson = JSON.stringify(manifest, null, 2);
+                    setGeneratedManifest(manifestJson);
+                    setIsGenerating(false);
+                }, 500);
+            };
+
+            const downloadManifest = () => {
+                const blob = new Blob([generatedManifest], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${manifestData.letterId || 'document'}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            };
+
+            const isFormValid = () => {
+                return manifestData.doi &&
+                    validateDoi(manifestData.doi) &&
+                    manifestData.letterId &&
+                    manifestData.pages.every(p => p.hash && validateHash(p.hash));
+            };
+
+            return React.createElement('div', { className: 'container' },
+                React.createElement('h1', { className: 'title' }, 'Générateur de Manifests IIIF de Nakala vers Transkribus'),
+                
+                // CSV Upload Section
+                React.createElement('div', { className: 'upload-section' },
+                    React.createElement('div', { className: 'upload-area' },
+                        React.createElement(Upload, { className: 'upload-icon' }),
+                        React.createElement('div', { className: 'upload-content' },
+                            React.createElement('input', {
+                                type: 'file',
+                                accept: '.csv',
+                                onChange: handleFileUpload,
+                                ref: fileInputRef,
+                                style: { display: 'none' }
+                            }),
+                            React.createElement('button', {
+                                onClick: () => fileInputRef.current?.click(),
+                                className: 'btn btn-primary'
+                            }, React.createElement(Upload), ' Charger le CSV myNKL'),
+                            csvData.length > 0 && React.createElement('p', { className: 'success-message' },
+                                React.createElement(CheckCircle),
+                                ` ${csvData.length} lettres chargées`
+                            )
+                        )
+                    )
+                ),
+
+                React.createElement('div', { className: 'form-section' },
+                    // Letter Selection
+                    csvData.length > 0 && React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Sélectionner une lettre'),
+                        React.createElement('select', {
+                            value: selectedLetter,
+                            onChange: (e) => handleLetterSelect(e.target.value),
+                            className: 'form-input'
+                        },
+                            React.createElement('option', { value: '' }, '-- Choisir une lettre --'),
+                            csvData.map((item, index) =>
+                                React.createElement('option', { key: index, value: item['Linked in item'] },
+                                    item['http://nakala.fr/terms#title']
+                                )
+                            )
+                        )
+                    ),
+
+                    // Basic Information
+                    React.createElement('h3', { className: 'section-title' }, 'Informations de base'),
+                    
+                    // Champ combiné global
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Coller DOI/hash complet (optionnel)'),
+                        React.createElement('input', {
+                            type: 'text',
+                            value: combined,
+                            onChange: handleCombinedChange,
+                            placeholder: '10.34847/nkl.e68ch4qq/cc32f286701e44a3772292ac41356e880e3f3161',
+                            className: 'form-input'
+                        }),
+                        React.createElement('p', { className: 'dimensions-help' },
+                            'Collez l\'identifiant complet pour remplir automatiquement le DOI et le hash de la première page'
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'DOI Nakala *'),
+                        React.createElement('div', { className: 'input-wrapper' },
+                            React.createElement('input', {
+                                type: 'text',
+                                value: manifestData.doi,
+                                onChange: (e) => setManifestData({...manifestData, doi: e.target.value}),
+                                placeholder: '10.34847/nkl.e68ch4qq',
+                                className: `form-input ${
+                                    manifestData.doi && !validateDoi(manifestData.doi)
+                                        ? 'invalid'
+                                        : manifestData.doi && validateDoi(manifestData.doi)
+                                        ? 'valid'
+                                        : ''
+                                }`
+                            }),
+                            manifestData.doi && React.createElement('div', { className: 'input-icons' },
+                                validateDoi(manifestData.doi) ?
+                                    React.createElement(CheckCircle, { className: 'icon icon-success' }) :
+                                    React.createElement(AlertCircle, { className: 'icon icon-error' })
+                            )
+                        ),
+                        manifestData.doi && !validateDoi(manifestData.doi) &&
+                            React.createElement('p', { className: 'error-message' }, 'Format DOI invalide')
+                    ),
+
+                    React.createElement('div', { className: 'form-grid' },
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { className: 'form-label' }, 'ID Lettre *'),
+                            React.createElement('input', {
+                                type: 'text',
+                                value: manifestData.letterId,
+                                onChange: (e) => setManifestData({...manifestData, letterId: e.target.value}),
+                                placeholder: 'SPA_2469',
+                                className: 'form-input'
+                            })
+                        ),
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { className: 'form-label' }, 'Date'),
+                            React.createElement('input', {
+                                type: 'date',
+                                value: manifestData.dateIssued,
+                                onChange: (e) => setManifestData({...manifestData, dateIssued: e.target.value}),
+                                className: 'form-input'
+                            })
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Titre'),
+                        React.createElement('input', {
+                            type: 'text',
+                            value: manifestData.title,
+                            onChange: (e) => setManifestData({...manifestData, title: e.target.value}),
+                            className: 'form-input'
+                        })
+                    ),
+
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Créateur'),
+                        React.createElement('input', {
+                            type: 'text',
+                            value: manifestData.creator,
+                            onChange: (e) => setManifestData({...manifestData, creator: e.target.value}),
+                            className: 'form-input'
+                        })
+                    ),
+
+                    // Pages Section
+                    React.createElement('div', { className: 'pages-header' },
+                        React.createElement('h3', { className: 'section-title' }, 'Pages'),
+                        React.createElement('div', { className: 'pages-actions' },
+                            React.createElement('button', {
+                                onClick: addPage,
+                                className: 'btn btn-green'
+                            }, React.createElement(Plus))
+                        )
+                    ),
+
+                    manifestData.pages.map((page, index) =>
+                        React.createElement('div', { key: index, className: 'page-card' },
+                            React.createElement('div', { className: 'page-header' },
+                                React.createElement('h4', { className: 'page-title' },
+                                    `Page ${index + 1}`,
+                                    page.loading && React.createElement('div', { className: 'spinner' }),
+                                    page.validated && React.createElement(CheckCircle)
+                                ),
+                                manifestData.pages.length > 1 &&
+                                    React.createElement('button', {
+                                        onClick: () => removePage(index),
+                                        className: 'btn-red'
+                                    }, React.createElement(Minus))
+                            ),
+
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { className: 'form-label' }, 'Coller DOI/hash pour cette page (optionnel)'),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    value: page.combinedId || '',
+                                    onChange: (e) => handlePageCombinedChange(index, e.target.value),
+                                    placeholder: '10.34847/nkl.e68ch4qq/cc32f286701e44a3772292ac41356e880e3f3161',
+                                    className: 'form-input'
+                                }),
+                                React.createElement('p', { className: 'dimensions-help' },
+                                    'Collez l\'identifiant complet pour extraire automatiquement le DOI et le hash'
+                                )
+                            ),
+
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { className: 'form-label' }, 'Hash de l\'image *'),
+                                React.createElement('div', { className: 'input-wrapper' },
+                                    React.createElement('input', {
+                                        type: 'text',
+                                        value: page.hash,
+                                        onChange: (e) => updatePage(index, 'hash', e.target.value),
+                                        placeholder: 'cc32f286701e44a3772292ac41356e880e3f3161',
+                                        className: `form-input ${
+                                            page.hash && !validateHash(page.hash)
+                                                ? 'invalid'
+                                                : page.hash && validateHash(page.hash)
+                                                ? 'valid'
+                                                : ''
+                                        }`
+                                    }),
+                                    React.createElement('div', { className: 'input-icons' },
+                                        page.hash && validateHash(page.hash) && manifestData.doi && validateDoi(manifestData.doi) &&
+                                            React.createElement('button', {
+                                                onClick: () => openInfoUrl(manifestData.doi, page.hash),
+                                                className: 'icon-link',
+                                                title: 'Ouvrir l\'URL info.json',
+                                                style: { border: 'none', background: 'none' }
+                                            }, React.createElement(ExternalLink)),
+                                        page.hash && (
+                                            validateHash(page.hash) ?
+                                                React.createElement(CheckCircle, { className: 'icon icon-success' }) :
+                                                React.createElement(AlertCircle, { className: 'icon icon-error' })
+                                        )
+                                    )
+                                ),
+                                page.error && React.createElement('p', { className: 'error-message' }, page.error),
+                                page.hash && !validateHash(page.hash) &&
+                                    React.createElement('p', { className: 'error-message' }, 'Format hash invalide (40 caractères hexadécimaux)')
+                            ),
+
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { className: 'form-label' }, 'Coller les dimensions ici (format libre)'),
+                                React.createElement('div', { className: 'dimensions-input' },
+                                    React.createElement('input', {
+                                        type: 'text',
+                                        value: page.dimensionsInput || '',
+                                        onChange: (e) => updatePage(index, 'dimensionsInput', e.target.value),
+                                        placeholder: 'Ex: {"width":2692,"height":3430} ou 2692x3430',
+                                        className: 'form-input'
+                                    }),
+                                    React.createElement('button', {
+                                        onClick: () => parseDimensions(page.dimensionsInput, index),
+                                        disabled: !page.dimensionsInput,
+                                        className: 'btn btn-primary'
+                                    }, 'Appliquer')
+                                ),
+                                React.createElement('p', { className: 'dimensions-help' },
+                                    'Copiez tout ou partie du JSON depuis l\'onglet info.json ouvert, ou saisissez "largeur x hauteur"'
+                                )
+                            ),
+
+                            React.createElement('div', { className: 'form-grid' },
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label' }, 'Largeur'),
+                                    React.createElement('input', {
+                                        type: 'number',
+                                        value: page.width,
+                                        onChange: (e) => updatePage(index, 'width', parseInt(e.target.value)),
+                                        className: 'form-input'
+                                    })
+                                ),
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label' }, 'Hauteur'),
+                                    React.createElement('input', {
+                                        type: 'number',
+                                        value: page.height,
+                                        onChange: (e) => updatePage(index, 'height', parseInt(e.target.value)),
+                                        className: 'form-input'
+                                    })
+                                )
+                            )
+                        )
+                    ),
+
+                    // Buttons row - Auto-fetch dimensions and Open Info URLs
+                    React.createElement('div', { 
+                        style: { 
+                            marginBottom: '1rem', 
+                            display: 'flex', 
+                            gap: '0.5rem',
+                            flexWrap: 'wrap'
+                        } 
+                    },
+                        React.createElement('button', {
+                            onClick: fetchAllDimensions,
+                            disabled: !manifestData.doi || !validateDoi(manifestData.doi) || manifestData.pages.some(p => !p.hash || !validateHash(p.hash)),
+                            className: 'btn btn-success',
+                            style: { 
+                                flex: '1',
+                                minWidth: '200px',
+                                justifyContent: 'center', 
+                                padding: '0.75rem 1rem',
+                                whiteSpace: 'normal',
+                                lineHeight: '1.2'
+                            }
+                        }, '🔄 Récupération automatique des dimensions', React.createElement('br'), 'de toutes les pages'),
+                        React.createElement('button', {
+                            onClick: openAllInfoUrls,
+                            disabled: !manifestData.doi || !validateDoi(manifestData.doi) || manifestData.pages.some(p => !p.hash || !validateHash(p.hash)),
+                            className: 'btn btn-purple',
+                            style: { 
+                                flex: '1',
+                                minWidth: '200px',
+                                justifyContent: 'center', 
+                                padding: '0.75rem 1rem',
+                                whiteSpace: 'normal',
+                                lineHeight: '1.2'
+                            }
+                        }, React.createElement(ExternalLink), ' Ouvrir toutes les URLs', React.createElement('br'), 'info.json')
+                    ),
+
+                    // Generate Button
+                    React.createElement('div', { className: 'generate-section' },
+                        React.createElement('button', {
+                            onClick: generateManifest,
+                            disabled: !isFormValid() || isGenerating,
+                            className: 'generate-btn'
+                        },
+                            isGenerating ?
+                                [React.createElement('div', { key: 'spinner', className: 'spinner' }), 'Génération en cours...'] :
+                                [React.createElement(FileText, { key: 'icon' }), 'Générer le Manifest IIIF']
+                        )
+                    )
+                ),
+
+                // Preview Section
+                generatedManifest && React.createElement('div', { className: 'preview-section' },
+                    React.createElement('h3', { className: 'preview-title' }, 'Aperçu du Manifest'),
+                    React.createElement('div', { className: 'preview-content' },
+                        React.createElement('pre', { className: 'preview-json' }, generatedManifest)
+                    ),
+                    React.createElement('button', {
+                        onClick: downloadManifest,
+                        className: 'download-btn'
+                    }, React.createElement(Download), ' Télécharger le Manifest')
+                )
+            );
+        };
+
+        ReactDOM.render(React.createElement(IIIFManifestGenerator), document.getElementById('root'));
+    </script>
+</body>
+</html>
