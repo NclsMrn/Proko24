@@ -605,42 +605,15 @@ const handleLetterSelect = (letterItem) => {
 
           {/* Pages Section */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-800">Pages</h3>
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  onClick={fetchAllDimensions}
-                  disabled={!manifestData.doi || !validateDoi(manifestData.doi) || isAutoFetching}
-                  className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-md transition-colors text-sm"
-                >
-                  {isAutoFetching ? (
-                    <>
-                      <div className="inline-block mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Récupération...
-                    </>
-                  ) : (
-                    <>
-                      <RefreshCw className="h-4 w-4 inline mr-1" />
-                      Récupérer dimensions auto
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={openAllInfoUrls}
-                  disabled={!manifestData.doi || !validateDoi(manifestData.doi)}
-                  className="bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-md transition-colors text-sm"
-                >
-                  <ExternalLink className="h-4 w-4 inline mr-1" />
-                  Ouvrir URLs info.json
-                </button>
-                <button
-                  onClick={addPage}
-                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md transition-colors"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
+           <div className="flex items-center justify-between">
+  <h3 className="text-lg font-semibold text-gray-800">Pages</h3>
+  <button
+    onClick={addPage}
+    className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md transition-colors"
+  >
+    <Plus className="h-4 w-4" />
+  </button>
+</div>
 
             {manifestData.pages.map((page, index) => (
               <div key={index} className="p-4 bg-gray-50 rounded-md">
@@ -782,23 +755,56 @@ const handleLetterSelect = (letterItem) => {
           </div>
 
           {/* Generate Button */}
-          <button
-            onClick={generateManifest}
-            disabled={!isFormValid() || isGenerating}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-          >
-            {isGenerating ? (
-              <>
-                <div className="inline-block mr-2 h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Génération en cours...
-              </>
-            ) : (
-              <>
-                <FileText className="inline-block mr-2 h-5 w-5" />
-                Générer le Manifest IIIF
-              </>
-            )}
-          </button>
+          {/* Action Buttons */}
+<div className="space-y-3">
+  {/* Utility buttons */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <button
+      onClick={fetchAllDimensions}
+      disabled={!manifestData.doi || !validateDoi(manifestData.doi) || isAutoFetching}
+      className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-md transition-colors text-sm flex items-center justify-center"
+    >
+      {isAutoFetching ? (
+        <>
+          <div className="inline-block mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          Récupération...
+        </>
+      ) : (
+        <>
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Récupérer dimensions auto
+        </>
+      )}
+    </button>
+    <button
+      onClick={openAllInfoUrls}
+      disabled={!manifestData.doi || !validateDoi(manifestData.doi)}
+      className="bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-md transition-colors text-sm flex items-center justify-center"
+    >
+      <ExternalLink className="h-4 w-4 mr-2" />
+      Ouvrir URLs info.json
+    </button>
+  </div>
+  
+  {/* Generate Button */}
+  <button
+    onClick={generateManifest}
+    disabled={!isFormValid() || isGenerating}
+    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+  >
+    {isGenerating ? (
+      <>
+        <div className="inline-block mr-2 h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        Génération en cours...
+      </>
+    ) : (
+      <>
+        <FileText className="inline-block mr-2 h-5 w-5" />
+        Générer le Manifest IIIF
+      </>
+    )}
+  </button>
+</div>
         </div>
 
         {/* Preview Section */}
