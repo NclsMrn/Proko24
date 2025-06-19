@@ -66,6 +66,37 @@
               }
             }
           ]
+        },
+        {
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.50765880/canvas/page2",
+          "@type": "sc:Canvas",
+          "label": "Page 2",
+          "height": 4529,
+          "width": 5677,
+          "thumbnail": {
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.50765880/9fc1fd57bdb9e7157f6c7c6b14e4e14596a2526f/full/,150/0/default.jpg",
+            "@type": "dctypes:Image"
+          },
+          "images": [
+            {
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.50765880/annotation/page2",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.50765880/canvas/page2",
+              "resource": {
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.50765880/9fc1fd57bdb9e7157f6c7c6b14e4e14596a2526f/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "height": 4529,
+                "width": 5677,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.50765880/9fc1fd57bdb9e7157f6c7c6b14e4e14596a2526f",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              }
+            }
+          ]
         }
       ]
     }
