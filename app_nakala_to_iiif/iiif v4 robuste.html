@@ -1,0 +1,2471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Manifests IIIF Nakala V10 - Gestion d'erreurs améliorée</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: #f9fafb;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        .title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .upload-section {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        
+        .btn-primary:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .btn-success {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #059669;
+        }
+        
+        .btn-purple {
+            background-color: #8b5cf6;
+            color: white;
+        }
+        
+        .btn-purple:hover {
+            background-color: #7c3aed;
+        }
+        
+        .btn-green {
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.25rem;
+        }
+        
+        .btn-green:hover {
+            background-color: #2563eb;
+        }
+        
+        .btn-red {
+            color: #ef4444;
+            background: none;
+            border: none;
+            padding: 0.25rem;
+        }
+        
+        .btn-red:hover {
+            color: #dc2626;
+        }
+        
+        .success-message {
+            color: #059669;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .form-section {
+            background-color: white;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 0.75rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 1px #3b82f6;
+        }
+        
+        .form-input.valid {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        
+        .form-input.invalid {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icons {
+            position: absolute;
+            right: 0.5rem;
+            top: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+        }
+        
+        .icon {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        .icon-success {
+            color: #10b981;
+        }
+        
+        .icon-error {
+            color: #ef4444;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        
+        .section-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 0.75rem;
+        }
+        
+        .pages-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .pages-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .page-card {
+            padding: 0.75rem;
+            background-color: #f9fafb;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 0.75rem;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .page-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .spinner {
+            width: 0.75rem;
+            height: 0.75rem;
+            border: 2px solid #3b82f6;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .dimensions-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .dimensions-input input {
+            flex: 1;
+        }
+        
+        .dimensions-help {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .generate-section {
+            padding-top: 1rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            background-color: #2563eb;
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .generate-btn:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .generate-btn:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .preview-section {
+            background-color: white;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+        }
+        
+        .preview-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .preview-content {
+            background-color: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .preview-json {
+            overflow-x: auto;
+            max-height: 20rem;
+            color: #374151;
+            white-space: pre;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .download-btn {
+            width: 100%;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .download-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .drag-drop-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .drag-drop-zone:hover {
+            border-color: #3b82f6;
+            background-color: #f8fafc;
+        }
+
+        .drag-drop-zone.drag-over {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: #2563eb;
+            transform: scale(1.1);
+        }
+
+        /* Mode sombre */
+        body.dark-mode {
+            background-color: #1f2937;
+            color: #f9fafb;
+        }
+
+        .dark-mode .container {
+            background-color: #1f2937;
+        }
+
+        .dark-mode .upload-section,
+        .dark-mode .form-section,
+        .dark-mode .preview-section {
+            background-color: #374151;
+            border-color: #4b5563;
+        }
+
+        .dark-mode .page-card {
+            background-color: #4b5563;
+            border-color: #6b7280;
+        }
+
+        .dark-mode .form-input {
+            background-color: #374151;
+            border-color: #6b7280;
+            color: #f9fafb;
+        }
+
+        .dark-mode .form-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .dark-mode .form-input.valid {
+            border-color: #10b981;
+            background-color: #065f46;
+        }
+
+        .dark-mode .form-input.invalid {
+            border-color: #ef4444;
+            background-color: #7f1d1d;
+        }
+
+        .dark-mode .drag-drop-zone {
+            border-color: #6b7280;
+            background-color: #374151;
+        }
+
+        .dark-mode .drag-drop-zone:hover {
+            border-color: #3b82f6;
+            background-color: #4b5563;
+        }
+
+        .dark-mode .drag-drop-zone.drag-over {
+            border-color: #10b981;
+            background-color: #065f46;
+        }
+
+        .dark-mode .title,
+        .dark-mode .section-title,
+        .dark-mode .form-label,
+        .dark-mode .page-title,
+        .dark-mode .preview-title {
+            color: #f9fafb;
+        }
+
+        .dark-mode .preview-content {
+            background-color: #4b5563;
+            border-color: #6b7280;
+        }
+
+        .dark-mode .preview-json {
+            color: #e5e7eb;
+        }
+
+        .dark-mode .theme-toggle {
+            background: #fbbf24;
+            color: #1f2937;
+        }
+
+        .dark-mode .theme-toggle:hover {
+            background: #f59e0b;
+        }
+
+        /* NOUVELLES AMÉLIORATIONS - Notifications d'erreur */
+        .error-notification {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .dark-mode .error-notification {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #fecaca;
+        }
+
+        .warning-notification {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fffbeb;
+            border: 1px solid #fed7aa;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .dark-mode .warning-notification {
+            background-color: #92400e;
+            border-color: #f59e0b;
+            color: #fed7aa;
+        }
+
+        .success-notification {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .dark-mode .success-notification {
+            background-color: #065f46;
+            border-color: #10b981;
+            color: #bbf7d0;
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: inherit;
+        }
+
+        .notification-body {
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .retry-section {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .dark-mode .retry-section {
+            border-top-color: #4b5563;
+        }
+
+        .retry-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .retry-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .retry-btn:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        /* Rate limiter indicator */
+        .rate-limit-indicator {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode .rate-limit-indicator {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: #d1d5db;
+        }
+
+        .rate-limit-indicator.active {
+            background-color: #fef3c7;
+            border-color: #fbbf24;
+            color: #92400e;
+        }
+
+        .dark-mode .rate-limit-indicator.active {
+            background-color: #92400e;
+            border-color: #f59e0b;
+            color: #fed7aa;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pages-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .title {
+                font-size: 1.1rem;
+            }
+
+            .error-notification,
+            .warning-notification,
+            .success-notification {
+                width: 95%;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+
+        // NOUVELLE CLASSE - Gestionnaire d'erreurs amélioré
+        class ErrorManager {
+            constructor() {
+                this.notifications = [];
+                this.callbacks = [];
+            }
+
+            // Messages d'erreur informatifs pour utilisateurs non-techniques
+            static getInformativeMessage(error, context) {
+                const errorPatterns = {
+                    'Failed to fetch': {
+                        title: '🌐 Problème de connexion',
+                        message: 'Impossible de contacter le serveur Nakala. Vérifiez votre connexion internet.',
+                        suggestions: [
+                            'Vérifiez votre connexion internet',
+                            'Le serveur Nakala peut être temporairement indisponible',
+                            'Réessayez dans quelques minutes'
+                        ]
+                    },
+                    'CORS': {
+                        title: '🔒 Restriction de sécurité',
+                        message: 'Le navigateur bloque l\'accès à l\'API Nakala pour des raisons de sécurité.',
+                        suggestions: [
+                            'C\'est un problème technique normal',
+                            'L\'application va tenter d\'utiliser un proxy automatiquement',
+                            'Aucune action de votre part n\'est requise'
+                        ]
+                    },
+                    '404': {
+                        title: '📄 Document introuvable',
+                        message: 'Le document demandé n\'existe pas ou n\'est pas accessible.',
+                        suggestions: [
+                            'Vérifiez que le DOI est correct',
+                            'Le document peut être privé ou supprimé',
+                            'Contactez le propriétaire du document'
+                        ]
+                    },
+                    '403': {
+                        title: '🚫 Accès refusé',
+                        message: 'Vous n\'avez pas l\'autorisation d\'accéder à ce document.',
+                        suggestions: [
+                            'Le document est probablement privé',
+                            'Contactez le propriétaire pour obtenir l\'accès',
+                            'Vérifiez que le DOI est correct'
+                        ]
+                    },
+                    '500': {
+                        title: '⚠️ Erreur serveur',
+                        message: 'Le serveur Nakala rencontre des difficultés techniques.',
+                        suggestions: [
+                            'Ce n\'est pas un problème de votre côté',
+                            'Réessayez dans quelques minutes',
+                            'Contactez le support Nakala si le problème persiste'
+                        ]
+                    },
+                    'timeout': {
+                        title: '⏱️ Délai d\'attente dépassé',
+                        message: 'Le serveur met trop de temps à répondre.',
+                        suggestions: [
+                            'Le serveur Nakala peut être surchargé',
+                            'Réessayez avec un délai plus long',
+                            'Vérifiez votre connexion internet'
+                        ]
+                    },
+                    'rate_limit': {
+                        title: '🚦 Trop de requêtes',
+                        message: 'Vous envoyez trop de requêtes en même temps.',
+                        suggestions: [
+                            'L\'application va ralentir automatiquement',
+                            'Attendez quelques secondes avant de continuer',
+                            'C\'est une protection normale du serveur'
+                        ]
+                    }
+                };
+
+                // Détection du type d'erreur
+                const errorString = error.toString().toLowerCase();
+                let errorInfo = null;
+
+                for (const [pattern, info] of Object.entries(errorPatterns)) {
+                    if (errorString.includes(pattern.toLowerCase())) {
+                        errorInfo = info;
+                        break;
+                    }
+                }
+
+                // Erreur générique si aucun pattern ne correspond
+                if (!errorInfo) {
+                    errorInfo = {
+                        title: '❌ Erreur technique',
+                        message: 'Une erreur inattendue s\'est produite.',
+                        suggestions: [
+                            'Réessayez l\'opération',
+                            'Vérifiez vos données saisies',
+                            'Consultez la console développeur pour plus de détails'
+                        ]
+                    };
+                }
+
+                return {
+                    ...errorInfo,
+                    context: context,
+                    originalError: error.toString(),
+                    timestamp: new Date().toLocaleTimeString()
+                };
+            }
+
+            addNotification(type, title, message, options = {}) {
+                const notification = {
+                    id: Date.now() + Math.random(),
+                    type,
+                    title,
+                    message,
+                    timestamp: new Date().toLocaleTimeString(),
+                    ...options
+                };
+
+                this.notifications.push(notification);
+                this.notifyCallbacks();
+
+                // Auto-suppression après 10 secondes sauf si canClose est false
+                if (options.canClose !== false) {
+                    setTimeout(() => {
+                        this.removeNotification(notification.id);
+                    }, options.duration || 10000);
+                }
+
+                return notification.id;
+            }
+
+            removeNotification(id) {
+                this.notifications = this.notifications.filter(n => n.id !== id);
+                this.notifyCallbacks();
+            }
+
+            clearAll() {
+                this.notifications = [];
+                this.notifyCallbacks();
+            }
+
+            subscribe(callback) {
+                this.callbacks.push(callback);
+                return () => {
+                    this.callbacks = this.callbacks.filter(cb => cb !== callback);
+                };
+            }
+
+            notifyCallbacks() {
+                this.callbacks.forEach(callback => callback(this.notifications));
+            }
+
+            // Méthodes helper pour types d'erreurs courants
+            showError(error, context = '') {
+                const errorInfo = ErrorManager.getInformativeMessage(error, context);
+                return this.addNotification('error', errorInfo.title, 
+                    errorInfo.message + '\n\n' + errorInfo.suggestions.map(s => '• ' + s).join('\n'), 
+                    { 
+                        canRetry: true, 
+                        originalError: errorInfo.originalError,
+                        context: errorInfo.context
+                    }
+                );
+            }
+
+            showWarning(title, message, options = {}) {
+                return this.addNotification('warning', title, message, options);
+            }
+
+            showSuccess(title, message, options = {}) {
+                return this.addNotification('success', title, message, { duration: 5000, ...options });
+            }
+        }
+
+        // NOUVELLE CLASSE - Rate Limiter
+        class RateLimiter {
+            constructor(maxRequests = 5, timeWindow = 1000) {
+                this.maxRequests = maxRequests;
+                this.timeWindow = timeWindow;
+                this.requests = [];
+                this.isActive = false;
+                this.callbacks = [];
+            }
+
+            async acquire() {
+                const now = Date.now();
+                
+                // Nettoyer les anciennes requêtes
+                this.requests = this.requests.filter(time => now - time < this.timeWindow);
+                
+                // Vérifier si on peut faire une nouvelle requête
+                if (this.requests.length >= this.maxRequests) {
+                    const oldestRequest = Math.min(...this.requests);
+                    const waitTime = this.timeWindow - (now - oldestRequest) + 100; // +100ms de marge
+                    
+                    this.setActive(true);
+                    await new Promise(resolve => setTimeout(resolve, waitTime));
+                    this.setActive(false);
+                }
+                
+                // Enregistrer la nouvelle requête
+                this.requests.push(now);
+            }
+
+            setActive(active) {
+                this.isActive = active;
+                this.callbacks.forEach(callback => callback(this.isActive));
+            }
+
+            subscribe(callback) {
+                this.callbacks.push(callback);
+                return () => {
+                    this.callbacks = this.callbacks.filter(cb => cb !== callback);
+                };
+            }
+
+            getStatus() {
+                const now = Date.now();
+                this.requests = this.requests.filter(time => now - time < this.timeWindow);
+                return {
+                    isActive: this.isActive,
+                    currentRequests: this.requests.length,
+                    maxRequests: this.maxRequests,
+                    timeWindow: this.timeWindow
+                };
+            }
+        }
+
+        // NOUVELLE FONCTION - Fetch avec retry et timeout
+        async function fetchWithRetry(url, options = {}, retries = 3, timeout = 10000) {
+            const {
+                retryDelay = 1000,
+                backoffMultiplier = 2,
+                ...fetchOptions
+            } = options;
+
+            for (let i = 0; i <= retries; i++) {
+                try {
+                    // Créer un AbortController pour le timeout
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+                    const response = await fetch(url, {
+                        ...fetchOptions,
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    return response;
+                } catch (error) {
+                    // Si c'est le dernier essai, relancer l'erreur
+                    if (i === retries) {
+                        if (error.name === 'AbortError') {
+                            throw new Error('timeout');
+                        }
+                        throw error;
+                    }
+
+                    // Attendre avant le prochain essai avec backoff exponentiel
+                    const delay = retryDelay * Math.pow(backoffMultiplier, i);
+                    console.log(`Tentative ${i + 1}/${retries + 1} échouée pour ${url}. Nouvelle tentative dans ${delay}ms...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+
+        // NOUVELLE FONCTION - Validation avancée côté client
+        class ValidationManager {
+            static validateDoi(doi) {
+                if (!doi) return { isValid: false, error: 'DOI requis' };
+                
+                const doiRegex = /^10\.\d{4,}\/.*$/;
+                if (!doiRegex.test(doi)) {
+                    return { 
+                        isValid: false, 
+                        error: 'Format DOI invalide. Doit commencer par "10." suivi d\'au moins 4 chiffres, puis "/" et un identifiant' 
+                    };
+                }
+                
+                return { isValid: true };
+            }
+
+            static validateHash(hash) {
+                if (!hash) return { isValid: false, error: 'Hash requis' };
+                
+                const hashRegex = /^[a-f0-9]{40}$/i;
+                if (!hashRegex.test(hash)) {
+                    return { 
+                        isValid: false, 
+                        error: 'Format hash invalide. Doit contenir exactement 40 caractères hexadécimaux (0-9, a-f)' 
+                    };
+                }
+                
+                return { isValid: true };
+            }
+
+            static validateBeforeApiCall(operation, data) {
+                const errors = [];
+                const warnings = [];
+
+                switch (operation) {
+                    case 'fetchDimensions':
+                        const doiValidation = this.validateDoi(data.doi);
+                        const hashValidation = this.validateHash(data.hash);
+                        
+                        if (!doiValidation.isValid) errors.push(`DOI: ${doiValidation.error}`);
+                        if (!hashValidation.isValid) errors.push(`Hash: ${hashValidation.error}`);
+                        break;
+
+                    case 'fetchCollection':
+                        const collectionDoiValidation = this.validateDoi(data.doi);
+                        if (!collectionDoiValidation.isValid) errors.push(`DOI: ${collectionDoiValidation.error}`);
+                        
+                        // Avertissement si le DOI semble être d'une donnée unique plutôt qu'une collection
+                        if (data.doi && data.doi.length > 25) {
+                            warnings.push('Ce DOI semble être d\'une donnée unique plutôt qu\'une collection. Utilisez plutôt "Récupération automatique depuis UNE donnée".');
+                        }
+                        break;
+
+                    case 'generateManifest':
+                        if (!data.letterId) errors.push('ID Lettre requis');
+                        if (!data.title) warnings.push('Titre recommandé pour une meilleure lisibilité');
+                        if (data.pages.length === 0) errors.push('Au moins une page requise');
+                        
+                        data.pages.forEach((page, index) => {
+                            const pageDoiValidation = this.validateDoi(page.sourceDoi || data.doi);
+                            const pageHashValidation = this.validateHash(page.hash);
+                            
+                            if (!pageDoiValidation.isValid) errors.push(`Page ${index + 1} - DOI: ${pageDoiValidation.error}`);
+                            if (!pageHashValidation.isValid) errors.push(`Page ${index + 1} - Hash: ${pageHashValidation.error}`);
+                            if (!page.width || !page.height) errors.push(`Page ${index + 1} - Dimensions requises`);
+                        });
+                        break;
+                }
+
+                return { 
+                    isValid: errors.length === 0, 
+                    errors, 
+                    warnings,
+                    hasWarnings: warnings.length > 0
+                };
+            }
+        }
+
+        // Composant de notification
+        const NotificationPanel = ({ notifications, onClose, onRetry }) => {
+            if (notifications.length === 0) return null;
+
+            return notifications.map(notification => {
+                const notificationClass = `${notification.type}-notification`;
+                
+                return React.createElement('div', {
+                    key: notification.id,
+                    className: notificationClass
+                },
+                    React.createElement('div', { className: 'notification-header' },
+                        React.createElement('span', null, notification.title),
+                        React.createElement('button', {
+                            className: 'notification-close',
+                            onClick: () => onClose(notification.id)
+                        }, '×')
+                    ),
+                    React.createElement('div', { className: 'notification-body' },
+                        notification.message.split('\n').map((line, index) =>
+                            React.createElement('div', { key: index }, line)
+                        )
+                    ),
+                    notification.canRetry && React.createElement('div', { className: 'retry-section' },
+                        React.createElement('button', {
+                            className: 'retry-btn',
+                            onClick: () => onRetry(notification)
+                        }, '🔄 Réessayer'),
+                        React.createElement('span', {
+                            style: { fontSize: '0.7rem', color: '#6b7280' }
+                        }, `Erreur à ${notification.timestamp}`)
+                    )
+                );
+            });
+        };
+
+        // Composant indicateur de rate limit
+        const RateLimitIndicator = ({ isActive, status }) => {
+            if (!isActive && status.currentRequests === 0) return null;
+
+            return React.createElement('div', {
+                className: `rate-limit-indicator ${isActive ? 'active' : ''}`
+            },
+                isActive ? 
+                    '🚦 Limitation en cours...' : 
+                    `📊 ${status.currentRequests}/${status.maxRequests} requêtes`
+            );
+        };
+
+        const IIIFManifestGenerator = () => {
+            const [csvData, setCsvData] = useState([]);
+            const [selectedLetter, setSelectedLetter] = useState('');
+            const [manifestData, setManifestData] = useState({
+                doi: '',
+                letterId: '',
+                title: '',
+                creator: '',
+                dateIssued: '',
+                attribution: 'Nicolas Moron / NAKALA',
+                license: 'http://creativecommons.org/licenses/by-nc/4.0/',
+                pages: [
+                    { hash: '', width: 2692, height: 3430, loading: false, validated: false, error: null, dimensionsInput: '', combinedId: ''}
+                ]
+            });
+            const [generatedManifest, setGeneratedManifest] = useState('');
+            const [isGenerating, setIsGenerating] = useState(false);
+            const [combined, setCombined] = useState('');
+            const [dragOver, setDragOver] = useState(false);
+            const [darkMode, setDarkMode] = useState(true);
+            const [manifestValidation, setManifestValidation] = useState(null);
+            
+            // NOUVEAUX ÉTATS pour la gestion d'erreurs améliorée
+            const [notifications, setNotifications] = useState([]);
+            const [rateLimitStatus, setRateLimitStatus] = useState({ isActive: false, currentRequests: 0, maxRequests: 5 });
+            
+            const fileInputRef = useRef(null);
+            
+            // NOUVELLES INSTANCES pour la gestion d'erreurs
+            const errorManager = useRef(new ErrorManager());
+            const rateLimiter = useRef(new RateLimiter(5, 2000)); // 5 requêtes par 2 secondes
+
+            // Initialisation des listeners d'erreurs
+            useEffect(() => {
+                const unsubscribeError = errorManager.current.subscribe(setNotifications);
+                const unsubscribeRateLimit = rateLimiter.current.subscribe((isActive) => {
+                    const status = rateLimiter.current.getStatus();
+                    setRateLimitStatus({ ...status, isActive });
+                });
+
+                return () => {
+                    unsubscribeError();
+                    unsubscribeRateLimit();
+                };
+            }, []);
+
+            // FONCTIONS ORIGINALES PRÉSERVÉES (avec améliorations d'erreurs)
+            const validateDoi = (doi) => {
+                return ValidationManager.validateDoi(doi).isValid;
+            };
+
+            const validateHash = (hash) => {
+                return ValidationManager.validateHash(hash).isValid;
+            };
+
+            const validateIIIFManifest = (manifest) => {
+                const errors = [];
+                const warnings = [];
+
+                if (!manifest['@context']) errors.push('Le champ @context est requis');
+                if (!manifest['@id']) errors.push('Le champ @id est requis');
+                if (!manifest['@type']) errors.push('Le champ @type est requis');
+                if (!manifest.label) warnings.push('Le champ label est recommandé');
+
+                if (!manifest.sequences || manifest.sequences.length === 0) {
+                    errors.push('Au moins une séquence est requise');
+                }
+
+                return { errors, warnings, isValid: errors.length === 0 };
+            };
+
+            const toggleDarkMode = () => {
+                setDarkMode(!darkMode);
+                document.body.classList.toggle('dark-mode');
+            };
+
+            const parseCombined = (input) => {
+                const parts = input.trim().split('/');
+                const hash = parts.pop();
+                const doi = parts.join('/');
+                return { doi, hash };
+            };
+
+            const handleCombinedChange = (e) => {
+                const val = e.target.value;
+                setCombined(val);
+
+                if (val.includes('/')) {
+                    try {
+                        const { doi, hash } = parseCombined(val);
+                        setManifestData(md => ({
+                            ...md,
+                            doi,
+                            pages: md.pages.map((p, i) =>
+                                i === 0 ? { ...p, hash, combinedId: val } : p
+                            )
+                        }));
+                    } catch {
+                        // laisse l'utilisateur continuer à taper
+                    }
+                }
+            };
+
+            const handlePageCombinedChange = (pageIndex, value) => {
+                const newPages = [...manifestData.pages];
+                newPages[pageIndex].combinedId = value;
+
+                if (value.includes('/')) {
+                    try {
+                        const { doi, hash } = parseCombined(value);
+                        
+                        if (!manifestData.doi || manifestData.doi !== doi) {
+                            setManifestData(prev => ({
+                                ...prev,
+                                doi: doi,
+                                pages: newPages.map((p, i) => 
+                                    i === pageIndex ? { ...p, hash, combinedId: value } : p
+                                )
+                            }));
+                        } else {
+                            newPages[pageIndex].hash = hash;
+                            setManifestData({ ...manifestData, pages: newPages });
+                        }
+                    } catch {
+                        setManifestData({ ...manifestData, pages: newPages });
+                    }
+                } else {
+                    setManifestData({ ...manifestData, pages: newPages });
+                }
+            };
+
+            const handleDragOver = (e) => {
+                e.preventDefault();
+                setDragOver(true);
+            };
+
+            const handleDragLeave = (e) => {
+                e.preventDefault();
+                setDragOver(false);
+            };
+
+            const handleDrop = (e) => {
+                e.preventDefault();
+                setDragOver(false);
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+                        Papa.parse(file, {
+                            header: true,
+                            skipEmptyLines: true,
+                            complete: (results) => {
+                                const rows = results.data.map((row) => {
+                                    const title = row['http://nakala.fr/terms#title'] || '';
+                                    const match = title.match(/(SPA_\d+)/);
+                                    return { ...row, letterId: match ? match[1] : '' };
+                                });
+                                setCsvData(rows);
+                                errorManager.current.showSuccess('📁 CSV chargé', `${rows.length} lettres chargées avec succès`);
+                            },
+                            error: (error) => {
+                                errorManager.current.showError(error, 'Lecture du fichier CSV');
+                            }
+                        });
+                    } else {
+                        errorManager.current.showWarning('📄 Format incorrect', 'Veuillez déposer un fichier CSV');
+                    }
+                }
+            };
+
+            const handleFileUpload = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: (results) => {
+                        const rows = results.data.map((row) => {
+                            const title = row['http://nakala.fr/terms#title'] || '';
+                            const match = title.match(/(SPA_\d+)/);
+                            return { ...row, letterId: match ? match[1] : '' };
+                        });
+                        setCsvData(rows);
+                        errorManager.current.showSuccess('📁 CSV chargé', `${rows.length} lettres chargées avec succès`);
+                    },
+                    error: (error) => {
+                        errorManager.current.showError(error, 'Lecture du fichier CSV');
+                    }
+                });
+            };
+
+            const handleLetterSelect = (letterItem) => {
+                const letterData = csvData.find(item => item['Linked in item'] === letterItem);
+                if (!letterData) return;
+
+                const letterId = letterData.letterId || 
+                    (letterData['http://nakala.fr/terms#title']?.match(/(SPA_\d+)/)?.[1] ?? '');
+
+                setManifestData({
+                    ...manifestData,
+                    letterId,
+                    title: letterData['http://nakala.fr/terms#title'] || '',
+                    creator: letterData['http://nakala.fr/terms#creator'] || '',
+                    dateIssued: letterData['http://nakala.fr/terms#created'] || ''
+                });
+                setSelectedLetter(letterItem);
+            };
+
+            // FONCTION AMÉLIORÉE avec retry et rate limiting
+            const fetchImageDimensions = async (doi, hash) => {
+                // Validation avant appel API
+                const validation = ValidationManager.validateBeforeApiCall('fetchDimensions', { doi, hash });
+                if (!validation.isValid) {
+                    throw new Error(`Données invalides: ${validation.errors.join(', ')}`);
+                }
+
+                // Rate limiting
+                await rateLimiter.current.acquire();
+
+                const infoUrl = 'https://api.nakala.fr/iiif/' + doi + '/' + hash + '/info.json';
+                console.log('🔍 Tentative de récupération des dimensions pour:', doi + '/' + hash);
+                console.log('📋 URL info.json:', infoUrl);
+                
+                try {
+                    const response = await fetchWithRetry(infoUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    }, 2, 8000);
+                    
+                    console.log('📊 Réponse directe - Status:', response.status);
+                    
+                    const data = await response.json();
+                    console.log('✅ Dimensions récupérées directement:', data.width + 'x' + data.height);
+                    return {
+                        width: data.width,
+                        height: data.height,
+                        success: true
+                    };
+                } catch (error) {
+                    console.log('❌ Erreur directe:', error.message);
+                    
+                    try {
+                        console.log('🔄 Tentative avec proxy...');
+                        await rateLimiter.current.acquire();
+                        
+                        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(infoUrl);
+                        const response = await fetchWithRetry(proxyUrl, {}, 2, 10000);
+                        
+                        console.log('📊 Réponse proxy - Status:', response.status);
+                        
+                        const data = await response.json();
+                        console.log('✅ Dimensions récupérées via proxy:', data.width + 'x' + data.height);
+                        return {
+                            width: data.width,
+                            height: data.height,
+                            success: true
+                        };
+                    } catch (proxyError) {
+                        console.error('❌ Erreur lors de la tentative proxy:', proxyError.message);
+                        throw proxyError;
+                    }
+                }
+            };
+
+            // FONCTION AMÉLIORÉE avec validation et gestion d'erreurs
+            const fetchAllHashesFromDOI = async () => {
+                // Validation préalable
+                const validation = ValidationManager.validateBeforeApiCall('fetchCollection', { doi: manifestData.doi });
+                if (!validation.isValid) {
+                    errorManager.current.showError(new Error(validation.errors.join(', ')), 'Validation des données');
+                    return;
+                }
+
+                if (validation.hasWarnings) {
+                    errorManager.current.showWarning('⚠️ Avertissement', validation.warnings.join('\n'));
+                }
+
+                try {
+                    await rateLimiter.current.acquire();
+                    const apiUrl = 'https://api.nakala.fr/datas/' + manifestData.doi;
+                    
+                    let response;
+                    try {
+                        response = await fetchWithRetry(apiUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        }, 3, 10000);
+                    } catch (error) {
+                        console.log('Tentative directe échouée, utilisation du proxy:', error);
+                        await rateLimiter.current.acquire();
+                        const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(apiUrl);
+                        response = await fetchWithRetry(proxyUrl);
+                        if (response.ok) {
+                            const proxyData = await response.json();
+                            response = { 
+                                ok: true, 
+                                json: () => Promise.resolve(JSON.parse(proxyData.contents))
+                            };
+                        }
+                    }
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        console.log('Données complètes de l\'API:', data);
+                        console.log('Fichiers trouvés:', data.files);
+                        
+                        const files = data.files || [];
+                        console.log('Nombre de fichiers:', files.length);
+                        
+                        files.forEach((file, index) => {
+                            console.log('Fichier ' + (index + 1) + ':', {
+                                nom: file.name || file.filename,
+                                mimetype: file.mimetype || file.type,
+                                sha1: file.sha1 || file.hash,
+                                taille: file.size
+                            });
+                        });
+                        
+                        let imageFiles = [];
+                        
+                        imageFiles = files.filter(file => 
+                            file.mimetype && file.mimetype.startsWith('image/')
+                        );
+                        console.log('Fichiers images (stratégie 1 - mimetype):', imageFiles.length);
+                        
+                        if (imageFiles.length === 0) {
+                            const imageExtensions = ['.jpg', '.jpeg', '.png', '.tiff', '.tif', '.gif', '.webp'];
+                            imageFiles = files.filter(file => {
+                                const fileName = file.name || file.filename || '';
+                                return imageExtensions.some(ext => 
+                                    fileName.toLowerCase().endsWith(ext)
+                                );
+                            });
+                            console.log('Fichiers images (stratégie 2 - extension):', imageFiles.length);
+                        }
+                        
+                        if (imageFiles.length === 0) {
+                            imageFiles = files;
+                            console.log('Fichiers images (stratégie 3 - tous les fichiers):', imageFiles.length);
+                        }
+                        
+                        if (imageFiles.length === 0) {
+                            throw new Error('Aucun fichier trouvé dans cette donnée.\n\nStructure des données reçues:\n' + JSON.stringify(data, null, 2).substring(0, 500) + '...');
+                        }
+                        
+                        const newPages = imageFiles.map((file, index) => ({
+                            hash: file.sha1 || file.hash,
+                            width: 2692,
+                            height: 3430,
+                            loading: false,
+                            validated: false,
+                            error: null,
+                            dimensionsInput: '',
+                            combinedId: manifestData.doi + '/' + (file.sha1 || file.hash)
+                        }));
+                        
+                        setManifestData({
+                            ...manifestData,
+                            pages: newPages
+                        });
+                        
+                        errorManager.current.showSuccess('✅ Fichiers trouvés', `${imageFiles.length} fichiers trouvés et ajoutés automatiquement!\n\nFichiers détectés:\n${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.mimetype || 'type inconnu'})`).join('\n')}`);
+                        
+                        await fetchAllDimensionsFromHash(newPages);
+                        
+                    } else {
+                        throw new Error('Erreur HTTP ' + response.status + ': ' + response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Erreur complète:', error);
+                    errorManager.current.showError(error, 'Récupération des fichiers depuis une donnée unique');
+                }
+            };
+
+            // FONCTION AMÉLIORÉE OAI-PMH avec retry et validation
+            const fetchAllHashesFromCollectionOAI = async () => {
+                // Validation préalable
+                const validation = ValidationManager.validateBeforeApiCall('fetchCollection', { doi: manifestData.doi });
+                if (!validation.isValid) {
+                    errorManager.current.showError(new Error(validation.errors.join(', ')), 'Validation des données');
+                    return;
+                }
+
+                try {
+                    await rateLimiter.current.acquire();
+                    
+                    const oaiSet = 'doi_' + manifestData.doi.replace(/\//g, '_');
+                    const oaiUrl = 'https://api.nakala.fr/oai2?verb=ListRecords&metadataPrefix=oai_dc&set=' + oaiSet;
+                    
+                    console.log('🎯 NOUVELLE APPROCHE - API OAI-PMH (SOLUTION DOCUMENTÉE)');
+                    console.log('📊 Collection DOI:', manifestData.doi);
+                    console.log('📊 Set OAI transformé:', oaiSet);
+                    console.log('📊 URL OAI-PMH:', oaiUrl);
+                    
+                    let response;
+                    try {
+                        response = await fetchWithRetry(oaiUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/xml,text/xml,*/*',
+                                'Content-Type': 'application/xml'
+                            }
+                        }, 3, 15000);
+                    } catch (error) {
+                        console.log('Tentative directe échouée, utilisation du proxy:', error);
+                        await rateLimiter.current.acquire();
+                        const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(oaiUrl);
+                        response = await fetchWithRetry(proxyUrl);
+                        if (response.ok) {
+                            const proxyData = await response.json();
+                            response = { 
+                                ok: true, 
+                                text: () => Promise.resolve(proxyData.contents)
+                            };
+                        }
+                    }
+                    
+                    if (response.ok) {
+                        const xmlText = await response.text();
+                        console.log('📊 Réponse XML OAI-PMH (premiers 1000 caractères):', xmlText.substring(0, 1000) + '...');
+                        
+                        // Parser le XML pour extraire les DOI
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                        
+                        // Vérifier les erreurs de parsing XML
+                        const parseError = xmlDoc.querySelector('parsererror');
+                        if (parseError) {
+                            throw new Error('Erreur de parsing XML: ' + parseError.textContent);
+                        }
+                        
+                        // Extraire les enregistrements
+                        const records = xmlDoc.querySelectorAll('record');
+                        console.log('📊 Nombre d\'enregistrements trouvés:', records.length);
+                        
+                        if (records.length === 0) {
+                            // Vérifier s'il y a des erreurs OAI
+                            const oaiError = xmlDoc.querySelector('error');
+                            if (oaiError) {
+                                const errorCode = oaiError.getAttribute('code');
+                                const errorMessage = oaiError.textContent;
+                                throw new Error('Erreur OAI-PMH (' + errorCode + '): ' + errorMessage);
+                            }
+                            
+                            throw new Error(`Aucun enregistrement trouvé dans cette collection via OAI-PMH.
+
+🔍 DIAGNOSTIC :
+• Collection DOI: ${manifestData.doi}
+• Set OAI: ${oaiSet}
+• URL testée: ${oaiUrl}
+
+CAUSES PROBABLES :
+• Collection vide
+• Collection privée
+• DOI de collection incorrect
+• Collection pas encore indexée dans OAI-PMH
+
+💡 SOLUTION : Vérifiez que la collection est publique et contient des données, ou utilisez le mode "donnée unique".`);
+                        }
+                        
+                        const extractedDOIs = [];
+                        
+                        // Parcourir chaque enregistrement pour extraire les DOI
+                        records.forEach((record, index) => {
+                            // Méthode 1: chercher dans dc:identifier
+                            const identifiers = record.querySelectorAll('dc\\:identifier, identifier');
+                            identifiers.forEach(id => {
+                                const value = id.textContent.trim();
+                                if (value && value.match(/^10\.\d{4,}\/.*$/)) {
+                                    extractedDOIs.push(value);
+                                    console.log('✅ DOI trouvé (dc:identifier):', value);
+                                }
+                            });
+                            
+                            // Méthode 2: chercher dans l'header identifier et l'extraire
+                            const headerIdentifier = record.querySelector('header identifier');
+                            if (headerIdentifier) {
+                                const headerValue = headerIdentifier.textContent.trim();
+                                console.log('📋 Header identifier:', headerValue);
+                                
+                                // Extraire le DOI du format oai:nakala.fr:doi_10.34847_nkl.xxxxx
+                                const doiMatch = headerValue.match(/doi_([^_]+_[^_]+_[^_]+(?:_[^_]+)*)/);
+                                if (doiMatch) {
+                                    const extractedDOI = doiMatch[1].replace(/_/g, '/');
+                                    if (extractedDOI.match(/^10\.\d{4,}\/.*$/)) {
+                                        extractedDOIs.push(extractedDOI);
+                                        console.log('✅ DOI extrait (header):', extractedDOI);
+                                    }
+                                }
+                            }
+                        });
+                        
+                        // Dédupliquer les DOI
+                        const uniqueDOIs = [...new Set(extractedDOIs)];
+                        console.log('📊 DOI uniques extraits:', uniqueDOIs);
+                        
+                        if (uniqueDOIs.length === 0) {
+                            throw new Error('Aucun DOI valide trouvé dans les enregistrements OAI-PMH.\n\n🔍 Les enregistrements existent mais ne contiennent pas de DOI exploitables.\n\nVérifiez la console pour plus de détails sur les métadonnées récupérées.');
+                        }
+                        
+                        errorManager.current.showSuccess('🎯 API OAI-PMH réussie !', `${uniqueDOIs.length} données trouvées dans la collection.\n\n📋 DOI détectés:\n${uniqueDOIs.map((doi, i) => `${i+1}. ${doi}`).join('\n')}\n\n🚀 Récupération des fichiers en cours...`);
+                        
+                        // Traiter chaque DOI individuellement comme des données uniques
+                        let allPages = [];
+                        let totalImages = 0;
+                        let successfulItems = 0;
+                        let failedItems = [];
+                        
+                        for (let i = 0; i < uniqueDOIs.length; i++) {
+                            const currentDOI = uniqueDOIs[i];
+                            console.log('🔍 Traitement DOI ' + (i + 1) + '/' + uniqueDOIs.length + ': ' + currentDOI);
+                            
+                            try {
+                                await rateLimiter.current.acquire();
+                                const itemApiUrl = 'https://api.nakala.fr/datas/' + currentDOI;
+                                
+                                let itemResponse;
+                                try {
+                                    itemResponse = await fetchWithRetry(itemApiUrl, {
+                                        method: 'GET',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        }
+                                    }, 2, 8000);
+                                } catch (error) {
+                                    await rateLimiter.current.acquire();
+                                    const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(itemApiUrl);
+                                    itemResponse = await fetchWithRetry(proxyUrl);
+                                    if (itemResponse.ok) {
+                                        const proxyData = await itemResponse.json();
+                                        itemResponse = { 
+                                            ok: true, 
+                                            json: () => Promise.resolve(JSON.parse(proxyData.contents))
+                                        };
+                                    }
+                                }
+                                
+                                if (itemResponse.ok) {
+                                    const itemData = await itemResponse.json();
+                                    const files = itemData.files || [];
+                                    
+                                    let imageFiles = files.filter(file => 
+                                        file.mimetype && file.mimetype.startsWith('image/')
+                                    );
+                                    
+                                    if (imageFiles.length === 0) {
+                                        const imageExtensions = ['.jpg', '.jpeg', '.png', '.tiff', '.tif', '.gif', '.webp'];
+                                        imageFiles = files.filter(file => {
+                                            const fileName = file.name || file.filename || '';
+                                            return imageExtensions.some(ext => 
+                                                fileName.toLowerCase().endsWith(ext)
+                                            );
+                                        });
+                                    }
+                                    
+                                    if (imageFiles.length > 0) {
+                                        const itemPages = imageFiles.map((file, fileIndex) => ({
+                                            hash: file.sha1 || file.hash,
+                                            width: 2692,
+                                            height: 3430,
+                                            loading: false,
+                                            validated: false,
+                                            error: null,
+                                            dimensionsInput: '',
+                                            combinedId: currentDOI + '/' + (file.sha1 || file.hash),
+                                            sourceData: (itemData.metadata && itemData.metadata.title) || ('Donnée ' + (i + 1)),
+                                            sourceDoi: currentDOI
+                                        }));
+                                        
+                                        allPages = [...allPages, ...itemPages];
+                                        totalImages += imageFiles.length;
+                                        successfulItems++;
+                                        console.log('✅ DOI ' + currentDOI + ': ' + imageFiles.length + ' fichier(s) image trouvé(s)');
+                                    } else {
+                                        console.log('⚠️ DOI ' + currentDOI + ': aucun fichier image trouvé (total fichiers: ' + files.length + ')');
+                                        failedItems.push(currentDOI + ' (aucun fichier image)');
+                                    }
+                                } else {
+                                    console.log('❌ DOI ' + currentDOI + ': Erreur ' + itemResponse.status + ' (probablement privé)');
+                                    failedItems.push(currentDOI + ' (Erreur ' + itemResponse.status + ' - probablement privé)');
+                                }
+                                
+                                // Pause entre les requêtes - gérée par le rate limiter
+                                
+                            } catch (error) {
+                                console.error('❌ Erreur technique pour le DOI ' + currentDOI + ':', error);
+                                failedItems.push(currentDOI + ' (Erreur technique: ' + error.message + ')');
+                            }
+                        }
+                        
+                        if (allPages.length === 0) {
+                            let errorMessage = `❌ Aucun fichier image accessible trouvé dans cette collection.
+
+📊 RÉSUMÉ :
+• DOI trouvés via OAI-PMH: ${uniqueDOIs.length}
+• DOI accessibles: ${successfulItems}
+• DOI inaccessibles: ${failedItems.length}
+`;
+                            
+                            if (failedItems.length > 0) {
+                                errorMessage += `
+🔍 PROBLÈMES DÉTECTÉS :
+${failedItems.slice(0, 5).map(failure => `• ${failure}`).join('\n')}`;
+                                if (failedItems.length > 5) {
+                                    errorMessage += `\n• ... et ${failedItems.length - 5} autres`;
+                                }
+                                errorMessage += '\n';
+                            }
+                            
+                            errorMessage += `
+💡 CAUSE PROBABLE :
+• Les données de cette collection sont PRIVÉES
+• L'API publique peut voir la collection mais pas accéder aux données
+
+🛠️ SOLUTIONS :
+• Rendez les données publiques temporairement
+• Utilisez le mode "donnée unique" pour chaque lettre`;
+                            
+                            throw new Error(errorMessage);
+                        }
+                        
+                        const firstDoi = allPages[0].sourceDoi;
+                        
+                        setManifestData({
+                            ...manifestData,
+                            doi: firstDoi,
+                            pages: allPages,
+                            title: 'Collection OAI-PMH - ' + successfulItems + ' données accessibles',
+                            letterId: 'COLLECTION_OAI_' + manifestData.doi.split('/').pop()
+                        });
+                        
+                        let successMessage = `🎯 SUCCÈS avec l'API OAI-PMH ! ${totalImages} fichiers images trouvés !
+
+📊 RÉSUMÉ :
+• DOI extraits via OAI-PMH: ${uniqueDOIs.length}
+• DOI accessibles: ${successfulItems}
+• Fichiers images: ${totalImages}`;
+                        
+                        if (failedItems.length > 0) {
+                            successMessage += `\n\n⚠️ ${failedItems.length} DOI n'ont pas pu être traités:\n${failedItems.slice(0, 3).map(failure => `• ${failure.split(' (')[0]}`).join('\n')}`;
+                            if (failedItems.length > 3) {
+                                successMessage += `\n• ... et ${failedItems.length - 3} autres`;
+                            }
+                        }
+                        
+                        successMessage += `
+
+🎯 Cette méthode utilise l'API OAI-PMH officielle de Nakala !
+Le DOI principal a été défini sur: ${firstDoi}
+
+🚀 Vous pouvez maintenant récupérer les dimensions automatiquement.`;
+                        
+                        errorManager.current.showSuccess('🎯 Collection OAI-PMH chargée', successMessage);
+                        
+                    } else {
+                        console.error('❌ Erreur HTTP OAI-PMH:', response.status, response.statusText);
+                        throw new Error('Erreur HTTP OAI-PMH ' + response.status + ': ' + response.statusText + '\n\n🔍 Cela peut indiquer :\n• Collection privée ou inexistante\n• DOI de collection invalide\n• Problème avec l\'entrepôt OAI-PMH de Nakala');
+                    }
+                } catch (error) {
+                    console.error('❌ Erreur complète OAI-PMH:', error);
+                    errorManager.current.showError(error, 'API OAI-PMH (Collection)');
+                }
+            };
+
+            const fetchAllDimensionsFromHash = async (pages) => {
+                const newPages = [...pages];
+                
+                newPages.forEach(page => {
+                    page.loading = true;
+                    page.error = null;
+                });
+                setManifestData(prev => ({ ...prev, pages: newPages }));
+                
+                let successCount = 0;
+                let errorCount = 0;
+                
+                for (let i = 0; i < newPages.length; i++) {
+                    const page = newPages[i];
+                    
+                    if (page.hash && validateHash(page.hash)) {
+                        const pageDoi = page.sourceDoi || manifestData.doi;
+                        
+                        try {
+                            const result = await fetchImageDimensions(pageDoi, page.hash);
+
+                            if (result.success) {
+                                newPages[i] = {
+                                    ...page,
+                                    width: result.width,
+                                    height: result.height,
+                                    loading: false,
+                                    validated: true,
+                                    error: null
+                                };
+                                successCount++;
+                            } else {
+                                newPages[i] = {
+                                    ...page,
+                                    loading: false,
+                                    error: result.error || 'Erreur lors de la récupération'
+                                };
+                                errorCount++;
+                            }
+                        } catch (error) {
+                            newPages[i] = {
+                                ...page,
+                                loading: false,
+                                error: ErrorManager.getInformativeMessage(error, 'Récupération des dimensions').message
+                            };
+                            errorCount++;
+                        }
+
+                        setManifestData(prev => ({ ...prev, pages: [...newPages] }));
+                    } else {
+                        newPages[i] = {
+                            ...page,
+                            loading: false,
+                            error: 'Hash invalide'
+                        };
+                        errorCount++;
+                    }
+                }
+                
+                // Résumé final
+                if (successCount > 0) {
+                    errorManager.current.showSuccess('📐 Dimensions récupérées', `${successCount} dimension(s) récupérée(s) avec succès${errorCount > 0 ? `, ${errorCount} erreur(s)` : ''}`);
+                }
+                if (errorCount > 0 && successCount === 0) {
+                    errorManager.current.showError(new Error(`Impossible de récupérer les dimensions pour ${errorCount} page(s)`), 'Récupération des dimensions');
+                }
+            };
+
+            const fetchAllDimensions = async () => {
+                // Validation préalable
+                if (!manifestData.doi) {
+                    errorManager.current.showError(new Error('DOI requis'), 'Validation');
+                    return;
+                }
+                
+                const invalidPages = manifestData.pages.filter(p => !p.hash || !validateHash(p.hash));
+                if (invalidPages.length > 0) {
+                    errorManager.current.showError(new Error(`${invalidPages.length} page(s) ont des hash invalides`), 'Validation');
+                    return;
+                }
+                
+                await fetchAllDimensionsFromHash(manifestData.pages);
+            };
+
+            // FONCTIONS ORIGINALES PRÉSERVÉES (inchangées)
+            const addPage = () => {
+                setManifestData({
+                    ...manifestData,
+                    pages: [...manifestData.pages, {
+                        hash: '',
+                        width: 2692,
+                        height: 3430,
+                        loading: false,
+                        validated: false,
+                        error: null,
+                        dimensionsInput: '',
+                        combinedId: ''
+                    }]
+                });
+            };
+
+            const removePage = (index) => {
+                if (manifestData.pages.length > 1) {
+                    const newPages = manifestData.pages.filter((_, i) => i !== index);
+                    setManifestData({ ...manifestData, pages: newPages });
+                }
+            };
+
+            const updatePage = (index, field, value) => {
+                const newPages = [...manifestData.pages];
+                newPages[index][field] = value;
+
+                if (field === 'hash') {
+                    newPages[index].validated = false;
+                    newPages[index].error = null;
+                }
+
+                setManifestData({ ...manifestData, pages: newPages });
+            };
+
+            const parseDimensions = (input, pageIndex) => {
+                if (!input.trim()) return;
+
+                try {
+                    const jsonData = JSON.parse(input);
+                    if (jsonData.width && jsonData.height) {
+                        updatePageDimensions(pageIndex, jsonData.width, jsonData.height);
+                        return;
+                    }
+                } catch (e) {
+                    // Si ce n'est pas du JSON, essayer d'autres formats
+                }
+
+                const dimensionRegex = /(\d+)[\s,x×](\d+)/;
+                const match = input.match(dimensionRegex);
+                if (match) {
+                    const width = parseInt(match[1]);
+                    const height = parseInt(match[2]);
+                    updatePageDimensions(pageIndex, width, height);
+                    return;
+                }
+
+                const numbers = input.match(/\d+/g);
+                if (numbers && numbers.length >= 2) {
+                    const width = parseInt(numbers[0]);
+                    const height = parseInt(numbers[1]);
+                    updatePageDimensions(pageIndex, width, height);
+                }
+            };
+
+            const updatePageDimensions = (pageIndex, width, height) => {
+                const newPages = [...manifestData.pages];
+                newPages[pageIndex] = {
+                    ...newPages[pageIndex],
+                    width: width,
+                    height: height,
+                    validated: true,
+                    error: null,
+                    dimensionsInput: ''
+                };
+                setManifestData({ ...manifestData, pages: newPages });
+            };
+
+            // FONCTION AMÉLIORÉE avec validation
+            const generateManifest = () => {
+                // Validation avant génération
+                const validation = ValidationManager.validateBeforeApiCall('generateManifest', manifestData);
+                if (!validation.isValid) {
+                    errorManager.current.showError(new Error(validation.errors.join(', ')), 'Validation du manifest');
+                    return;
+                }
+
+                if (validation.hasWarnings) {
+                    errorManager.current.showWarning('⚠️ Avertissements', validation.warnings.join('\n'));
+                }
+
+                setIsGenerating(true);
+
+                setTimeout(() => {
+                    try {
+                        const manifest = {
+                            "@context": "http://iiif.io/api/presentation/2/context.json",
+                            "@id": "https://nakala.fr/iiif/" + manifestData.doi + "/manifest",
+                            "@type": "sc:Manifest",
+                            "label": manifestData.letterId,
+                            "attribution": manifestData.attribution,
+                            "license": manifestData.license,
+                            "logo": "https://nakala.fr/logo/",
+                            "metadata": [
+                                {
+                                    "label": "Id",
+                                    "value": manifestData.letterId
+                                },
+                                {
+                                    "label": "Title",
+                                    "value": manifestData.title
+                                },
+                                {
+                                    "label": "Creator",
+                                    "value": manifestData.creator
+                                },
+                                {
+                                    "label": "Date Issued",
+                                    "value": manifestData.dateIssued
+                                },
+                                {
+                                    "label": "Type",
+                                    "value": "manuscript"
+                                }
+                            ],
+                            "sequences": [
+                                {
+                                    "@id": "https://nakala.fr/iiif/" + manifestData.doi + "/sequence/normal",
+                                    "@type": "sc:Sequence",
+                                    "label": manifestData.letterId,
+                                    "viewingHint": "paged",
+                                    "startCanvas": "https://nakala.fr/iiif/" + manifestData.doi + "/canvas/page1",
+                                    "canvases": manifestData.pages.map((page, index) => {
+                                        const pageDoi = page.sourceDoi || manifestData.doi;
+                                        return {
+                                            "@id": "https://nakala.fr/iiif/" + manifestData.doi + "/canvas/page" + (index + 1),
+                                            "@type": "sc:Canvas",
+                                            "label": "Page " + (index + 1),
+                                            "height": page.height,
+                                            "width": page.width,
+                                            "thumbnail": {
+                                                "@id": "https://api.nakala.fr/iiif/" + pageDoi + "/" + page.hash + "/full/,150/0/default.jpg",
+                                                "@type": "dctypes:Image"
+                                            },
+                                            "images": [
+                                                {
+                                                    "@id": "https://nakala.fr/iiif/" + manifestData.doi + "/annotation/page" + (index + 1),
+                                                    "@type": "oa:Annotation",
+                                                    "motivation": "sc:painting",
+                                                    "on": "https://nakala.fr/iiif/" + manifestData.doi + "/canvas/page" + (index + 1),
+                                                    "resource": {
+                                                        "@id": "https://api.nakala.fr/iiif/" + pageDoi + "/" + page.hash + "/full/full/0/default.jpg",
+                                                        "@type": "dctypes:Image",
+                                                        "format": "image/jpeg",
+                                                        "height": page.height,
+                                                        "width": page.width,
+                                                        "service": {
+                                                            "@context": "http://iiif.io/api/image/2/context.json",
+                                                            "@id": "https://api.nakala.fr/iiif/" + pageDoi + "/" + page.hash,
+                                                            "profile": "http://iiif.io/api/image/2/level2.json"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        };
+                                    })
+                                }
+                            ]
+                        };
+
+                        const manifestJson = JSON.stringify(manifest, null, 2);
+                        
+                        const validation = validateIIIFManifest(manifest);
+                        
+                        setGeneratedManifest(manifestJson);
+                        setManifestValidation(validation);
+                        setIsGenerating(false);
+                        
+                        errorManager.current.showSuccess('📄 Manifest généré', `Manifest IIIF ${validation.isValid ? 'valide' : 'avec avertissements'} créé avec succès`);
+                    } catch (error) {
+                        setIsGenerating(false);
+                        errorManager.current.showError(error, 'Génération du manifest');
+                    }
+                }, 500);
+            };
+
+            const downloadManifest = () => {
+                try {
+                    const blob = new Blob([generatedManifest], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = (manifestData.letterId || 'document') + '.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    errorManager.current.showSuccess('💾 Téléchargement', 'Manifest téléchargé avec succès');
+                } catch (error) {
+                    errorManager.current.showError(error, 'Téléchargement du manifest');
+                }
+            };
+
+            const isFormValid = () => {
+                return manifestData.doi && validateDoi(manifestData.doi) && manifestData.letterId && manifestData.pages.every(p => p.hash && validateHash(p.hash));
+            };
+
+            // NOUVELLES FONCTIONS pour gestion des notifications
+            const handleCloseNotification = (id) => {
+                errorManager.current.removeNotification(id);
+            };
+
+            const handleRetryNotification = (notification) => {
+                errorManager.current.removeNotification(notification.id);
+                
+                // Logique de retry basée sur le contexte
+                if (notification.context) {
+                    switch (notification.context) {
+                        case 'Récupération des fichiers depuis une donnée unique':
+                            fetchAllHashesFromDOI();
+                            break;
+                        case 'API OAI-PMH (Collection)':
+                            fetchAllHashesFromCollectionOAI();
+                            break;
+                        case 'Récupération des dimensions':
+                            fetchAllDimensions();
+                            break;
+                        default:
+                            errorManager.current.showWarning('🔄 Retry', 'Veuillez relancer l\'opération manuellement');
+                    }
+                } else {
+                    errorManager.current.showWarning('🔄 Retry', 'Veuillez relancer l\'opération manuellement');
+                }
+            };
+
+            return React.createElement('div', { className: 'container' },
+                React.createElement('button', {
+                    onClick: toggleDarkMode,
+                    className: 'theme-toggle',
+                    title: darkMode ? 'Mode clair' : 'Mode sombre'
+                }, darkMode ? '☀️' : '🌙'),
+
+                // NOUVEAUX COMPOSANTS - Notifications et indicateurs
+                React.createElement(NotificationPanel, {
+                    notifications: notifications,
+                    onClose: handleCloseNotification,
+                    onRetry: handleRetryNotification
+                }),
+
+                React.createElement(RateLimitIndicator, {
+                    isActive: rateLimitStatus.isActive,
+                    status: rateLimitStatus
+                }),
+
+                React.createElement('h1', { className: 'title' }, 'Générateur de Manifests IIIF Nakala V10 - Gestion d\'erreurs améliorée'),
+                
+                React.createElement('div', { className: 'upload-section' },
+                    React.createElement('div', { 
+                        className: 'drag-drop-zone' + (dragOver ? ' drag-over' : ''),
+                        onDragOver: handleDragOver,
+                        onDragLeave: handleDragLeave,
+                        onDrop: handleDrop,
+                        onClick: () => fileInputRef.current?.click()
+                    },
+                        React.createElement('div', { className: 'upload-content' },
+                            React.createElement('input', {
+                                type: 'file',
+                                accept: '.csv',
+                                onChange: handleFileUpload,
+                                ref: fileInputRef,
+                                style: { display: 'none' }
+                            }),
+                            React.createElement('h3', { style: { marginBottom: '0.5rem', color: '#374151' } }, 
+                                dragOver ? 'Déposez votre fichier CSV ici' : 'Charger le CSV myNKL'
+                            ),
+                            React.createElement('p', { style: { fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' } },
+                                'Glissez-déposez un fichier CSV ou cliquez pour parcourir'
+                            ),
+                            React.createElement('button', {
+                                className: 'btn btn-primary'
+                            }, '📁 Parcourir les fichiers'),
+                            csvData.length > 0 && React.createElement('p', { 
+                                className: 'success-message',
+                                style: { marginTop: '1rem' }
+                            },
+                                '✅ ' + csvData.length + ' lettres chargées'
+                            )
+                        )
+                    )
+                ),
+
+                React.createElement('div', { className: 'form-section' },
+                    csvData.length > 0 && React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Sélectionner une lettre'),
+                        React.createElement('select', {
+                            value: selectedLetter,
+                            onChange: (e) => handleLetterSelect(e.target.value),
+                            className: 'form-input'
+                        },
+                            React.createElement('option', { value: '' }, '-- Choisir une lettre --'),
+                            csvData.map((item, index) =>
+                                React.createElement('option', { key: index, value: item['Linked in item'] },
+                                    item['http://nakala.fr/terms#title']
+                                )
+                            )
+                        )
+                    ),
+
+                    React.createElement('h3', { className: 'section-title' }, 'Informations de base'),
+                    
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Coller DOI/hash complet *'),
+                        React.createElement('input', {
+                            type: 'text',
+                            value: combined,
+                            onChange: handleCombinedChange,
+                            placeholder: '10.34847/nkl.e68ch4qq/cc32f286701e44a3772292ac41356e880e3f3161',
+                            className: 'form-input'
+                        }),
+                        React.createElement('p', { className: 'dimensions-help' },
+                            'Collez l\'identifiant complet pour remplir automatiquement le DOI et le hash de la première page'
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'DOI Nakala (donnée ou collection)'),
+                        React.createElement('div', { className: 'input-wrapper' },
+                            React.createElement('input', {
+                                type: 'text',
+                                value: manifestData.doi,
+                                onChange: (e) => setManifestData({...manifestData, doi: e.target.value}),
+                                placeholder: '10.34847/nkl.e68ch4qq (donnée) ou 10.34847/nkl.collectionid (collection)',
+                                className: 'form-input' + (
+                                    manifestData.doi && !validateDoi(manifestData.doi)
+                                        ? ' invalid'
+                                        : manifestData.doi && validateDoi(manifestData.doi)
+                                        ? ' valid'
+                                        : ''
+                                )
+                            }),
+                            manifestData.doi && React.createElement('div', { className: 'input-icons' },
+                                validateDoi(manifestData.doi) ?
+                                    React.createElement('span', { className: 'icon icon-success' }, '✅') :
+                                    React.createElement('span', { className: 'icon icon-error' }, '⚠️')
+                            )
+                        ),
+                        manifestData.doi && !validateDoi(manifestData.doi) &&
+                            React.createElement('p', { className: 'error-message' }, 'Format DOI invalide'),
+                        React.createElement('p', { className: 'dimensions-help' },
+                            '💡 Vous pouvez maintenant utiliser le DOI d\'une donnée unique OU d\'une collection complète'
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'form-grid' },
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { className: 'form-label' }, 'ID Lettre (automatique)'),
+                            React.createElement('input', {
+                                type: 'text',
+                                value: manifestData.letterId,
+                                onChange: (e) => setManifestData({...manifestData, letterId: e.target.value}),
+                                placeholder: 'SPA_2469',
+                                className: 'form-input'
+                            })
+                        ),
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { className: 'form-label' }, 'Date'),
+                            React.createElement('input', {
+                                type: 'date',
+                                value: manifestData.dateIssued,
+                                onChange: (e) => setManifestData({...manifestData, dateIssued: e.target.value}),
+                                className: 'form-input'
+                            })
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Titre'),
+                        React.createElement('input', {
+                            type: 'text',
+                            value: manifestData.title,
+                            onChange: (e) => setManifestData({...manifestData, title: e.target.value}),
+                            className: 'form-input'
+                        })
+                    ),
+
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Créateur'),
+                        React.createElement('input', {
+                            type: 'text',
+                            value: manifestData.creator,
+                            onChange: (e) => setManifestData({...manifestData, creator: e.target.value}),
+                            className: 'form-input'
+                        })
+                    ),
+
+                    React.createElement('div', { className: 'pages-header' },
+                        React.createElement('h3', { className: 'section-title' }, 'Pages'),
+                        React.createElement('div', { className: 'pages-actions' },
+                            React.createElement('button', {
+                                onClick: addPage,
+                                className: 'btn btn-green'
+                            }, '➕')
+                        )
+                    ),
+
+                    manifestData.pages.map((page, index) =>
+                        React.createElement('div', { key: index, className: 'page-card' },
+                            React.createElement('div', { className: 'page-header' },
+                                React.createElement('h4', { className: 'page-title' },
+                                    'Page ' + (index + 1),
+                                    page.loading && React.createElement('div', { className: 'spinner' }),
+                                    page.validated && React.createElement('span', null, ' ✅')
+                                ),
+                                manifestData.pages.length > 1 &&
+                                    React.createElement('button', {
+                                        onClick: () => removePage(index),
+                                        className: 'btn-red'
+                                    }, '➖')
+                            ),
+
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { className: 'form-label' }, 'Coller DOI/hash pour cette page *'),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    value: page.combinedId || '',
+                                    onChange: (e) => handlePageCombinedChange(index, e.target.value),
+                                    placeholder: '10.34847/nkl.e68ch4qq/cc32f286701e44a3772292ac41356e880e3f3161',
+                                    className: 'form-input'
+                                }),
+                                React.createElement('p', { className: 'dimensions-help' },
+                                    'Collez l\'identifiant complet pour extraire automatiquement le DOI et le hash'
+                                )
+                            ),
+
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { className: 'form-label' }, 'Hash de l\'image (automatique)'),
+                                React.createElement('div', { className: 'input-wrapper' },
+                                    React.createElement('input', {
+                                        type: 'text',
+                                        value: page.hash,
+                                        onChange: (e) => updatePage(index, 'hash', e.target.value),
+                                        placeholder: 'cc32f286701e44a3772292ac41356e880e3f3161',
+                                        className: 'form-input' + (
+                                            page.hash && !validateHash(page.hash)
+                                                ? ' invalid'
+                                                : page.hash && validateHash(page.hash)
+                                                ? ' valid'
+                                                : ''
+                                        )
+                                    }),
+                                    React.createElement('div', { className: 'input-icons' },
+                                        page.hash && (
+                                            validateHash(page.hash) ?
+                                                React.createElement('span', { className: 'icon icon-success' }, '✅') :
+                                                React.createElement('span', { className: 'icon icon-error' }, '⚠️')
+                                        )
+                                    )
+                                ),
+                                page.error && React.createElement('p', { className: 'error-message' }, page.error),
+                                page.hash && !validateHash(page.hash) &&
+                                    React.createElement('p', { className: 'error-message' }, 'Format hash invalide (40 caractères hexadécimaux)'),
+                                page.hash && validateHash(page.hash) && React.createElement('div', { 
+                                    style: { marginTop: '0.5rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }
+                                },
+                                    React.createElement('button', {
+                                        onClick: () => {
+                                            const pageDoi = page.sourceDoi || manifestData.doi;
+                                            const infoUrl = 'https://api.nakala.fr/iiif/' + pageDoi + '/' + page.hash + '/info.json';
+                                            console.log('📋 Ouverture info.json pour:', pageDoi + '/' + page.hash);
+                                            window.open(infoUrl, '_blank');
+                                        },
+                                        className: 'btn btn-primary',
+                                        style: { fontSize: '0.75rem', padding: '0.25rem 0.5rem' }
+                                    }, '📋 Ouvrir info.json'),
+                                    React.createElement('button', {
+                                        onClick: () => {
+                                            const pageDoi = page.sourceDoi || manifestData.doi;
+                                            const imageUrl = 'https://api.nakala.fr/iiif/' + pageDoi + '/' + page.hash + '/full/full/0/default.jpg';
+                                            console.log('🖼️ Ouverture image pour:', pageDoi + '/' + page.hash);
+                                            window.open(imageUrl, '_blank');
+                                        },
+                                        className: 'btn btn-success',
+                                        style: { fontSize: '0.75rem', padding: '0.25rem 0.5rem' }
+                                    }, '🖼️ Voir image'),
+                                    page.sourceDoi && React.createElement('span', {
+                                        style: { fontSize: '0.7rem', color: '#6b7280', alignSelf: 'center' }
+                                    }, 'DOI: ' + page.sourceDoi)
+                                )
+                            ),
+
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { className: 'form-label' }, 'Coller les dimensions ici (si la récupération automatique a échouée)'),
+                                React.createElement('div', { className: 'dimensions-input' },
+                                    React.createElement('input', {
+                                        type: 'text',
+                                        value: page.dimensionsInput || '',
+                                        onChange: (e) => updatePage(index, 'dimensionsInput', e.target.value),
+                                        placeholder: 'Ex: {"width":2692,"height":3430} ou 2692x3430',
+                                        className: 'form-input'
+                                    }),
+                                    React.createElement('button', {
+                                        onClick: () => parseDimensions(page.dimensionsInput, index),
+                                        disabled: !page.dimensionsInput,
+                                        className: 'btn btn-primary'
+                                    }, 'Appliquer')
+                                ),
+                                React.createElement('p', { className: 'dimensions-help' },
+                                    'Copiez tout ou partie du JSON depuis l\'onglet info.json ouvert, ou saisissez "largeur x hauteur"'
+                                )
+                            ),
+
+                            React.createElement('div', { className: 'form-grid' },
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label' }, 'Largeur'),
+                                    React.createElement('input', {
+                                        type: 'number',
+                                        value: page.width,
+                                        onChange: (e) => updatePage(index, 'width', parseInt(e.target.value)),
+                                        className: 'form-input'
+                                    })
+                                ),
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label' }, 'Hauteur'),
+                                    React.createElement('input', {
+                                        type: 'number',
+                                        value: page.height,
+                                        onChange: (e) => updatePage(index, 'height', parseInt(e.target.value)),
+                                        className: 'form-input'
+                                    })
+                                )
+                            )
+                        )
+                    ),
+
+                    React.createElement('div', { 
+                        style: { 
+                            marginBottom: '1rem', 
+                            display: 'flex', 
+                            gap: '0.5rem',
+                            flexWrap: 'wrap'
+                        } 
+                    },
+                        React.createElement('button', {
+                            onClick: fetchAllHashesFromDOI,
+                            disabled: !manifestData.doi || !validateDoi(manifestData.doi),
+                            className: 'btn btn-success',
+                            style: { 
+                                flex: '1',
+                                minWidth: '180px',
+                                justifyContent: 'center', 
+                                padding: '0.75rem 1rem',
+                                whiteSpace: 'normal',
+                                lineHeight: '1.2'
+                            }
+                        }, '📄 Récupération automatique depuis UNE donnée'),
+                        React.createElement('button', {
+                            onClick: fetchAllHashesFromCollectionOAI,
+                            disabled: !manifestData.doi || !validateDoi(manifestData.doi),
+                            className: 'btn btn-purple',
+                            style: { 
+                                flex: '1',
+                                minWidth: '180px',
+                                justifyContent: 'center', 
+                                padding: '0.75rem 1rem',
+                                whiteSpace: 'normal',
+                                lineHeight: '1.2'
+                            }
+                        }, '🎯 API OAI-PMH (COLLECTION) - NOUVELLE !'),
+                        React.createElement('button', {
+                            onClick: fetchAllDimensions,
+                            disabled: !manifestData.doi || !validateDoi(manifestData.doi) || manifestData.pages.some(p => !p.hash || !validateHash(p.hash)),
+                            className: 'btn btn-primary',
+                            style: { 
+                                flex: '1',
+                                minWidth: '180px',
+                                justifyContent: 'center', 
+                                padding: '0.75rem 1rem',
+                                whiteSpace: 'normal',
+                                lineHeight: '1.2'
+                            }
+                        }, '📐 Récupération automatique des dimensions')
+                    ),
+
+                    React.createElement('div', { className: 'generate-section' },
+                        React.createElement('button', {
+                            onClick: generateManifest,
+                            disabled: !isFormValid() || isGenerating,
+                            className: 'generate-btn'
+                        },
+                            isGenerating ?
+                                [React.createElement('div', { key: 'spinner', className: 'spinner' }), 'Génération en cours...'] :
+                                ['📄 Générer le Manifest IIIF']
+                        )
+                    )
+                ),
+
+                generatedManifest && React.createElement('div', { className: 'preview-section' },
+                    React.createElement('h3', { className: 'preview-title' }, 'Aperçu du Manifest'),
+                    
+                    manifestValidation && React.createElement('div', { 
+                        style: { marginBottom: '1rem', padding: '0.75rem', borderRadius: '0.375rem',
+                                backgroundColor: manifestValidation.isValid ? '#f0fdf4' : '#fef2f2',
+                                border: '1px solid ' + (manifestValidation.isValid ? '#10b981' : '#ef4444') }
+                    },
+                        React.createElement('h4', { 
+                            style: { color: manifestValidation.isValid ? '#065f46' : '#7f1d1d', marginBottom: '0.5rem' }
+                        }, manifestValidation.isValid ? '✅ Manifest IIIF valide' : '❌ Erreurs détectées'),
+                        
+                        manifestValidation.errors.length > 0 && React.createElement('div', null,
+                            React.createElement('strong', { style: { color: '#ef4444' } }, 'Erreurs:'),
+                            React.createElement('ul', { style: { margin: '0.25rem 0', paddingLeft: '1.5rem' } },
+                                manifestValidation.errors.map((error, index) =>
+                                    React.createElement('li', { key: index, style: { color: '#7f1d1d' } }, error)
+                                )
+                            )
+                        ),
+                        
+                        manifestValidation.warnings.length > 0 && React.createElement('div', null,
+                            React.createElement('strong', { style: { color: '#f59e0b' } }, 'Avertissements:'),
+                            React.createElement('ul', { style: { margin: '0.25rem 0', paddingLeft: '1.5rem' } },
+                                manifestValidation.warnings.map((warning, index) =>
+                                    React.createElement('li', { key: index, style: { color: '#92400e' } }, warning)
+                                )
+                            )
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'preview-content' },
+                        React.createElement('pre', { className: 'preview-json' }, generatedManifest)
+                    ),
+                    React.createElement('button', {
+                        onClick: downloadManifest,
+                        className: 'download-btn'
+                    }, '💾 Télécharger le Manifest')
+                )
+            );
+        };
+
+        ReactDOM.render(React.createElement(IIIFManifestGenerator), document.getElementById('root'));
+    </script>
+</body>
+</html>

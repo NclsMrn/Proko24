@@ -940,19 +940,146 @@
                 };
             };
 
+            const fetchAllHashesFromDOI = async () => {
+                if (!manifestData.doi || !validateDoi(manifestData.doi)) {
+                    alert('Veuillez d\'abord saisir un DOI valide');
+                    return;
+                }
+
+                try {
+                    const apiUrl = `https://api.nakala.fr/datas/${manifestData.doi}`;
+                    
+                    // Essayer d'abord directement
+                    let response;
+                    try {
+                        response = await fetch(apiUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                    } catch (error) {
+                        console.log('Tentative directe échouée, utilisation du proxy:', error);
+                        // Utiliser le proxy si nécessaire
+                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+                        response = await fetch(proxyUrl);
+                        if (response.ok) {
+                            const proxyData = await response.json();
+                            response = { 
+                                ok: true, 
+                                json: () => Promise.resolve(JSON.parse(proxyData.contents))
+                            };
+                        }
+                    }
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // DEBUG: Afficher la structure des données
+                        console.log('Données complètes de l\'API:', data);
+                        console.log('Fichiers trouvés:', data.files);
+                        
+                        // Extraire les fichiers et leurs hash
+                        const files = data.files || [];
+                        console.log('Nombre de fichiers:', files.length);
+                        
+                        // Afficher les détails de chaque fichier
+                        files.forEach((file, index) => {
+                            console.log(`Fichier ${index + 1}:`, {
+                                nom: file.name || file.filename,
+                                mimetype: file.mimetype || file.type,
+                                sha1: file.sha1 || file.hash,
+                                taille: file.size
+                            });
+                        });
+                        
+                        // Essayer plusieurs stratégies de filtrage
+                        let imageFiles = [];
+                        
+                        // Stratégie 1: Filtrer par mimetype
+                        imageFiles = files.filter(file => 
+                            file.mimetype && file.mimetype.startsWith('image/')
+                        );
+                        console.log('Fichiers images (stratégie 1 - mimetype):', imageFiles.length);
+                        
+                        // Stratégie 2: Filtrer par extension si pas de mimetype
+                        if (imageFiles.length === 0) {
+                            const imageExtensions = ['.jpg', '.jpeg', '.png', '.tiff', '.tif', '.gif', '.webp'];
+                            imageFiles = files.filter(file => {
+                                const fileName = file.name || file.filename || '';
+                                return imageExtensions.some(ext => 
+                                    fileName.toLowerCase().endsWith(ext)
+                                );
+                            });
+                            console.log('Fichiers images (stratégie 2 - extension):', imageFiles.length);
+                        }
+                        
+                        // Stratégie 3: Prendre tous les fichiers si aucune image détectée
+                        if (imageFiles.length === 0) {
+                            imageFiles = files;
+                            console.log('Fichiers images (stratégie 3 - tous les fichiers):', imageFiles.length);
+                        }
+                        
+                        if (imageFiles.length === 0) {
+                            alert(`❌ Aucun fichier trouvé dans cette donnée.
+
+Structure des données reçues:
+${JSON.stringify(data, null, 2).substring(0, 500)}...`);
+                            return;
+                        }
+                        
+                        // Créer une nouvelle liste de pages basée sur les fichiers trouvés
+                        const newPages = imageFiles.map((file, index) => ({
+                            hash: file.sha1 || file.hash,
+                            width: 2692, // Valeur par défaut
+                            height: 3430, // Valeur par défaut
+                            loading: false,
+                            validated: false,
+                            error: null,
+                            dimensionsInput: '',
+                            combinedId: `${manifestData.doi}/${file.sha1 || file.hash}`
+                        }));
+                        
+                        setManifestData({
+                            ...manifestData,
+                            pages: newPages
+                        });
+                        
+                        alert(`✅ ${imageFiles.length} fichiers trouvés et ajoutés automatiquement!
+
+Fichiers détectés:
+${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.mimetype || 'type inconnu'})`).join('\n')}`);
+                        
+                        // Récupérer automatiquement les dimensions pour tous les fichiers
+                        await fetchAllDimensionsFromHash(newPages);
+                        
+                    } else {
+                        throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
+                    }
+                } catch (error) {
+                    console.error('Erreur complète:', error);
+                    alert(`❌ Impossible de récupérer les fichiers: ${error.message}\n\nVérifiez la console pour plus de détails.`);
+                }
+            };
+
             const fetchAllDimensions = async () => {
                 if (!manifestData.doi) {
                     alert('Veuillez d\'abord saisir le DOI');
                     return;
                 }
 
-                const newPages = [...manifestData.pages];
+                await fetchAllDimensionsFromHash(manifestData.pages);
+            };
+
+            const fetchAllDimensionsFromHash = async (pages) => {
+                const newPages = [...pages];
                 
                 newPages.forEach(page => {
                     page.loading = true;
                     page.error = null;
                 });
-                setManifestData({ ...manifestData, pages: newPages });
+                setManifestData(prev => ({ ...prev, pages: newPages }));
                 
                 for (let i = 0; i < newPages.length; i++) {
                     const page = newPages[i];
@@ -977,7 +1104,7 @@
                             };
                         }
 
-                        setManifestData({ ...manifestData, pages: [...newPages] });
+                        setManifestData(prev => ({ ...prev, pages: [...newPages] }));
                         if (i < newPages.length - 1) await new Promise(r => setTimeout(r, 500));
                     } else {
                         newPages[i] = {
@@ -1571,16 +1698,6 @@
                         })
                     ),
 
-                    React.createElement('div', { className: 'form-group' },
-                        React.createElement('label', { className: 'form-label' }, 'Créateur'),
-                        React.createElement('input', {
-                            type: 'text',
-                            value: manifestData.creator,
-                            onChange: (e) => setManifestData({...manifestData, creator: e.target.value}),
-                            className: 'form-input'
-                        })
-                    ),
-
                     React.createElement('div', { className: 'pages-header' },
                         React.createElement('h3', { className: 'section-title' }, 'Pages'),
                         React.createElement('div', { className: 'pages-actions' },
@@ -1702,6 +1819,19 @@
                         } 
                     },
                         React.createElement('button', {
+                            onClick: fetchAllHashesFromDOI,
+                            disabled: !manifestData.doi || !validateDoi(manifestData.doi),
+                            className: 'btn btn-success',
+                            style: { 
+                                flex: '1',
+                                minWidth: '200px',
+                                justifyContent: 'center', 
+                                padding: '0.75rem 1rem',
+                                whiteSpace: 'normal',
+                                lineHeight: '1.2'
+                            }
+                        }, '🔄 Récupération automatique', React.createElement('br'), 'de TOUS les hash depuis Nakala'),
+                        React.createElement('button', {
                             onClick: fetchAllDimensions,
                             disabled: !manifestData.doi || !validateDoi(manifestData.doi) || manifestData.pages.some(p => !p.hash || !validateHash(p.hash)),
                             className: 'btn btn-primary',
@@ -1713,7 +1843,7 @@
                                 whiteSpace: 'normal',
                                 lineHeight: '1.2'
                             }
-                        }, '🔄 Récupération automatique des dimensions', React.createElement('br'), 'de toutes les pages'),
+                        }, '📐 Récupération automatique des dimensions', React.createElement('br'), 'de toutes les pages'),
                         React.createElement('button', {
                             onClick: openAllInfoUrls,
                             disabled: !manifestData.doi || !validateDoi(manifestData.doi) || manifestData.pages.some(p => !p.hash || !validateHash(p.hash)),

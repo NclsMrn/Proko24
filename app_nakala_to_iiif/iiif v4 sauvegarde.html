@@ -749,6 +749,10 @@
             const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
             const [lastSaved, setLastSaved] = useState(null);
             const [showRecoveryBanner, setShowRecoveryBanner] = useState(false);
+            const [showSaveModal, setShowSaveModal] = useState(false);
+            const [saveName, setSaveName] = useState('');
+            const [savedSessions, setSavedSessions] = useState([]);
+            const [showLoadModal, setShowLoadModal] = useState(false);
             const [githubConfig, setGithubConfig] = useState({
                 enabled: false,
                 username: '',
