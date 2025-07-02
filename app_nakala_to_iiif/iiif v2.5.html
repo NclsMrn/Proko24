@@ -1648,7 +1648,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                     title: darkMode ? 'Mode clair' : 'Mode sombre'
                 }, darkMode ? '☀️' : '🌙'),
 
-                React.createElement('h1', { className: 'title' }, 'Générateur de Manifests IIIF Nakala'),
+                React.createElement('h1', { className: 'title' }, 'Générateur de Manifests IIIF Nakala vers Transkribus v.2.5'),
 
                 // Indicateur de sauvegarde automatique
                 React.createElement('div', { 
@@ -2018,12 +2018,14 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                     React.createElement('div', { className: 'preview-content' },
                         React.createElement('pre', { className: 'preview-json' }, generatedManifest)
                     ),
-                    React.createElement('button', {
-                        onClick: downloadManifest,
-                        className: 'download-btn',
-                        style: { marginBottom: '0.5rem' }
-                    }, React.createElement(Download), ' Télécharger le Manifest'),
-
+    React.createElement('button', {
+    onClick: downloadManifest,
+    className: 'download-btn',
+    style: { 
+        marginBottom: '0.5rem',
+        display: (githubConfig.token && githubConfig.username && githubConfig.repository) ? 'none' : 'flex'
+    }
+}, React.createElement(Download), ' Télécharger le Manifest'),
                     // GitHub Integration Section
                     React.createElement('div', { className: 'github-section' },
                         React.createElement('div', { 
