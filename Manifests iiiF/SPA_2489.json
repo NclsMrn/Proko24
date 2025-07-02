@@ -1,0 +1,73 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/manifest",
+  "@type": "sc:Manifest",
+  "label": "SPA_2489",
+  "attribution": "Nicolas Moron / NAKALA",
+  "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+  "logo": "https://nakala.fr/logo/",
+  "metadata": [
+    {
+      "label": "Id",
+      "value": "SPA_2489"
+    },
+    {
+      "label": "Title",
+      "value": "SPA_2489 Letter from Sergey Sergeevich Prokofiev to Aron Minster"
+    },
+    {
+      "label": "Creator",
+      "value": "Sergey Sergeevich Prokofiev"
+    },
+    {
+      "label": "Date Issued",
+      "value": "1924-01-10"
+    },
+    {
+      "label": "Type",
+      "value": "manuscript"
+    }
+  ],
+  "sequences": [
+    {
+      "@id": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/sequence/normal",
+      "@type": "sc:Sequence",
+      "label": "SPA_2489",
+      "viewingHint": "paged",
+      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/canvas/page1",
+      "canvases": [
+        {
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/canvas/page1",
+          "@type": "sc:Canvas",
+          "label": "Page 1",
+          "height": 5331,
+          "width": 3606,
+          "thumbnail": {
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.deb63c44/502c02f07b7c2780780f2d7495a07115eea6c466/full/,150/0/default.jpg",
+            "@type": "dctypes:Image"
+          },
+          "images": [
+            {
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/annotation/page1",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/canvas/page1",
+              "resource": {
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.deb63c44/502c02f07b7c2780780f2d7495a07115eea6c466/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "height": 5331,
+                "width": 3606,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.deb63c44/502c02f07b7c2780780f2d7495a07115eea6c466",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
