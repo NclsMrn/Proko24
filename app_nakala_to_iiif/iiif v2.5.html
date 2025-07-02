@@ -132,6 +132,89 @@
             color: #b83619;
         }
         
+        .btn-critical {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    color: white !important;
+    border: 1px solid #991b1b !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3) !important;
+    position: relative !important;
+}
+
+.btn-critical:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
+}
+
+.btn-critical:disabled {
+    background: linear-gradient(135deg, #d4c4a8 0%, #c7b89e 100%) !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.dark-mode .btn-critical {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4) !important;
+}
+
+.dark-mode .btn-critical:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5) !important;
+}
+
+/* Bouton secondaire (non-obligatoire) - palette Hasui */
+.btn-secondary {
+    background: linear-gradient(135deg, #4a8b8b 0%, #3a7575 100%) !important;
+    color: white !important;
+    border: 1px solid #2a5858 !important;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #3a7575 0%, #2a5858 100%) !important;
+}
+
+.btn-secondary:disabled {
+    background: linear-gradient(135deg, #d4c4a8 0%, #c7b89e 100%) !important;
+    cursor: not-allowed !important;
+}
+
+/* Bouton orange pour dimensions (mode sombre uniquement) */
+.btn-orange {
+    background: linear-gradient(135deg, #c73e1d 0%, #a73218 100%) !important;
+    color: white !important;
+    border: 1px solid #963018 !important;
+}
+
+.btn-orange:hover {
+    background: linear-gradient(135deg, #b83619 0%, #9a2e15 100%) !important;
+}
+
+.btn-orange:disabled {
+    background: linear-gradient(135deg, #d4c4a8 0%, #c7b89e 100%) !important;
+    cursor: not-allowed !important;
+}
+
+/* Mode sombre : couleurs ajustées */
+.dark-mode .btn-secondary {
+    background: linear-gradient(135deg, #52c7c7 0%, #3a9999 100%) !important;
+    box-shadow: 0 2px 4px rgba(82, 199, 199, 0.2) !important;
+}
+
+.dark-mode .btn-secondary:hover {
+    background: linear-gradient(135deg, #3a9999 0%, #2a7575 100%) !important;
+}
+
+.dark-mode .btn-orange {
+    background: linear-gradient(135deg, #ff8c52 0%, #e6743a 100%) !important;
+    box-shadow: 0 2px 4px rgba(255, 140, 82, 0.2) !important;
+}
+
+.dark-mode .btn-orange:hover {
+    background: linear-gradient(135deg, #e6743a 0%, #cc5f22 100%) !important;
+}
+
         .success-message {
             color: #3a7575;
             font-size: 0.875rem;
@@ -1361,91 +1444,104 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                 setManifestData({ ...manifestData, pages: newPages });
             };
 
-            const generateManifest = () => {
-                setIsGenerating(true);
+            const generateManifest = async () => {
+    setIsGenerating(true);
 
-                setTimeout(() => {
-                    const manifest = {
-                        "@context": "http://iiif.io/api/presentation/2/context.json",
-                        "@id": `https://nakala.fr/iiif/${manifestData.doi}/manifest`,
-                        "@type": "sc:Manifest",
-                        "label": manifestData.letterId,
-                        "attribution": manifestData.attribution,
-                        "license": manifestData.license,
-                        "logo": "https://nakala.fr/logo/",
-                        "metadata": [
+    setTimeout(async () => {
+        const manifest = {
+            "@context": "http://iiif.io/api/presentation/2/context.json",
+            "@id": `https://nakala.fr/iiif/${manifestData.doi}/manifest`,
+            "@type": "sc:Manifest",
+            "label": manifestData.letterId,
+            "attribution": manifestData.attribution,
+            "license": manifestData.license,
+            "logo": "https://nakala.fr/logo/",
+            "metadata": [
+                {
+                    "label": "Id",
+                    "value": manifestData.letterId
+                },
+                {
+                    "label": "Title",
+                    "value": manifestData.title
+                },
+                {
+                    "label": "Creator",
+                    "value": manifestData.creator
+                },
+                {
+                    "label": "Date Issued",
+                    "value": manifestData.dateIssued
+                },
+                {
+                    "label": "Type",
+                    "value": "manuscript"
+                }
+            ],
+            "sequences": [
+                {
+                    "@id": `https://nakala.fr/iiif/${manifestData.doi}/sequence/normal`,
+                    "@type": "sc:Sequence",
+                    "label": manifestData.letterId,
+                    "viewingHint": "paged",
+                    "startCanvas": `https://nakala.fr/iiif/${manifestData.doi}/canvas/page1`,
+                    "canvases": manifestData.pages.map((page, index) => ({
+                        "@id": `https://nakala.fr/iiif/${manifestData.doi}/canvas/page${index + 1}`,
+                        "@type": "sc:Canvas",
+                        "label": `Page ${index + 1}`,
+                        "height": page.height,
+                        "width": page.width,
+                        "thumbnail": {
+                            "@id": `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}/full/,150/0/default.jpg`,
+                            "@type": "dctypes:Image"
+                        },
+                        "images": [
                             {
-                                "label": "Id",
-                                "value": manifestData.letterId
-                            },
-                            {
-                                "label": "Title",
-                                "value": manifestData.title
-                            },
-                            {
-                                "label": "Creator",
-                                "value": manifestData.creator
-                            },
-                            {
-                                "label": "Date Issued",
-                                "value": manifestData.dateIssued
-                            },
-                            {
-                                "label": "Type",
-                                "value": "manuscript"
-                            }
-                        ],
-                        "sequences": [
-                            {
-                                "@id": `https://nakala.fr/iiif/${manifestData.doi}/sequence/normal`,
-                                "@type": "sc:Sequence",
-                                "label": manifestData.letterId,
-                                "viewingHint": "paged",
-                                "startCanvas": `https://nakala.fr/iiif/${manifestData.doi}/canvas/page1`,
-                                "canvases": manifestData.pages.map((page, index) => ({
-                                    "@id": `https://nakala.fr/iiif/${manifestData.doi}/canvas/page${index + 1}`,
-                                    "@type": "sc:Canvas",
-                                    "label": `Page ${index + 1}`,
+                                "@id": `https://nakala.fr/iiif/${manifestData.doi}/annotation/page${index + 1}`,
+                                "@type": "oa:Annotation",
+                                "motivation": "sc:painting",
+                                "on": `https://nakala.fr/iiif/${manifestData.doi}/canvas/page${index + 1}`,
+                                "resource": {
+                                    "@id": `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}/full/full/0/default.jpg`,
+                                    "@type": "dctypes:Image",
+                                    "format": "image/jpeg",
                                     "height": page.height,
                                     "width": page.width,
-                                    "thumbnail": {
-                                        "@id": `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}/full/,150/0/default.jpg`,
-                                        "@type": "dctypes:Image"
-                                    },
-                                    "images": [
-                                        {
-                                            "@id": `https://nakala.fr/iiif/${manifestData.doi}/annotation/page${index + 1}`,
-                                            "@type": "oa:Annotation",
-                                            "motivation": "sc:painting",
-                                            "on": `https://nakala.fr/iiif/${manifestData.doi}/canvas/page${index + 1}`,
-                                            "resource": {
-                                                "@id": `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}/full/full/0/default.jpg`,
-                                                "@type": "dctypes:Image",
-                                                "format": "image/jpeg",
-                                                "height": page.height,
-                                                "width": page.width,
-                                                "service": {
-                                                    "@context": "http://iiif.io/api/image/2/context.json",
-                                                    "@id": `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}`,
-                                                    "profile": "http://iiif.io/api/image/2/level2.json"
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }))
+                                    "service": {
+                                        "@context": "http://iiif.io/api/image/2/context.json",
+                                        "@id": `https://api.nakala.fr/iiif/${manifestData.doi}/${page.hash}`,
+                                        "profile": "http://iiif.io/api/image/2/level2.json"
+                                    }
+                                }
                             }
                         ]
-                    };
+                    }))
+                }
+            ]
+        };
 
-                    const manifestJson = JSON.stringify(manifest, null, 2);
-                    
-                    const validation = validateIIIFManifest(manifest);
-                    
-                    setGeneratedManifest(manifestJson);
-                    setManifestValidation(validation);
-                    setIsGenerating(false);
-                }, 500);
-            };
+        const manifestJson = JSON.stringify(manifest, null, 2);
+        
+        const validation = validateIIIFManifest(manifest);
+        
+        setGeneratedManifest(manifestJson);
+        setManifestValidation(validation);
+
+        // Push automatique vers GitHub si la configuration est complète
+        if (githubConfig.token && githubConfig.username && githubConfig.repository && validation.isValid) {
+            try {
+                await pushToGitHub();
+                alert(`✅ Manifest généré et pushé automatiquement sur GitHub !`);
+            } catch (error) {
+                alert(`❌ Manifest généré mais erreur lors du push: ${error.message}\nVous pouvez utiliser le bouton de téléchargement.`);
+            }
+        } else if (!githubConfig.token || !githubConfig.username || !githubConfig.repository) {
+            alert(`⚠️ Manifest généré ! Configurez GitHub pour l'automatisation du push.`);
+        }
+        
+        setIsGenerating(false);
+    }, 500);
+};
 
             const downloadManifest = () => {
                 const blob = new Blob([generatedManifest], { type: 'application/json' });
@@ -1834,7 +1930,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                         React.createElement('button', {
                             onClick: fetchAllDimensions,
                             disabled: !manifestData.doi || !validateDoi(manifestData.doi) || manifestData.pages.some(p => !p.hash || !validateHash(p.hash)),
-                            className: 'btn btn-primary',
+                            className: 'btn btn-critical',
                             style: { 
                                 flex: '1',
                                 minWidth: '200px',
@@ -1847,7 +1943,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                         React.createElement('button', {
                             onClick: openAllInfoUrls,
                             disabled: !manifestData.doi || !validateDoi(manifestData.doi) || manifestData.pages.some(p => !p.hash || !validateHash(p.hash)),
-                            className: 'btn btn-primary',
+                            className: 'btn btn-orange',
                             style: { 
                                 flex: '1',
                                 minWidth: '200px',
@@ -1864,7 +1960,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                         React.createElement('div', { className: 'pages-actions' },
                             React.createElement('button', {
                                 onClick: addPage,
-                                className: 'btn btn-green'
+                                className: 'btn btn-secondary',
                             }, React.createElement(Plus))
                         )
                     ),
@@ -1975,7 +2071,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                         React.createElement('button', {
                             onClick: generateManifest,
                             disabled: !isFormValid() || isGenerating,
-                            className: 'generate-btn'
+                            className: 'generate-btn btn-critical',
                         },
                             isGenerating ?
                                 [React.createElement('div', { key: 'spinner', className: 'spinner' }), 'Génération en cours...'] :
@@ -2018,13 +2114,13 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                     React.createElement('div', { className: 'preview-content' },
                         React.createElement('pre', { className: 'preview-json' }, generatedManifest)
                     ),
-    React.createElement('button', {
-    onClick: downloadManifest,
-    className: 'download-btn',
-    style: { 
-        marginBottom: '0.5rem',
-        display: (githubConfig.token && githubConfig.username && githubConfig.repository) ? 'none' : 'flex'
-    }
+                    React.createElement('button', {
+                      onClick: downloadManifest,
+                        className: 'download-btn',
+                        style: { 
+                            marginBottom: '0.5rem',
+                            display: (githubConfig.token && githubConfig.username && githubConfig.repository) ? 'none' : 'flex'
+                        }      
 }, React.createElement(Download), ' Télécharger le Manifest'),
                     // GitHub Integration Section
                     React.createElement('div', { className: 'github-section' },
@@ -2111,7 +2207,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                             githubConfig.token && githubConfig.username && githubConfig.repository && React.createElement('button', {
                                 onClick: pushToGitHub,
                                 disabled: !generatedManifest,
-                                className: 'btn btn-primary'
+                                className: 'btn btn-critical'
                             }, '📤 Push vers Repository'),
 
                             React.createElement('button', {
@@ -2193,7 +2289,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                             React.createElement('button', {
                                 onClick: copyRawUrlToClipboard,
                                 disabled: !lastPushedFile,
-                                className: 'btn btn-primary',
+                                className: 'btn btn-critical',
                                 style: { 
                                     flex: '1', 
                                     minWidth: '150px', 
