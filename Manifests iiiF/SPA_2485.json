@@ -1,0 +1,104 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "https://nakala.fr/iiif/10.34847/nkl.bae79hc0/manifest",
+  "@type": "sc:Manifest",
+  "label": "SPA_2485",
+  "attribution": "Nicolas Moron / NAKALA",
+  "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+  "logo": "https://nakala.fr/logo/",
+  "metadata": [
+    {
+      "label": "Id",
+      "value": "SPA_2485"
+    },
+    {
+      "label": "Title",
+      "value": "SPA_2485 Letter from Vladimir Nikolaevich Bashkirov to Sergey Sergeevich Prokofiev"
+    },
+    {
+      "label": "Creator",
+      "value": "Vladimir Nikolaevich Bashkirov"
+    },
+    {
+      "label": "Date Issued",
+      "value": "1924-01-05"
+    },
+    {
+      "label": "Type",
+      "value": "manuscript"
+    }
+  ],
+  "sequences": [
+    {
+      "@id": "https://nakala.fr/iiif/10.34847/nkl.bae79hc0/sequence/normal",
+      "@type": "sc:Sequence",
+      "label": "SPA_2485",
+      "viewingHint": "paged",
+      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.bae79hc0/canvas/page1",
+      "canvases": [
+        {
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.bae79hc0/canvas/page1",
+          "@type": "sc:Canvas",
+          "label": "Page 1",
+          "height": 7089,
+          "width": 5559,
+          "thumbnail": {
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bae79hc0/9b85b3ac16d19a401afe55196fdfb3cad0cdd91d/full/,150/0/default.jpg",
+            "@type": "dctypes:Image"
+          },
+          "images": [
+            {
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.bae79hc0/annotation/page1",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.bae79hc0/canvas/page1",
+              "resource": {
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bae79hc0/9b85b3ac16d19a401afe55196fdfb3cad0cdd91d/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "height": 7089,
+                "width": 5559,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bae79hc0/9b85b3ac16d19a401afe55196fdfb3cad0cdd91d",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.bae79hc0/canvas/page2",
+          "@type": "sc:Canvas",
+          "label": "Page 2",
+          "height": 7066,
+          "width": 5621,
+          "thumbnail": {
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bae79hc0/be6649e840717d13d18da7a0d8c32802c0310444/full/,150/0/default.jpg",
+            "@type": "dctypes:Image"
+          },
+          "images": [
+            {
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.bae79hc0/annotation/page2",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.bae79hc0/canvas/page2",
+              "resource": {
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bae79hc0/be6649e840717d13d18da7a0d8c32802c0310444/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "height": 7066,
+                "width": 5621,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bae79hc0/be6649e840717d13d18da7a0d8c32802c0310444",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
