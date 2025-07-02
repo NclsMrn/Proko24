@@ -1,6 +1,6 @@
 {
   "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/manifest",
+  "@id": "https://nakala.fr/iiif/10.34847/nkl.ebe8f651/manifest",
   "@type": "sc:Manifest",
   "label": "SPA_2488",
   "attribution": "Nicolas Moron / NAKALA",
@@ -30,37 +30,37 @@
   ],
   "sequences": [
     {
-      "@id": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/sequence/normal",
+      "@id": "https://nakala.fr/iiif/10.34847/nkl.ebe8f651/sequence/normal",
       "@type": "sc:Sequence",
       "label": "SPA_2488",
       "viewingHint": "paged",
-      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/canvas/page1",
+      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.ebe8f651/canvas/page1",
       "canvases": [
         {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/canvas/page1",
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.ebe8f651/canvas/page1",
           "@type": "sc:Canvas",
           "label": "Page 1",
-          "height": 5331,
-          "width": 3606,
+          "height": 6870,
+          "width": 5405,
           "thumbnail": {
-            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.deb63c44/502c02f07b7c2780780f2d7495a07115eea6c466/full/,150/0/default.jpg",
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ebe8f651/9381d78fd82a04081efad7496b1a88c53f70f1a1/full/,150/0/default.jpg",
             "@type": "dctypes:Image"
           },
           "images": [
             {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/annotation/page1",
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.ebe8f651/annotation/page1",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.deb63c44/canvas/page1",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.ebe8f651/canvas/page1",
               "resource": {
-                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.deb63c44/502c02f07b7c2780780f2d7495a07115eea6c466/full/full/0/default.jpg",
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ebe8f651/9381d78fd82a04081efad7496b1a88c53f70f1a1/full/full/0/default.jpg",
                 "@type": "dctypes:Image",
                 "format": "image/jpeg",
-                "height": 5331,
-                "width": 3606,
+                "height": 6870,
+                "width": 5405,
                 "service": {
                   "@context": "http://iiif.io/api/image/2/context.json",
-                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.deb63c44/502c02f07b7c2780780f2d7495a07115eea6c466",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.ebe8f651/9381d78fd82a04081efad7496b1a88c53f70f1a1",
                   "profile": "http://iiif.io/api/image/2/level2.json"
                 }
               }
