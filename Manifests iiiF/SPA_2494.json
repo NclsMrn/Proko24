@@ -1,0 +1,73 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "https://nakala.fr/iiif/10.34847/nkl.55ec56cp/manifest",
+  "@type": "sc:Manifest",
+  "label": "SPA_2494",
+  "attribution": "Nicolas Moron / NAKALA",
+  "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+  "logo": "https://nakala.fr/logo/",
+  "metadata": [
+    {
+      "label": "Id",
+      "value": "SPA_2494"
+    },
+    {
+      "label": "Title",
+      "value": "SPA_2494 Letter from Joseph Holbrooke to Sergey Sergeevich Prokofiev"
+    },
+    {
+      "label": "Creator",
+      "value": "Joseph Holbrooke"
+    },
+    {
+      "label": "Date Issued",
+      "value": "1924-01-23"
+    },
+    {
+      "label": "Type",
+      "value": "manuscript"
+    }
+  ],
+  "sequences": [
+    {
+      "@id": "https://nakala.fr/iiif/10.34847/nkl.55ec56cp/sequence/normal",
+      "@type": "sc:Sequence",
+      "label": "SPA_2494",
+      "viewingHint": "paged",
+      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.55ec56cp/canvas/page1",
+      "canvases": [
+        {
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.55ec56cp/canvas/page1",
+          "@type": "sc:Canvas",
+          "label": "Page 1",
+          "height": 3424,
+          "width": 5240,
+          "thumbnail": {
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.55ec56cp/b0f2dc68f1bea9a5036b8b8c350f18b67a19c8fb/full/,150/0/default.jpg",
+            "@type": "dctypes:Image"
+          },
+          "images": [
+            {
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.55ec56cp/annotation/page1",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.55ec56cp/canvas/page1",
+              "resource": {
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.55ec56cp/b0f2dc68f1bea9a5036b8b8c350f18b67a19c8fb/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "height": 3424,
+                "width": 5240,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.55ec56cp/b0f2dc68f1bea9a5036b8b8c350f18b67a19c8fb",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
