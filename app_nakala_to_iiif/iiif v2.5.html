@@ -452,6 +452,84 @@
             background: linear-gradient(135deg, #3a7575 0%, #2a5858 100%);
         }
 
+        .preview-image-section {
+            background: linear-gradient(135deg, #f0f6f8 0%, #e6f0f4 100%);
+            border: 1px solid #b8d4d9;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(44, 74, 92, 0.1);
+        }
+
+        .preview-image-container {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 250px;
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            object-fit: contain;
+        }
+
+        .preview-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .preview-info-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #2c4a5c;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-doi {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #6b8794;
+            background: rgba(255,255,255,0.5);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .preview-error {
+            color: #c73e1d;
+            font-size: 0.875rem;
+            font-style: italic;
+        }
+
+        .preview-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #4a8b8b;
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .preview-link:hover {
+            color: #3a7575;
+            text-decoration: underline;
+        }
+
+        .work-session-info {
+            background: linear-gradient(135deg, #f0f6f8 0%, #e6f0f4 100%);
+            border: 1px solid #b8d4d9;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: #4a6b7a;
+            box-shadow: 0 1px 3px rgba(44, 74, 92, 0.1);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 0.5rem;
@@ -472,6 +550,15 @@
             
             .title {
                 font-size: 1.1rem;
+            }
+
+            .preview-image-container {
+                flex-direction: column;
+            }
+
+            .preview-image {
+                max-width: 100%;
+                align-self: center;
             }
         }
 
@@ -618,110 +705,6 @@
             background: linear-gradient(135deg, #c73e1d 0%, #a73218 100%);
             box-shadow: 0 2px 8px rgba(199, 62, 29, 0.3);
         }
-
-        .work-session-info {
-            background: linear-gradient(135deg, #f0f6f8 0%, #e6f0f4 100%);
-            border: 1px solid #b8d4d9;
-            border-radius: 0.375rem;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            font-size: 0.875rem;
-            color: #4a6b7a;
-            box-shadow: 0 1px 3px rgba(44, 74, 92, 0.1);
-        }
-        .preview-image-section {
-    background: linear-gradient(135deg, #f0f6f8 0%, #e6f0f4 100%);
-    border: 1px solid #b8d4d9;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin: 1rem 0;
-    box-shadow: 0 1px 3px rgba(44, 74, 92, 0.1);
-}
-
-.preview-image-container {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-}
-
-.preview-image {
-    max-width: 200px;
-    max-height: 250px;
-    border-radius: 0.375rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    object-fit: contain;
-}
-
-.preview-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.preview-title {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #2c4a5c;
-    margin-bottom: 0.5rem;
-}
-
-.preview-doi {
-    font-family: monospace;
-    font-size: 0.75rem;
-    color: #6b8794;
-    background: rgba(255,255,255,0.5);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    margin-bottom: 0.5rem;
-    word-break: break-all;
-}
-
-.preview-error {
-    color: #c73e1d;
-    font-size: 0.875rem;
-    font-style: italic;
-}
-
-.preview-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    color: #4a8b8b;
-    text-decoration: none;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-}
-
-.preview-link:hover {
-    color: #3a7575;
-    text-decoration: underline;
-}
-
-/* Mode sombre */
-.dark-mode .preview-image-section {
-    background: linear-gradient(135deg, #243447 0%, #1d2a3a 100%);
-    border-color: #4a6380;
-}
-
-.dark-mode .preview-title {
-    color: #e8f0f2;
-}
-
-.dark-mode .preview-doi {
-    background: rgba(0,0,0,0.3);
-    color: #9bb3c0;
-}
-
-.dark-mode .preview-error {
-    color: #ff9980;
-}
-
-.dark-mode .preview-link {
-    color: #52c7c7;
-}
-
-.dark-mode .preview-link:hover {
-    color: #3a9999;
-}
 
         /* Mode sombre inspiré de l'estampe nocturne de Hasui */
         body.dark-mode {
@@ -934,6 +917,32 @@
             color: #9bb3c0;
         }
 
+        .dark-mode .preview-image-section {
+            background: linear-gradient(135deg, #243447 0%, #1d2a3a 100%);
+            border-color: #4a6380;
+        }
+
+        .dark-mode .preview-info-title {
+            color: #e8f0f2;
+        }
+
+        .dark-mode .preview-doi {
+            background: rgba(0,0,0,0.3);
+            color: #9bb3c0;
+        }
+
+        .dark-mode .preview-error {
+            color: #ff9980;
+        }
+
+        .dark-mode .preview-link {
+            color: #52c7c7;
+        }
+
+        .dark-mode .preview-link:hover {
+            color: #3a9999;
+        }
+
         .theme-toggle {
             position: fixed;
             top: 1rem;
@@ -1036,7 +1045,7 @@
             const [lastPushedFile, setLastPushedFile] = useState(null);
             const [transkribusCollectionId, setTranskribusCollectionId] = useState('190656');
             const [imagePreview, setImagePreview] = useState({
-               loading: false,
+                loading: false,
                 error: null,
                 imageUrl: null,
                 visible: false
@@ -1086,6 +1095,37 @@
                 return { errors, warnings, isValid: errors.length === 0 };
             };
 
+            const updateImagePreview = (doi, hash) => {
+                if (!doi || !hash || !validateDoi(doi) || !validateHash(hash)) {
+                    setImagePreview({ loading: false, error: null, imageUrl: null, visible: false });
+                    return;
+                }
+
+                setImagePreview({ loading: true, error: null, imageUrl: null, visible: true });
+                
+                const previewUrl = `https://api.nakala.fr/iiif/${doi}/${hash}/full/,300/0/default.jpg`;
+                
+                // Tester si l'image peut être chargée
+                const img = new Image();
+                img.onload = () => {
+                    setImagePreview({ 
+                        loading: false, 
+                        error: null, 
+                        imageUrl: previewUrl, 
+                        visible: true 
+                    });
+                };
+                img.onerror = () => {
+                    setImagePreview({ 
+                        loading: false, 
+                        error: 'Impossible de charger l\'aperçu de l\'image', 
+                        imageUrl: null, 
+                        visible: true 
+                    });
+                };
+                img.src = previewUrl;
+            };
+
             const toggleDarkMode = () => {
                 setDarkMode(!darkMode);
                 document.body.classList.toggle('dark-mode');
@@ -1128,28 +1168,28 @@
             };
 
             const handleCombinedChange = (e) => {
-    const val = e.target.value;
-    setCombined(val);
+                const val = e.target.value;
+                setCombined(val);
 
-    if (val.includes('/')) {
-        try {
-            const { doi, hash } = parseCombined(val);
-            setManifestData(md => ({
-                ...md,
-                doi,
-                pages: md.pages.map((p, i) =>
-                    i === 0 ? { ...p, hash, combinedId: val } : p
-                )
-            }));
-            // Déclencher la prévisualisation
-            updateImagePreview(doi, hash);
-        } catch {
-            /* laisse l'utilisateur continuer à taper */
-        }
-    } else {
-        setImagePreview({ loading: false, error: null, imageUrl: null, visible: false });
-    }
-};
+                if (val.includes('/')) {
+                    try {
+                        const { doi, hash } = parseCombined(val);
+                        setManifestData(md => ({
+                            ...md,
+                            doi,
+                            pages: md.pages.map((p, i) =>
+                                i === 0 ? { ...p, hash, combinedId: val } : p
+                            )
+                        }));
+                        // Déclencher la prévisualisation
+                        updateImagePreview(doi, hash);
+                    } catch {
+                        /* laisse l'utilisateur continuer à taper */
+                    }
+                } else {
+                    setImagePreview({ loading: false, error: null, imageUrl: null, visible: false });
+                }
+            };
 
             const handlePageCombinedChange = (pageIndex, value) => {
                 const newPages = [...manifestData.pages];
@@ -1171,11 +1211,19 @@
                             newPages[pageIndex].hash = hash;
                             setManifestData({ ...manifestData, pages: newPages });
                         }
+
+                        // Mettre à jour la prévisualisation si c'est la première page
+                        if (pageIndex === 0) {
+                            updateImagePreview(doi, hash);
+                        }
                     } catch {
                         setManifestData({ ...manifestData, pages: newPages });
                     }
                 } else {
                     setManifestData({ ...manifestData, pages: newPages });
+                    if (pageIndex === 0) {
+                        setImagePreview({ loading: false, error: null, imageUrl: null, visible: false });
+                    }
                 }
             };
 
@@ -1331,6 +1379,11 @@ ${JSON.stringify(data, null, 2).substring(0, 500)}...`);
                             pages: newPages
                         });
                         
+                        // Mettre à jour la prévisualisation avec la première page
+                        if (newPages.length > 0 && newPages[0].hash) {
+                            updateImagePreview(manifestData.doi, newPages[0].hash);
+                        }
+                        
                         alert(`✅ ${imageFiles.length} fichiers trouvés et ajoutés automatiquement!
 
 Fichiers détectés:
@@ -1466,6 +1519,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                 setGeneratedManifest('');
                 setManifestValidation(null);
                 setCombined('');
+                setImagePreview({ loading: false, error: null, imageUrl: null, visible: false });
                 
                 setSelectedLetter(letterItem);
             };
@@ -1500,6 +1554,11 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                 if (field === 'hash') {
                     newPages[index].validated = false;
                     newPages[index].error = null;
+                    
+                    // Mettre à jour la prévisualisation si c'est la première page
+                    if (index === 0 && manifestData.doi && validateHash(value)) {
+                        updateImagePreview(manifestData.doi, value);
+                    }
                 }
 
                 setManifestData({ ...manifestData, pages: newPages });
@@ -1781,19 +1840,6 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                 }
             };
 
-            const generateGitHubURL = () => {
-                if (!githubConfig.username || !githubConfig.repository) {
-                    return '';
-                }
-                
-                const fileName = `${manifestData.letterId || 'document'}.json`;
-                const filePath = `${githubConfig.path}/${fileName}`;
-                const commitMessage = encodeURIComponent(`Add IIIF manifest for ${manifestData.letterId || 'document'}`);
-                const content = encodeURIComponent(generatedManifest);
-                
-                return `https://github.com/${githubConfig.username}/${githubConfig.repository}/new/${githubConfig.branch}?filename=${filePath}&message=${commitMessage}&value=${content}`;
-            };
-
             const copyRawUrlToClipboard = async () => {
                 if (!lastPushedFile) {
                     alert('Aucun fichier pushé récemment. Utilisez d\'abord "Push vers Repository".');
@@ -1830,36 +1876,6 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
             };
 
             const openTranskribus = () => {
-                const updateImagePreview = (doi, hash) => {
-    if (!doi || !hash || !validateDoi(doi) || !validateHash(hash)) {
-        setImagePreview({ loading: false, error: null, imageUrl: null, visible: false });
-        return;
-    }
-
-    setImagePreview({ loading: true, error: null, imageUrl: null, visible: true });
-    
-    const previewUrl = `https://api.nakala.fr/iiif/${doi}/${hash}/full/,300/0/default.jpg`;
-    
-    // Tester si l'image peut être chargée
-    const img = new Image();
-    img.onload = () => {
-        setImagePreview({ 
-            loading: false, 
-            error: null, 
-            imageUrl: previewUrl, 
-            visible: true 
-        });
-    };
-    img.onerror = () => {
-        setImagePreview({ 
-            loading: false, 
-            error: 'Impossible de charger l\'aperçu de l\'image', 
-            imageUrl: null, 
-            visible: true 
-        });
-    };
-    img.src = previewUrl;
-};
                 const transkribusUrl = `https://app.transkribus.org/upload?collId=${transkribusCollectionId}`;
                 window.open(transkribusUrl, '_blank');
             };
@@ -2005,7 +2021,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                         manifestData.doi && !validateDoi(manifestData.doi) &&
                             React.createElement('p', { className: 'error-message' }, 'Format DOI invalide')
                     ),
-                    
+
                     React.createElement('div', { className: 'form-grid' },
                         React.createElement('div', { className: 'form-group' },
                             React.createElement('label', { className: 'form-label' }, 'ID Lettre (automatique)'),
@@ -2038,6 +2054,41 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                         })
                     ),
 
+                    // Section de prévisualisation d'image
+                    imagePreview.visible && React.createElement('div', { className: 'preview-image-section' },
+                        React.createElement('h4', { className: 'preview-title' }, '👁️ Aperçu de la première page'),
+                        React.createElement('div', { className: 'preview-image-container' },
+                            imagePreview.loading && React.createElement('div', { 
+                                style: { display: 'flex', alignItems: 'center', gap: '0.5rem' } 
+                            },
+                                React.createElement('div', { className: 'spinner' }),
+                                'Chargement de l\'aperçu...'
+                            ),
+                            imagePreview.error && React.createElement('div', { className: 'preview-error' },
+                                `❌ ${imagePreview.error}`
+                            ),
+                            imagePreview.imageUrl && React.createElement('img', {
+                                src: imagePreview.imageUrl,
+                                alt: 'Aperçu de la première page',
+                                className: 'preview-image'
+                            }),
+                            React.createElement('div', { className: 'preview-info' },
+                                React.createElement('div', { className: 'preview-info-title' }, 
+                                    `📄 ${manifestData.letterId || 'Document'}`
+                                ),
+                                manifestData.title && React.createElement('div', { 
+                                    style: { fontSize: '0.875rem', color: darkMode ? '#b3c7d1' : '#6b8794', marginBottom: '0.5rem' }
+                                }, manifestData.title),
+                                React.createElement('div', { className: 'preview-doi' }, manifestData.doi),
+                                React.createElement('a', {
+                                    href: `https://nakala.fr/${manifestData.doi}`,
+                                    target: '_blank',
+                                    rel: 'noopener noreferrer',
+                                    className: 'preview-link'
+                                }, '🔗 Voir sur Nakala ', React.createElement(ExternalLink))
+                            )
+                        )
+                    ),
 
                     React.createElement('div', { 
                         style: { 
@@ -2049,44 +2100,7 @@ ${imageFiles.map((f, i) => `${i+1}. ${f.name || f.filename || 'Sans nom'} (${f.m
                             borderTop: '1px solid #d4c4a8'
                         } 
                     },
-                        
-                    // Section de prévisualisation d'image
-imagePreview.visible && React.createElement('div', { className: 'preview-image-section' },
-    React.createElement('h4', { className: 'preview-title' }, '👁️ Aperçu de la première page'),
-    React.createElement('div', { className: 'preview-image-container' },
-        imagePreview.loading && React.createElement('div', { 
-            style: { display: 'flex', alignItems: 'center', gap: '0.5rem' } 
-        },
-            React.createElement('div', { className: 'spinner' }),
-            'Chargement de l\'aperçu...'
-        ),
-        imagePreview.error && React.createElement('div', { className: 'preview-error' },
-            `❌ ${imagePreview.error}`
-        ),
-        imagePreview.imageUrl && React.createElement('img', {
-            src: imagePreview.imageUrl,
-            alt: 'Aperçu de la première page',
-            className: 'preview-image'
-        }),
-        React.createElement('div', { className: 'preview-info' },
-            React.createElement('div', { className: 'preview-title' }, 
-                `📄 ${manifestData.letterId || 'Document'}`
-            ),
-            manifestData.title && React.createElement('div', { 
-                style: { fontSize: '0.875rem', color: darkMode ? '#b3c7d1' : '#6b8794', marginBottom: '0.5rem' }
-            }, manifestData.title),
-            React.createElement('div', { className: 'preview-doi' }, manifestData.doi),
-            React.createElement('a', {
-                href: `https://nakala.fr/${manifestData.doi}`,
-                target: '_blank',
-                rel: 'noopener noreferrer',
-                className: 'preview-link'
-            }, '🔗 Voir sur Nakala', React.createElement(ExternalLink))
-        )
-    )
-),
-
-                    React.createElement('button', {
+                        React.createElement('button', {
                             onClick: fetchAllHashesFromDOI,
                             disabled: !manifestData.doi || !validateDoi(manifestData.doi),
                             className: 'btn btn-critical',
