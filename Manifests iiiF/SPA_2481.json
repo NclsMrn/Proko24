@@ -1,0 +1,73 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "https://nakala.fr/iiif/10.34847/nkl.5e483y55/manifest",
+  "@type": "sc:Manifest",
+  "label": "SPA_2481",
+  "attribution": "Nicolas Moron / NAKALA",
+  "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+  "logo": "https://nakala.fr/logo/",
+  "metadata": [
+    {
+      "label": "Id",
+      "value": "SPA_2481"
+    },
+    {
+      "label": "Title",
+      "value": "SPA_2481 Letter from Sergey Sergeevich Prokofiev to Moiseii Davidovich Shereshevsky"
+    },
+    {
+      "label": "Creator",
+      "value": "Sergey Sergeevich Prokofiev"
+    },
+    {
+      "label": "Date Issued",
+      "value": "1924-01-20"
+    },
+    {
+      "label": "Type",
+      "value": "manuscript"
+    }
+  ],
+  "sequences": [
+    {
+      "@id": "https://nakala.fr/iiif/10.34847/nkl.5e483y55/sequence/normal",
+      "@type": "sc:Sequence",
+      "label": "SPA_2481",
+      "viewingHint": "paged",
+      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.5e483y55/canvas/page1",
+      "canvases": [
+        {
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.5e483y55/canvas/page1",
+          "@type": "sc:Canvas",
+          "label": "Page 1",
+          "height": 7079,
+          "width": 5794,
+          "thumbnail": {
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.5e483y55/16718d4030fec5be0b031739f215b8bec0cd186b/full/,150/0/default.jpg",
+            "@type": "dctypes:Image"
+          },
+          "images": [
+            {
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.5e483y55/annotation/page1",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.5e483y55/canvas/page1",
+              "resource": {
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.5e483y55/16718d4030fec5be0b031739f215b8bec0cd186b/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "height": 7079,
+                "width": 5794,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.5e483y55/16718d4030fec5be0b031739f215b8bec0cd186b",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
