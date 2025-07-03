@@ -1,0 +1,73 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "https://nakala.fr/iiif/10.34847/nkl.9c48c04b/manifest",
+  "@type": "sc:Manifest",
+  "label": "SPA_2499",
+  "attribution": "Nicolas Moron / NAKALA",
+  "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+  "logo": "https://nakala.fr/logo/",
+  "metadata": [
+    {
+      "label": "Id",
+      "value": "SPA_2499"
+    },
+    {
+      "label": "Title",
+      "value": "SPA_2499 Letter from Fitzhugh Haensel to Sergey Sergeevich Prokofiev"
+    },
+    {
+      "label": "Creator",
+      "value": "Fitzhugh Haensel"
+    },
+    {
+      "label": "Date Issued",
+      "value": "1924-01-25"
+    },
+    {
+      "label": "Type",
+      "value": "manuscript"
+    }
+  ],
+  "sequences": [
+    {
+      "@id": "https://nakala.fr/iiif/10.34847/nkl.9c48c04b/sequence/normal",
+      "@type": "sc:Sequence",
+      "label": "SPA_2499",
+      "viewingHint": "paged",
+      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.9c48c04b/canvas/page1",
+      "canvases": [
+        {
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.9c48c04b/canvas/page1",
+          "@type": "sc:Canvas",
+          "label": "Page 1",
+          "height": 7064,
+          "width": 5498,
+          "thumbnail": {
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.9c48c04b/fdec004eb0302f73fd1237b7773a16c013a1f0a5/full/,150/0/default.jpg",
+            "@type": "dctypes:Image"
+          },
+          "images": [
+            {
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.9c48c04b/annotation/page1",
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.9c48c04b/canvas/page1",
+              "resource": {
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.9c48c04b/fdec004eb0302f73fd1237b7773a16c013a1f0a5/full/full/0/default.jpg",
+                "@type": "dctypes:Image",
+                "format": "image/jpeg",
+                "height": 7064,
+                "width": 5498,
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.9c48c04b/fdec004eb0302f73fd1237b7773a16c013a1f0a5",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
