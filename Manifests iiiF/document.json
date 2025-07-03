@@ -1,19 +1,19 @@
 {
   "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/manifest",
+  "@id": "https://nakala.fr/iiif/10.34847/nkl.f01fax85/manifest",
   "@type": "sc:Manifest",
-  "label": "SPA_2500",
+  "label": "SPA_2502",
   "attribution": "Nicolas Moron / NAKALA",
   "license": "http://creativecommons.org/licenses/by-nc/4.0/",
   "logo": "https://nakala.fr/logo/",
   "metadata": [
     {
       "label": "Id",
-      "value": "SPA_2500"
+      "value": "SPA_2502"
     },
     {
       "label": "Title",
-      "value": "SPA_2500 Letter from Sergey Sergeevich Prokofiev to Fitzhugh Haensel"
+      "value": "SPA_2502 Letter from Sergey Sergeevich Prokofiev to Joseph Holbrooke"
     },
     {
       "label": "Creator",
@@ -21,7 +21,7 @@
     },
     {
       "label": "Date Issued",
-      "value": "1924-03-18"
+      "value": "1924-01-28"
     },
     {
       "label": "Type",
@@ -30,99 +30,37 @@
   ],
   "sequences": [
     {
-      "@id": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/sequence/normal",
+      "@id": "https://nakala.fr/iiif/10.34847/nkl.f01fax85/sequence/normal",
       "@type": "sc:Sequence",
-      "label": "SPA_2500",
+      "label": "SPA_2502",
       "viewingHint": "paged",
-      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/canvas/page1",
+      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.f01fax85/canvas/page1",
       "canvases": [
         {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/canvas/page1",
+          "@id": "https://nakala.fr/iiif/10.34847/nkl.f01fax85/canvas/page1",
           "@type": "sc:Canvas",
           "label": "Page 1",
-          "height": 7053,
-          "width": 5523,
+          "height": 4403,
+          "width": 3091,
           "thumbnail": {
-            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.be8394ll/eefe5bb9a054b8962cfa37771f0d0620a9105548/full/,150/0/default.jpg",
+            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.f01fax85/ff57bed95861e3308b098fb9b55a9e8c92292c7b/full/,150/0/default.jpg",
             "@type": "dctypes:Image"
           },
           "images": [
             {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/annotation/page1",
+              "@id": "https://nakala.fr/iiif/10.34847/nkl.f01fax85/annotation/page1",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/canvas/page1",
+              "on": "https://nakala.fr/iiif/10.34847/nkl.f01fax85/canvas/page1",
               "resource": {
-                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.be8394ll/eefe5bb9a054b8962cfa37771f0d0620a9105548/full/full/0/default.jpg",
+                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.f01fax85/ff57bed95861e3308b098fb9b55a9e8c92292c7b/full/full/0/default.jpg",
                 "@type": "dctypes:Image",
                 "format": "image/jpeg",
-                "height": 7053,
-                "width": 5523,
+                "height": 4403,
+                "width": 3091,
                 "service": {
                   "@context": "http://iiif.io/api/image/2/context.json",
-                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.be8394ll/eefe5bb9a054b8962cfa37771f0d0620a9105548",
-                  "profile": "http://iiif.io/api/image/2/level2.json"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/canvas/page2",
-          "@type": "sc:Canvas",
-          "label": "Page 2",
-          "height": 5411,
-          "width": 3723,
-          "thumbnail": {
-            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.be8394ll/35c5e2db5e83a2bf99fff86a584048556571ef0a/full/,150/0/default.jpg",
-            "@type": "dctypes:Image"
-          },
-          "images": [
-            {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/annotation/page2",
-              "@type": "oa:Annotation",
-              "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/canvas/page2",
-              "resource": {
-                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.be8394ll/35c5e2db5e83a2bf99fff86a584048556571ef0a/full/full/0/default.jpg",
-                "@type": "dctypes:Image",
-                "format": "image/jpeg",
-                "height": 5411,
-                "width": 3723,
-                "service": {
-                  "@context": "http://iiif.io/api/image/2/context.json",
-                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.be8394ll/35c5e2db5e83a2bf99fff86a584048556571ef0a",
-                  "profile": "http://iiif.io/api/image/2/level2.json"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/canvas/page3",
-          "@type": "sc:Canvas",
-          "label": "Page 3",
-          "height": 5450,
-          "width": 3676,
-          "thumbnail": {
-            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.be8394ll/ea57b7cf525ed7edec7a8ca1f29526379d9d6ad8/full/,150/0/default.jpg",
-            "@type": "dctypes:Image"
-          },
-          "images": [
-            {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/annotation/page3",
-              "@type": "oa:Annotation",
-              "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.be8394ll/canvas/page3",
-              "resource": {
-                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.be8394ll/ea57b7cf525ed7edec7a8ca1f29526379d9d6ad8/full/full/0/default.jpg",
-                "@type": "dctypes:Image",
-                "format": "image/jpeg",
-                "height": 5450,
-                "width": 3676,
-                "service": {
-                  "@context": "http://iiif.io/api/image/2/context.json",
-                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.be8394ll/ea57b7cf525ed7edec7a8ca1f29526379d9d6ad8",
+                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.f01fax85/ff57bed95861e3308b098fb9b55a9e8c92292c7b",
                   "profile": "http://iiif.io/api/image/2/level2.json"
                 }
               }
