@@ -1,0 +1,2519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proko24 TEI Generator 2.0</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c5aa0 0%, #8b5a3c 50%, #d4845a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5aa0 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .version-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .header-icon {
+            font-size: 2rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .toolbar {
+            background: #f8fafc;
+            padding: 15px 30px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .mode-toggle {
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+        }
+
+        .mode-btn {
+            padding: 8px 16px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn.active {
+            background: #2c5aa0;
+            color: white;
+        }
+
+        .import-btn {
+            background: #d4845a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .import-btn:hover {
+            background: #b86f47;
+        }
+
+        .auto-generate-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .auto-generate-btn:hover {
+            background: #059669;
+        }
+
+        .import-transcription-btn {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .import-transcription-btn:hover {
+            background: #7c3aed;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .progress-step {
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 3;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step:hover {
+            border-color: #2c5aa0;
+            transform: scale(1.1);
+        }
+
+        .progress-step.active {
+            border-color: #2c5aa0;
+            background: #2c5aa0;
+            color: white;
+        }
+
+        .progress-step.completed {
+            border-color: #d4845a;
+            background: #d4845a;
+            color: white;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .step-content.compact {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row.triple {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+            position: relative;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .auto-filled {
+            color: #10b981;
+            font-size: 0.75rem;
+            margin-left: 5px;
+        }
+
+        input, select, textarea, .custom-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            position: relative;
+        }
+
+        input:focus, select:focus, textarea:focus, .custom-select:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+
+        .auto-filled-field {
+            border-color: #10b981 !important;
+            background: #f0fdf4;
+        }
+
+        .ai-filled-field {
+            border-color: #8b5cf6 !important;
+            background: #faf5ff;
+        }
+
+        .custom-select {
+            position: relative;
+            cursor: pointer;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .custom-select::after {
+            content: '▼';
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .dropdown-item.selected {
+            background: #2c5aa0;
+            color: white;
+        }
+
+        .spa-generator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .spa-generator input {
+            flex: 1;
+        }
+
+        .spa-auto-btn {
+            background: #8b7355;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        .spa-auto-btn:hover {
+            background: #6b5a43;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .letter-selector {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .letter-selector:hover {
+            border-color: #2c5aa0;
+            background: #f0f9ff;
+        }
+
+        .letter-selector.selected {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .letter-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+
+        .letter-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .letter-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+
+        .letter-value {
+            color: #2d3748;
+        }
+
+        .import-section {
+            background: #f8fafc;
+            border: 2px dashed #d4845a;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .import-section.drag-over {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .transcription-preview {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+
+        .ai-analysis-panel {
+            background: #faf5ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .ai-suggestion {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .ai-suggestion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ai-suggestion-title {
+            font-weight: 600;
+            color: #8b5cf6;
+        }
+
+        .ai-confidence {
+            background: #8b5cf6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .person-entry, .place-entry {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+        }
+
+        .remove-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            float: right;
+            transition: background 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #dc2626;
+        }
+
+        .add-btn {
+            background: #d4845a;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #b86f47;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .nav-btn {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #1a365d;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn.secondary {
+            background: #8b7355;
+        }
+
+        .nav-btn.secondary:hover {
+            background: #6b5a43;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #2c5aa0 0%, #d4845a 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(44, 90, 160, 0.3);
+        }
+
+        .output {
+            margin-top: 30px;
+            padding: 20px;
+            background: #1a202c;
+            border-radius: 12px;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            display: none;
+        }
+
+        .copy-btn {
+            background: #8b7355;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #6b5a43;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .date-format {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #2c5aa0;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .compact-mode .progress-bar {
+            display: none;
+        }
+
+        .compact-mode .step-content {
+            display: block;
+        }
+
+        .compact-mode .navigation {
+            display: none;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .status-none { background: #cbd5e0; }
+        .status-catalogue { background: #d4845a; }
+        .status-transcription { background: #8b5cf6; }
+        .status-complete { background: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="version-badge">v2.0</div>
+            <h1>
+                <span class="header-icon">📄</span>
+                Proko24 TEI Generator
+            </h1>
+            <p>Générateur intelligent avec import catalogue et analyse Transkribus</p>
+        </div>
+
+        <div class="toolbar">
+            <div class="mode-toggle">
+                <button class="mode-btn active" onclick="setMode('full')">Mode par étape</button>
+                <button class="mode-btn" onclick="setMode('compact')">Mode vertical</button>
+            </div>
+            
+            <button class="import-btn" onclick="showCatalogueModal()">
+                📊 Catalogue v2.0 <span class="status-indicator status-none" id="catalogueStatus"></span>
+            </button>
+            
+            <button class="import-transcription-btn" onclick="showTranscriptionImport()">
+                📜 Transkribus <span class="status-indicator status-none" id="transcriptionStatus"></span>
+            </button>
+            
+            <button class="auto-generate-btn" onclick="runAIAnalysis()" id="aiBtn" disabled>
+                🤖 Analyse IA <span class="status-indicator status-none" id="aiStatus"></span>
+            </button>
+
+            <input type="file" id="catalogueFile" accept=".xlsx,.csv" style="display: none;" onchange="loadCatalogue(event)">
+            <input type="file" id="transcriptionFile" accept=".xml,.txt" style="display: none;" onchange="loadTranscription(event)">
+        </div>
+
+        <!-- Modal de sélection de lettre -->
+        <div id="catalogueModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📊 Sélection de lettre du Catalogue v2.0</h2>
+                    <span class="close" onclick="closeCatalogueModal()">&times;</span>
+                </div>
+                
+                <div class="import-section" onclick="document.getElementById('catalogueFile').click()">
+                    <h3>📁 Charger le Catalogue v2.0</h3>
+                    <p>Sélectionnez le fichier "Catalogue v2.0.xlsx"</p>
+                </div>
+                
+                <div id="catalogueLetters" style="display: none;">
+                    <h3>📋 Sélectionner une lettre (574 disponibles) :</h3>
+                    <div class="form-group">
+                        <label for="letterSelect">Titre de la lettre</label>
+                        <select id="letterSelect" onchange="previewSelectedLetter()">
+                            <option value="">-- Choisir une lettre --</option>
+                        </select>
+                        <div class="help-text">Triées par SPA_ID croissant</div>
+                    </div>
+                    
+                    <div id="letterPreview" style="display: none; background: #f8fafc; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h4>📋 Aperçu de la lettre :</h4>
+                        <div id="previewContent"></div>
+                    </div>
+                    
+                    <button class="nav-btn" onclick="importSelectedLetter()" id="importBtn" disabled>Importer cette lettre</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal d'import Transkribus -->
+        <div id="transcriptionModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📜 Import transcription Transkribus</h2>
+                    <span class="close" onclick="closeTranscriptionModal()">&times;</span>
+                </div>
+                
+                <div class="import-section" onclick="document.getElementById('transcriptionFile').click()">
+                    <h3>📁 Charger la transcription</h3>
+                    <p>Fichier XML ou TXT depuis Transkribus</p>
+                </div>
+                
+                <div id="transcriptionPreview" style="display: none;">
+                    <h3>Aperçu de la transcription :</h3>
+                    <div class="transcription-preview" id="transcriptionContent"></div>
+                    <button class="nav-btn" onclick="processTranscription()">Traiter avec l'IA</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-step active" data-step="1" onclick="showStep(1)">
+                    <span>1</span>
+                    <div class="step-label">titleStmt</div>
+                </div>
+                <div class="progress-step" data-step="2" onclick="showStep(2)">
+                    <span>2</span>
+                    <div class="step-label">msDesc</div>
+                </div>
+                <div class="progress-step" data-step="3" onclick="showStep(3)">
+                    <span>3</span>
+                    <div class="step-label">correspDesc</div>
+                </div>
+                <div class="progress-step" data-step="4" onclick="showStep(4)">
+                    <span>4</span>
+                    <div class="step-label">particDesc</div>
+                </div>
+                <div class="progress-step" data-step="5" onclick="showStep(5)">
+                    <span>5</span>
+                    <div class="step-label">settingDesc</div>
+                </div>
+                <div class="progress-step" data-step="6" onclick="showStep(6)">
+                    <span>6</span>
+                    <div class="step-label">Génération</div>
+                </div>
+            </div>
+
+            <form id="teiForm">
+                <!-- Étape 1: titleStmt -->
+                <div class="step-content active" data-step="1">
+                    <h2>📋 titleStmt - Title Statement</h2>
+                    <p class="help-text">Informations sur le titre, l'édition et la responsabilité éditoriale selon la TEI</p>
+                    
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="letterTitleFr">Titre de la lettre (FR) <span class="required">*</span></label>
+                                <input type="text" id="letterTitleFr" placeholder="Paul Demasy à Sergei Prokofiev, Paris, France, 14 janvier 1924" required>
+                            </div>
+                            <div>
+                                <label for="letterTitleEn">Titre de la lettre (EN) <span class="required">*</span></label>
+                                <input type="text" id="letterTitleEn" placeholder="Paul Demasy to Sergei Prokofiev, Paris, France, 14 January 1924" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="titleLangFr">Langue du titre FR</label>
+                                <select id="titleLangFr">
+                                    <option value="fr" selected>Français</option>
+                                    <option value="en">Anglais</option>
+                                    <option value="de">Allemand</option>
+                                    <option value="ru">Russe</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="titleLangEn">Langue du titre EN</label>
+                                <select id="titleLangEn">
+                                    <option value="en" selected>Anglais</option>
+                                    <option value="fr">Français</option>
+                                    <option value="de">Allemand</option>
+                                    <option value="ru">Russe</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="transcriber">Transcripteur</label>
+                                <input type="text" id="transcriber" value="Moron, Nicolas">
+                            </div>
+                            <div>
+                                <label for="transcriberOrcid">ORCID du transcripteur</label>
+                                <input type="text" id="transcriberOrcid" value="0000-0001-7861-3382">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="spaId">Identifiant SPA <span class="required">*</span></label>
+                                <div class="spa-generator">
+                                    <input type="text" id="spaId" placeholder="SPA_2490" required>
+                                    <button type="button" class="spa-auto-btn" onclick="generateNextSpaId()">Auto</button>
+                                </div>
+                                <div class="help-text">Dernière série: 2469-2508 (Jan 2024)</div>
+                            </div>
+                            <div>
+                                <label for="editionDate">Date d'édition</label>
+                                <input type="date" id="editionDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row full">
+                            <div>
+                                <label for="summaryFr">Résumé (FR) <span class="required">*</span></label>
+                                <textarea id="summaryFr" placeholder="Résumé de la lettre en français" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row full">
+                            <div>
+                                <label for="summaryEn">Résumé (EN) <span class="required">*</span></label>
+                                <textarea id="summaryEn" placeholder="Summary of the letter in English" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row full">
+                            <div>
+                                <label for="incipit">Incipit <span class="required">*</span></label>
+                                <input type="text" id="incipit" placeholder="J'ai vu cet après-midi une personne..." required>
+                                <div class="help-text">Premiers mots de la lettre</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="letterLang">Langue principale de la lettre</label>
+                                <select id="letterLang">
+                                    <option value="fre" selected>Français</option>
+                                    <option value="eng">Anglais</option>
+                                    <option value="ger">Allemand</option>
+                                    <option value="rus">Russe</option>
+                                </select>
+                            </div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 2: msDesc -->
+                <div class="step-content" data-step="2">
+                    <h2>📜 msDesc - Manuscript Description</h2>
+                    <p class="help-text">Description physique du manuscrit (sourceDesc/msDesc dans la TEI)</p>
+                    
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="country">Pays du dépôt</label>
+                                <input type="text" id="country" value="USA" readonly>
+                            </div>
+                            <div>
+                                <label for="settlement">Ville du dépôt</label>
+                                <input type="text" id="settlement" value="New York" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row full">
+                            <div>
+                                <label for="repository">Dépôt d'archives</label>
+                                <input type="text" id="repository" value="Rare Book & Manuscript Library, Columbia University" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="boxId">Cote/Boîte <span class="required">*</span></label>
+                                <input type="text" id="boxId" placeholder="Box II.2" value="Box II.2" required>
+                            </div>
+                            <div>
+                                <label for="pages">Nombre de pages <span class="required">*</span></label>
+                                <input type="number" id="pages" value="2" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="supportType">Support</label>
+                                <select id="supportType">
+                                    <option value="Papier" selected>Papier</option>
+                                    <option value="Parchemin">Parchemin</option>
+                                    <option value="Autre">Autre</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="formType">Type de document</label>
+                                <select id="formType" onchange="adaptToDocumentType()">
+                                    <option value="letter" selected>Lettre</option>
+                                    <option value="postcard">Carte postale</option>
+                                    <option value="telegram">Télégramme</option>
+                                    <option value="document">Document</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row full">
+                            <div>
+                                <label for="provenance">Provenance</label>
+                                <textarea id="provenance" placeholder="Transféré du dépôt Châlon-Prokofiev, depuis la Bibliothèque Nationale de France, Paris"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="facsimile1">URL Facsimilé 1</label>
+                                <input type="url" id="facsimile1" placeholder="10.34847/nkl.ca86te47/...">
+                            </div>
+                            <div>
+                                <label for="facsimile2">URL Facsimilé 2</label>
+                                <input type="url" id="facsimile2" placeholder="10.34847/nkl.ca86te47/...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="holdingGeo">Coordonnées du dépôt</label>
+                                <input type="text" id="holdingGeo" value="40.8075 -73.9626" readonly>
+                            </div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 3: correspDesc -->
+                <div class="step-content" data-step="3">
+                    <h2>✉️ correspDesc - Correspondence Description</h2>
+                    <p class="help-text">Métadonnées de correspondance (profileDesc/correspDesc dans la TEI)</p>
+                    
+                    <h3>Expéditeur</h3>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="senderName">Nom complet <span class="required">*</span></label>
+                                <input type="text" id="senderName" placeholder="Demasy, Paul" required>
+                            </div>
+                            <div>
+                                <label for="senderRef">Référence ID <span class="required">*</span></label>
+                                <input type="text" id="senderRef" placeholder="Demasy_Paul" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="senderViaf">VIAF ID de l'expéditeur</label>
+                                <input type="text" id="senderViaf" placeholder="39088295">
+                            </div>
+                            <div>
+                                <label for="senderAddress">Adresse complète <span class="required">*</span></label>
+                                <input type="text" id="senderAddress" placeholder="28, rue du Printemps, Paris" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="senderStreet">Rue</label>
+                                <input type="text" id="senderStreet" placeholder="28, rue du Printemps">
+                            </div>
+                            <div>
+                                <label for="senderCity">Ville</label>
+                                <input type="text" id="senderCity" placeholder="Paris">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="senderCountry">Pays</label>
+                                <input type="text" id="senderCountry" placeholder="France" value="France">
+                            </div>
+                            <div>
+                                <label for="senderGeo">Coordonnées GPS</label>
+                                <input type="text" id="senderGeo" placeholder="48.87985, 2.30983">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="sentDate">Date d'envoi <span class="required">*</span></label>
+                                <input type="date" id="sentDate" required onchange="suggestDateFormat()">
+                                <div class="date-format">Sera formaté automatiquement en français</div>
+                            </div>
+                            <div>
+                                <label for="sentDateDisplay">Date d'envoi (affichage)</label>
+                                <input type="text" id="sentDateDisplay" placeholder="Paris, 14 janvier 1924" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Destinataire</h3>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="recipientName">Nom complet <span class="required">*</span></label>
+                                <input type="text" id="recipientName" value="Prokofiev, Sergei" required>
+                            </div>
+                            <div>
+                                <label for="recipientRef">Référence ID <span class="required">*</span></label>
+                                <input type="text" id="recipientRef" value="SSP" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div>
+                                <label for="recipientViaf">VIAF ID du destinataire</label>
+                                <input type="text" id="recipientViaf" value="71579098">
+                            </div>
+                            <div>
+                                <label for="receivedDate">Date de réception</label>
+                                <input type="date" id="receivedDate">
+                                <div class="date-format">Format: YYYY-MM-DD</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 4: particDesc -->
+                <div class="step-content" data-step="4">
+                    <h2>👥 particDesc - Participant Description</h2>
+                    <p class="help-text">Liste des personnes mentionnées (profileDesc/particDesc dans la TEI)</p>
+                    
+                    <div id="aiSuggestedPeople" style="display: none;">
+                        <h3>🤖 Personnes détectées par l'IA :</h3>
+                        <div id="aiPeopleList"></div>
+                    </div>
+                    
+                    <button type="button" class="add-btn" onclick="addPerson()">+ Ajouter une personne</button>
+                    <div id="peopleContainer">
+                        <!-- Les personnes seront ajoutées ici dynamiquement -->
+                    </div>
+                </div>
+
+                <!-- Étape 5: settingDesc -->
+                <div class="step-content" data-step="5">
+                    <h2>📍 settingDesc - Setting Description</h2>
+                    <p class="help-text">Description des lieux mentionnés (profileDesc/settingDesc dans la TEI)</p>
+                    
+                    <button type="button" class="add-btn" onclick="addPlace()">+ Ajouter un lieu</button>
+                    <div id="placesContainer">
+                        <!-- Les lieux seront ajoutés ici dynamiquement -->
+                    </div>
+                </div>
+
+                <!-- Étape 6: Génération -->
+                <div class="step-content" data-step="6">
+                    <h2>📄 Génération du XML TEI</h2>
+                    <p class="help-text">Vérifiez vos informations et générez le fichier XML TEI complet</p>
+                    
+                    <div id="aiAnalysisPanel" class="ai-analysis-panel" style="display: none;">
+                        <h3>🤖 Analyse IA de la transcription</h3>
+                        <div id="aiSuggestions"></div>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateTEI()">📄 Générer le XML TEI</button>
+
+                    <div id="output" class="output"></div>
+                    <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()" style="display: none;">📋 Copier le XML</button>
+                </div>
+            </form>
+
+            <div class="navigation">
+                <button type="button" class="nav-btn secondary" id="prevBtn" onclick="previousStep()" disabled>← Précédent</button>
+                <button type="button" class="nav-btn" id="nextBtn" onclick="nextStep()">Suivant →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let totalSteps = 6;
+        let personCount = 0;
+        let placeCount = 0;
+        let currentMode = 'full';
+        let lastSpaId = 2508;
+        let catalogueData = null;
+        let selectedLetter = null;
+        let transcriptionText = null;
+        let aiAnalysisResults = null;
+
+        // Base de données des correspondants avec VIAF (élargie pour le Catalogue v2.0)
+        const correspondentsDB = {
+            'Demasy, Paul': { ref: 'Demasy_Paul', viaf: '39088295' },
+            'Prokofiev, Sergei': { ref: 'SSP', viaf: '71579098' },
+            'Sergei Sergeevich Prokofiev': { ref: 'SSP', viaf: '71579098' },
+            'Prokofiev, Sergey Sergeevich': { ref: 'SSP', viaf: '71579098' },
+            'Shereshevsky, Moiseii Davidovich': { ref: 'Shereshevsky_MD', viaf: '123456789' },
+            'Moiseii Davidovich Shereshevsky': { ref: 'Shereshevsky_MD', viaf: '123456789' },
+            'Fitelberg, Grzegorz': { ref: 'Fitelberg_G', viaf: '987654321' },
+            'Grzegorz Fitelberg': { ref: 'Fitelberg_G', viaf: '987654321' },
+            'Holbrooke, Joseph': { ref: 'Holbrooke_J', viaf: '456789123' },
+            'Joseph Holbrooke': { ref: 'Holbrooke_J', viaf: '456789123' },
+            'Koshetz, Nina Pavlovna': { ref: 'Koshetz_NP', viaf: '789123456' },
+            'Nina Pavlovna Koshetz': { ref: 'Koshetz_NP', viaf: '789123456' },
+            'Chevaillier, Lucien': { ref: 'Chevaillier_L', viaf: '111222333' },
+            'Lucien Chevaillier': { ref: 'Chevaillier_L', viaf: '111222333' },
+            'Bashkirov, Vladimir Nikolaevich': { ref: 'Bashkirov_VN', viaf: '444555666' },
+            'Vladimir Nikolaevich Bashkirov': { ref: 'Bashkirov_VN', viaf: '444555666' }
+        };
+
+        function setMode(mode) {
+            currentMode = mode;
+            const container = document.querySelector('.form-container');
+            const modeButtons = document.querySelectorAll('.mode-btn');
+            
+            modeButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (mode === 'compact') {
+                container.classList.add('compact-mode');
+                document.querySelectorAll('.step-content').forEach(content => {
+                    content.classList.add('compact');
+                });
+            } else {
+                container.classList.remove('compact-mode');
+                document.querySelectorAll('.step-content').forEach(content => {
+                    content.classList.remove('compact');
+                });
+            }
+        }
+
+        function showCatalogueModal() {
+            document.getElementById('catalogueModal').style.display = 'block';
+        }
+
+        function closeCatalogueModal() {
+            document.getElementById('catalogueModal').style.display = 'none';
+        }
+
+        function showTranscriptionImport() {
+            document.getElementById('transcriptionModal').style.display = 'block';
+        }
+
+        function closeTranscriptionModal() {
+            document.getElementById('transcriptionModal').style.display = 'none';
+        }
+
+        async function loadCatalogue(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                // Charger le Catalogue v2.0 avec SheetJS
+                const arrayBuffer = await file.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, {
+                    cellStyles: true,
+                    cellFormulas: true,
+                    cellDates: true,
+                    cellNF: true,
+                    sheetStubs: true
+                });
+
+                console.log("Feuilles trouvées:", workbook.SheetNames);
+                
+                // Charger spécifiquement l'onglet "1924"
+                if (!workbook.Sheets['1924']) {
+                    alert('❌ Onglet "1924" non trouvé dans le fichier. Vérifiez le Catalogue v2.0.');
+                    return;
+                }
+                
+                const sheet1924 = workbook.Sheets['1924'];
+                const data1924 = XLSX.utils.sheet_to_json(sheet1924);
+                
+                console.log(`✅ ${data1924.length} lettres trouvées dans l'onglet 1924`);
+                
+                // Filtrer les entrées valides (avec SPA_ID)
+                const validLetters = data1924.filter(row => 
+                    row['SPA_ID'] && 
+                    row['Letter_Title'] && 
+                    row['SPA_ID'].toString().trim() !== ''
+                );
+                
+                console.log(`📋 ${validLetters.length} lettres valides avec SPA_ID`);
+                
+                // Stocker globalement
+                catalogueData = { '1924': validLetters };
+                
+                // Remplir le menu déroulant
+                populateLetterDropdown(validLetters);
+                
+                document.getElementById('catalogueLetters').style.display = 'block';
+                document.getElementById('catalogueStatus').className = 'status-indicator status-catalogue';
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+                alert('Erreur lors du chargement du catalogue: ' + error.message);
+            }
+        }
+
+        function populateLetterDropdown(letters) {
+            const select = document.getElementById('letterSelect');
+            select.innerHTML = '<option value="">-- Choisir une lettre --</option>';
+            
+            // Trier les lettres par SPA_ID
+            letters.sort((a, b) => {
+                const spaA = a['SPA_ID'].toString().replace('SPA_', '');
+                const spaB = b['SPA_ID'].toString().replace('SPA_', '');
+                return parseInt(spaA) - parseInt(spaB);
+            });
+            
+            letters.forEach((letter, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${letter['SPA_ID']} - ${letter['Letter_Title']}`;
+                select.appendChild(option);
+            });
+            
+            // Stocker la liste globalement
+            window.allLetters = letters;
+        }
+
+        function previewSelectedLetter() {
+            const select = document.getElementById('letterSelect');
+            const selectedIndex = select.value;
+            
+            if (!selectedIndex || !window.allLetters) {
+                document.getElementById('letterPreview').style.display = 'none';
+                document.getElementById('importBtn').disabled = true;
+                return;
+            }
+            
+            const letter = window.allLetters[selectedIndex];
+            selectedLetter = { data: letter };
+            
+            // Afficher l'aperçu riche
+            const previewContent = document.getElementById('previewContent');
+            previewContent.innerHTML = `
+                <div class="letter-info">
+                    <div class="letter-detail">
+                        <div class="letter-label">🏷️ SPA ID</div>
+                        <div class="letter-value">${letter['SPA_ID']}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">📝 Titre</div>
+                        <div class="letter-value">${letter['Letter_Title']}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">👤 Expéditeur</div>
+                        <div class="letter-value">${letter["Sender's Name"] || 'N/A'}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">👤 Destinataire</div>
+                        <div class="letter-value">${letter["Recipient's Name"] || 'N/A'}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">📅 Date</div>
+                        <div class="letter-value">${letter['Date'] || 'N/A'}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">🌍 Langue</div>
+                        <div class="letter-value">${letter['Language'] || 'N/A'}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">📋 Type</div>
+                        <div class="letter-value">${letter['Document type']} - ${letter['Format']}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">📦 Boîte</div>
+                        <div class="letter-value">Box ${letter['Box']} - ${letter['Folder']}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">📍 Adresse expéditeur</div>
+                        <div class="letter-value">${letter['Sender_Address'] || letter['Sender address'] || 'N/A'}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">🌍 Coordonnées GPS</div>
+                        <div class="letter-value">${letter['Sender_Geocode'] || 'N/A'}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">📏 Étendue</div>
+                        <div class="letter-value">${letter['Extent'] || 'N/A'}</div>
+                    </div>
+                    <div class="letter-detail">
+                        <div class="letter-label">📚 Provenance</div>
+                        <div class="letter-value">${letter['Previous holding library'] || 'N/A'}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('letterPreview').style.display = 'block';
+            document.getElementById('importBtn').disabled = false;
+        }
+
+        function importSelectedLetter() {
+            if (!selectedLetter) return;
+            
+            const letter = selectedLetter.data;
+            
+            // Remplir automatiquement avec les données enrichies du Catalogue v2.0
+            fillFromCatalogueV2(letter);
+            
+            closeCatalogueModal();
+            document.getElementById('catalogueStatus').className = 'status-indicator status-complete';
+            
+            alert(`✅ Lettre importée avec succès!\n${letter['SPA_ID']} - ${letter['Letter_Title']}`);
+        }
+
+        function fillFromCatalogueV2(letter) {
+            // Nettoyer et normaliser les noms
+            const senderName = normalizeName(letter["Sender's Name"] || '');
+            const recipientName = normalizeName(letter["Recipient's Name"] || '');
+            
+            // Remplir les champs de base
+            if (senderName) {
+                document.getElementById('senderName').value = senderName;
+                document.getElementById('senderRef').value = generateReference(senderName);
+                
+                // VIAF automatique si disponible
+                if (correspondentsDB[senderName]) {
+                    document.getElementById('senderViaf').value = correspondentsDB[senderName].viaf;
+                }
+            }
+            
+            if (recipientName) {
+                document.getElementById('recipientName').value = recipientName;
+                document.getElementById('recipientRef').value = generateReference(recipientName);
+                
+                // VIAF automatique si disponible
+                if (correspondentsDB[recipientName]) {
+                    document.getElementById('recipientViaf').value = correspondentsDB[recipientName].viaf;
+                }
+            }
+            
+            // SPA ID directement depuis le catalogue (déjà formaté)
+            if (letter['SPA_ID']) {
+                document.getElementById('spaId').value = letter['SPA_ID'];
+            }
+            
+            // Date
+            if (letter['Date']) {
+                let dateValue = letter['Date'];
+                if (typeof dateValue === 'string' && dateValue.includes('T')) {
+                    dateValue = dateValue.split('T')[0];
+                } else if (dateValue instanceof Date) {
+                    dateValue = dateValue.toISOString().split('T')[0];
+                }
+                document.getElementById('sentDate').value = dateValue;
+                suggestDateFormat();
+            }
+            
+            // Adresses enrichies
+            const senderAddress = letter['Sender_Address'] || letter['Sender address'] || '';
+            const senderStreet = letter['Sender_Street_Normalized'] || '';
+            const senderCity = letter['Sender_City_Normalized'] || '';
+            const senderCountry = letter['Sender_Country_Normalized'] || '';
+            const senderGeo = letter['Sender_Geocode'] || '';
+            
+            if (senderAddress) {
+                document.getElementById('senderAddress').value = senderAddress;
+            }
+            if (senderStreet) {
+                document.getElementById('senderStreet').value = senderStreet;
+            }
+            if (senderCity) {
+                document.getElementById('senderCity').value = senderCity.trim();
+            }
+            if (senderCountry) {
+                document.getElementById('senderCountry').value = senderCountry.trim();
+            }
+            if (senderGeo) {
+                document.getElementById('senderGeo').value = senderGeo;
+            }
+            
+            // Boîte et dossier
+            if (letter['Box']) {
+                document.getElementById('boxId').value = `Box ${letter['Box']}`;
+            }
+            
+            // Langue de la lettre
+            const language = letter['Language'];
+            if (language) {
+                const langMap = {
+                    'French': 'fre',
+                    'Russian': 'rus',
+                    'English': 'eng',
+                    'German': 'ger'
+                };
+                const langCode = langMap[language] || 'fre';
+                document.getElementById('letterLang').value = langCode;
+            }
+            
+            // Type de document
+            const docType = letter['Document type'];
+            if (docType && docType.toLowerCase().includes('postcard')) {
+                document.getElementById('formType').value = 'postcard';
+            } else if (docType && docType.toLowerCase().includes('telegram')) {
+                document.getElementById('formType').value = 'telegram';
+            } else {
+                document.getElementById('formType').value = 'letter';
+            }
+            
+            // Nombre de pages depuis Extent
+            const extent = letter['Extent'];
+            if (extent) {
+                const pageMatch = extent.match(/(\d+)\s*page/);
+                if (pageMatch) {
+                    document.getElementById('pages').value = pageMatch[1];
+                }
+            }
+            
+            adaptToDocumentType();
+            
+            // Provenance
+            if (letter['Previous holding library']) {
+                document.getElementById('provenance').value = `Transféré du dépôt ${letter['Previous holding library']}`;
+            }
+            
+            // Générer les titres automatiquement
+            updateLetterTitles();
+            
+            // Marquer tous les champs comme auto-remplis
+            const autoFilledFields = ['senderName', 'recipientName', 'senderRef', 'recipientRef', 'sentDate', 'spaId', 'boxId', 'senderAddress', 'senderStreet', 'senderCity', 'senderCountry', 'senderGeo'];
+            autoFilledFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field && field.value) {
+                    field.classList.add('auto-filled-field');
+                    setTimeout(() => field.classList.remove('auto-filled-field'), 5000);
+                }
+            });
+        }
+
+        function normalizeName(name) {
+            if (!name) return '';
+            
+            // Normaliser les variantes de noms du Catalogue v2.0
+            const normalizations = {
+                'Sergei Sergeevich Prokofiev': 'Prokofiev, Sergei',
+                'Sergey Sergeevich Prokofiev': 'Prokofiev, Sergei',
+                'Moiseii Davidovich Shereshevsky': 'Shereshevsky, Moiseii Davidovich',
+                'Grzegorz Fitelberg': 'Fitelberg, Grzegorz',
+                'Joseph Holbrooke': 'Holbrooke, Joseph',
+                'Nina Pavlovna Koshetz': 'Koshetz, Nina Pavlovna',
+                'Lucien Chevaillier': 'Chevaillier, Lucien',
+                'Vladimir Nikolaevich Bashkirov': 'Bashkirov, Vladimir Nikolaevich'
+            };
+            
+            // Nettoyer les espaces en trop
+            const cleanName = name.trim().replace(/\s+/g, ' ');
+            
+            return normalizations[cleanName] || cleanName;
+        }
+
+        function generateReference(fullName) {
+            if (!fullName) return '';
+            if (fullName === 'Prokofiev, Sergei') return 'SSP';
+            
+            // Logique de génération Nom_Prénom
+            const parts = fullName.split(',').map(p => p.trim());
+            if (parts.length >= 2) {
+                const lastName = parts[0].replace(/\s+/g, '');
+                const firstName = parts[1].split(' ')[0];
+                return `${lastName}_${firstName}`;
+            }
+            
+            // Si pas de virgule, essayer de deviner (Prénom Nom)
+            const words = fullName.split(' ').filter(w => w.length > 0);
+            if (words.length >= 2) {
+                const firstName = words[0];
+                const lastName = words[words.length - 1];
+                return `${lastName}_${firstName}`;
+            }
+            
+            return fullName.replace(/[^a-zA-Z]/g, '_');
+        }
+
+        async function loadTranscription(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                
+                // Parser différents formats
+                if (file.name.toLowerCase().endsWith('.xml')) {
+                    transcriptionText = parseXMLTranscription(text);
+                } else {
+                    transcriptionText = text;
+                }
+                
+                document.getElementById('transcriptionContent').textContent = transcriptionText.substring(0, 1000) + '...';
+                document.getElementById('transcriptionPreview').style.display = 'block';
+                document.getElementById('transcriptionStatus').className = 'status-indicator status-transcription';
+                
+                // Activer le bouton d'analyse IA
+                document.getElementById('aiBtn').disabled = false;
+                
+            } catch (error) {
+                alert('Erreur lors du chargement de la transcription: ' + error.message);
+            }
+        }
+
+        function parseXMLTranscription(xmlText) {
+            // Parser TEI ou XML Transkribus pour extraire le texte
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+            
+            // Essayer différents sélecteurs pour extraire le texte
+            let textElements = xmlDoc.querySelectorAll('p, line, textLine, seg');
+            if (textElements.length === 0) {
+                textElements = xmlDoc.querySelectorAll('*');
+            }
+            
+            let extractedText = '';
+            textElements.forEach(element => {
+                if (element.textContent && element.textContent.trim()) {
+                    extractedText += element.textContent.trim() + ' ';
+                }
+            });
+            
+            return extractedText.trim() || xmlText;
+        }
+
+        function processTranscription() {
+            if (transcriptionText) {
+                runAIAnalysis();
+                closeTranscriptionModal();
+            }
+        }
+
+        async function runAIAnalysis() {
+            if (!transcriptionText) {
+                alert('Veuillez d\'abord charger une transcription Transkribus');
+                return;
+            }
+            
+            document.getElementById('aiBtn').innerHTML = '🤖 Analyse en cours... <span class="loading"></span>';
+            
+            try {
+                // Vérifier si l'API Claude est configurée
+                const apiKey = localStorage.getItem('claude_api_key');
+                if (!apiKey) {
+                    showAPIKeyDialog();
+                    return;
+                }
+                
+                // Analyser avec Claude API
+                const analysisResults = await analyzeWithClaude(transcriptionText, apiKey);
+                
+                // Afficher les résultats avec validation humaine
+                displayAIAnalysisWithValidation(analysisResults);
+                
+                document.getElementById('aiStatus').className = 'status-indicator status-complete';
+                document.getElementById('aiBtn').innerHTML = '🤖 Analyse IA';
+                
+            } catch (error) {
+                console.error('Erreur analyse IA:', error);
+                alert('Erreur lors de l\'analyse IA: ' + error.message + '\nVérifiez votre clé API Claude.');
+                document.getElementById('aiBtn').innerHTML = '🤖 Analyse IA';
+            }
+        }
+
+        function showAPIKeyDialog() {
+            const apiKey = prompt(`🔑 Configuration API Claude
+
+Pour utiliser l'analyse IA, vous devez configurer votre clé API Claude :
+
+1. Créez un compte sur console.anthropic.com
+2. Générez une clé API
+3. Entrez-la ci-dessous (elle sera stockée localement)
+
+Clé API Claude :`);
+            
+            if (apiKey && apiKey.trim()) {
+                localStorage.setItem('claude_api_key', apiKey.trim());
+                runAIAnalysis();
+            }
+        }
+
+        async function analyzeWithClaude(text, apiKey) {
+            const prompt = buildAnalysisPrompt(text);
+            
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': apiKey,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-sonnet-20240229',
+                    max_tokens: 2000,
+                    messages: [{
+                        role: 'user',
+                        content: prompt
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erreur API Claude: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return parseClaudeResponse(data.content[0].text);
+        }
+
+        function buildAnalysisPrompt(transcriptionText) {
+            const senderName = document.getElementById('senderName').value || '[Expéditeur]';
+            const recipientName = document.getElementById('recipientName').value || '[Destinataire]';
+            const date = document.getElementById('sentDate').value || '[Date]';
+            
+            return `Tu es un expert en édition de correspondances historiques et en TEI (Text Encoding Initiative). Analyse cette lettre de ${senderName} à ${recipientName} datée de ${date} et fournis une analyse structurée.
+
+CONTEXTE : Correspondance de Sergei Prokofiev en 1924, période où il vit en exil en Occident et développe sa carrière internationale.
+
+TRANSCRIPTION À ANALYSER :
+${transcriptionText}
+
+TÂCHES D'ANALYSE :
+
+1. RÉSUMÉ FRANÇAIS (2-3 phrases, style académique) :
+- Résume le contenu principal et l'objet de la lettre
+- Mentionne les éléments factuels importants
+- Style : "[Expéditeur] [verbe] [contenu principal] à [destinataire]"
+
+2. RÉSUMÉ ANGLAIS (traduction du résumé français) :
+- Traduction fidèle du résumé français
+- Vocabulaire académique anglais
+
+3. INCIPIT (premiers mots significatifs) :
+- Extrait les 6-10 premiers mots réellement significatifs
+- Ignore les formules d'adresse standard
+- Supprime guillemets et ponctuation superflue
+
+4. PERSONNES MENTIONNÉES :
+- Liste des noms propres de personnes (hors expéditeur/destinataire)
+- Format : "Nom, Prénom" si possible
+- Maximum 5 personnes les plus importantes
+
+5. LIEUX MENTIONNÉS :
+- Lieux géographiques spécifiques mentionnés
+- Exclure l'adresse de l'expéditeur déjà connue
+- Maximum 3 lieux les plus significatifs
+
+6. MOTS-CLÉS THÉMATIQUES :
+- 3-5 mots-clés décrivant les thèmes principaux
+- Vocabulaire : musique, théâtre, édition, famille, finances, voyages, etc.
+
+RÉPONSE ATTENDUE (format JSON strict) :
+{
+  "resume_fr": "...",
+  "resume_en": "...", 
+  "incipit": "...",
+  "personnes": ["Nom1, Prénom1", "Nom2, Prénom2"],
+  "lieux": ["Lieu1", "Lieu2"],
+  "mots_cles": ["mot1", "mot2", "mot3"],
+  "confiance": 0.95
+}
+
+IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
+        }
+
+        function parseClaudeResponse(responseText) {
+            try {
+                // Nettoyer la réponse et extraire le JSON
+                const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) {
+                    throw new Error('Format de réponse invalide');
+                }
+                
+                return JSON.parse(jsonMatch[0]);
+            } catch (error) {
+                console.error('Erreur parsing Claude:', error);
+                throw new Error('Impossible de parser la réponse de Claude');
+            }
+        }
+
+        function displayAIAnalysisWithValidation(results) {
+            const panel = document.getElementById('aiAnalysisPanel');
+            const suggestionsDiv = document.getElementById('aiSuggestions');
+            
+            suggestionsDiv.innerHTML = `
+                <div class="ai-suggestion">
+                    <div class="ai-suggestion-header">
+                        <div class="ai-suggestion-title">📝 Résumé généré par Claude</div>
+                        <div class="ai-confidence">${Math.round(results.confiance * 100)}%</div>
+                    </div>
+                    <div style="margin: 10px 0;">
+                        <label><strong>Français:</strong></label>
+                        <textarea id="aiSummaryFr" style="width: 100%; height: 60px; margin: 5px 0;">${results.resume_fr}</textarea>
+                        <button onclick="applySummaryFr()" class="add-btn" style="padding: 5px 10px; font-size: 0.8rem;">✓ Appliquer</button>
+                    </div>
+                    <div style="margin: 10px 0;">
+                        <label><strong>Anglais:</strong></label>
+                        <textarea id="aiSummaryEn" style="width: 100%; height: 60px; margin: 5px 0;">${results.resume_en}</textarea>
+                        <button onclick="applySummaryEn()" class="add-btn" style="padding: 5px 10px; font-size: 0.8rem;">✓ Appliquer</button>
+                    </div>
+                </div>
+                
+                <div class="ai-suggestion">
+                    <div class="ai-suggestion-header">
+                        <div class="ai-suggestion-title">🎯 Incipit détecté</div>
+                        <div class="ai-confidence">${Math.round(results.confiance * 100)}%</div>
+                    </div>
+                    <div style="margin: 10px 0;">
+                        <input id="aiIncipit" type="text" style="width: 80%; margin-right: 10px;" value="${results.incipit}">
+                        <button onclick="applyIncipit()" class="add-btn" style="padding: 5px 10px; font-size: 0.8rem;">✓ Appliquer</button>
+                    </div>
+                </div>
+                
+                ${results.personnes && results.personnes.length > 0 ? `
+                <div class="ai-suggestion">
+                    <div class="ai-suggestion-header">
+                        <div class="ai-suggestion-title">👥 Personnes détectées</div>
+                        <div class="ai-confidence">${Math.round(results.confiance * 100)}%</div>
+                    </div>
+                    <div style="margin: 10px 0;">
+                        ${results.personnes.map((person, index) => `
+                            <div style="display: flex; align-items: center; margin: 5px 0;">
+                                <input type="text" value="${person}" style="flex: 1; margin-right: 10px;" id="aiPerson${index}">
+                                <button onclick="addValidatedPerson(${index})" class="add-btn" style="padding: 5px 10px; font-size: 0.8rem;">+ Ajouter</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${results.lieux && results.lieux.length > 0 ? `
+                <div class="ai-suggestion">
+                    <div class="ai-suggestion-header">
+                        <div class="ai-suggestion-title">📍 Lieux détectés</div>
+                        <div class="ai-confidence">${Math.round(results.confiance * 100)}%</div>
+                    </div>
+                    <div style="margin: 10px 0;">
+                        ${results.lieux.map((lieu, index) => `
+                            <div style="display: flex; align-items: center; margin: 5px 0;">
+                                <input type="text" value="${lieu}" style="flex: 1; margin-right: 10px;" id="aiLieu${index}">
+                                <button onclick="addValidatedPlace(${index})" class="add-btn" style="padding: 5px 10px; font-size: 0.8rem;">+ Ajouter</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${results.mots_cles && results.mots_cles.length > 0 ? `
+                <div class="ai-suggestion">
+                    <div class="ai-suggestion-header">
+                        <div class="ai-suggestion-title">🏷️ Mots-clés thématiques</div>
+                        <div class="ai-confidence">${Math.round(results.confiance * 100)}%</div>
+                    </div>
+                    <p style="margin: 10px 0; font-style: italic;">${results.mots_cles.join(' • ')}</p>
+                </div>
+                ` : ''}
+            `;
+            
+            panel.style.display = 'block';
+            
+            // Stocker les résultats pour validation
+            window.aiAnalysisResults = results;
+        }
+
+        // Fonctions de validation humaine
+        function applySummaryFr() {
+            const summary = document.getElementById('aiSummaryFr').value;
+            document.getElementById('summaryFr').value = summary;
+            document.getElementById('summaryFr').classList.add('ai-filled-field');
+            setTimeout(() => document.getElementById('summaryFr').classList.remove('ai-filled-field'), 3000);
+        }
+
+        function applySummaryEn() {
+            const summary = document.getElementById('aiSummaryEn').value;
+            document.getElementById('summaryEn').value = summary;
+            document.getElementById('summaryEn').classList.add('ai-filled-field');
+            setTimeout(() => document.getElementById('summaryEn').classList.remove('ai-filled-field'), 3000);
+        }
+
+        function applyIncipit() {
+            const incipit = document.getElementById('aiIncipit').value;
+            document.getElementById('incipit').value = incipit;
+            document.getElementById('incipit').classList.add('ai-filled-field');
+            setTimeout(() => document.getElementById('incipit').classList.remove('ai-filled-field'), 3000);
+        }
+
+        function addValidatedPerson(index) {
+            const personName = document.getElementById(`aiPerson${index}`).value;
+            if (!personName.trim()) return;
+            
+            addPerson();
+            const entries = document.querySelectorAll('.person-entry');
+            const lastEntry = entries[entries.length - 1];
+            
+            lastEntry.querySelector('input[name="personName[]"]').value = personName;
+            lastEntry.querySelector('input[name="personRef[]"]').value = generateReference(personName);
+            
+            // Marquer comme ajouté par IA
+            lastEntry.style.borderColor = '#8b5cf6';
+            setTimeout(() => lastEntry.style.borderColor = '#e2e8f0', 3000);
+        }
+
+        function addValidatedPlace(index) {
+            const placeName = document.getElementById(`aiLieu${index}`).value;
+            if (!placeName.trim()) return;
+            
+            addPlace();
+            const entries = document.querySelectorAll('.place-entry');
+            const lastEntry = entries[entries.length - 1];
+            
+            lastEntry.querySelector('input[name="placeName[]"]').value = placeName;
+            lastEntry.querySelector('input[name="placeRef[]"]').value = generateReference(placeName);
+            
+            // Marquer comme ajouté par IA
+            lastEntry.style.borderColor = '#8b5cf6';
+            setTimeout(() => lastEntry.style.borderColor = '#e2e8f0', 3000);
+        }
+
+        function showAISuggestedPeople(people) {
+            const container = document.getElementById('aiSuggestedPeople');
+            const listDiv = document.getElementById('aiPeopleList');
+            
+            listDiv.innerHTML = people.map(person => `
+                <div class="ai-suggestion">
+                    <div class="ai-suggestion-header">
+                        <div class="ai-suggestion-title">${person}</div>
+                        <button class="add-btn" onclick="addAIPerson('${person}')">Ajouter</button>
+                    </div>
+                    <p>Référence suggérée: ${generateReference(person)}</p>
+                </div>
+            `).join('');
+            
+            container.style.display = 'block';
+        }
+
+        function addAIPerson(name) {
+            addPerson();
+            const entries = document.querySelectorAll('.person-entry');
+            const lastEntry = entries[entries.length - 1];
+            
+            lastEntry.querySelector('input[name="personName[]"]').value = name;
+            lastEntry.querySelector('input[name="personRef[]"]').value = generateReference(name);
+        }
+
+        function generateNextSpaId() {
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth() + 1;
+            
+            if (currentYear === 2024 && currentMonth === 1) {
+                lastSpaId = Math.max(lastSpaId + 1, 2509);
+            } else {
+                lastSpaId += 1;
+            }
+            
+            document.getElementById('spaId').value = 'SPA_' + lastSpaId;
+            document.getElementById('spaId').classList.add('auto-filled-field');
+            setTimeout(() => document.getElementById('spaId').classList.remove('auto-filled-field'), 2000);
+        }
+
+        function updateLetterTitles() {
+            const sender = document.getElementById('senderName').value;
+            const recipient = document.getElementById('recipientName').value;
+            const date = document.getElementById('sentDate').value;
+            const city = document.getElementById('senderCity').value || 'Paris';
+            
+            if (sender && recipient && date) {
+                const frenchDate = new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+                const englishDate = new Date(date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+                
+                const titleFr = `${sender} à ${recipient}, ${city}, France, ${frenchDate}`;
+                const titleEn = `${sender} to ${recipient}, ${city}, France, ${englishDate}`;
+                
+                document.getElementById('letterTitleFr').value = titleFr;
+                document.getElementById('letterTitleEn').value = titleEn;
+            }
+        }
+
+        function suggestDateFormat() {
+            const date = document.getElementById('sentDate').value;
+            const city = document.getElementById('senderCity').value || 'Paris';
+            
+            if (date) {
+                const frenchDate = new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('sentDateDisplay').value = `${city}, ${frenchDate}`;
+                updateLetterTitles();
+            }
+        }
+
+        function adaptToDocumentType() {
+            const type = document.getElementById('formType').value;
+            const pagesField = document.getElementById('pages');
+            
+            switch(type) {
+                case 'postcard':
+                    pagesField.value = 1;
+                    break;
+                case 'telegram':
+                    pagesField.value = 1;
+                    break;
+                case 'letter':
+                default:
+                    pagesField.value = 2;
+                    break;
+            }
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progressBar');
+            const steps = progressBar.querySelectorAll('.progress-step');
+            
+            steps.forEach((step, index) => {
+                const stepNumber = index + 1;
+                step.classList.remove('active', 'completed');
+                
+                if (stepNumber < currentStep) {
+                    step.classList.add('completed');
+                } else if (stepNumber === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+            
+            const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            const progressBarElement = document.getElementById('progressBar');
+            
+            let progressLine = progressBarElement.querySelector('.progress-line');
+            if (!progressLine) {
+                progressLine = document.createElement('div');
+                progressLine.className = 'progress-line';
+                progressLine.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 0;
+                    height: 2px;
+                    background: #2c5aa0;
+                    z-index: 2;
+                    transition: width 0.3s ease;
+                `;
+                progressBarElement.appendChild(progressLine);
+            }
+            progressLine.style.width = progressPercentage + '%';
+            
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentStep === 1;
+            if (nextBtn) nextBtn.textContent = currentStep === totalSteps ? 'Terminer' : 'Suivant →';
+        }
+
+        function showStep(step) {
+            if (currentMode === 'compact') return;
+            
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const targetStep = document.querySelector(`.step-content[data-step="${step}"]`);
+            if (targetStep) {
+                targetStep.classList.add('active');
+            }
+            
+            currentStep = step;
+            updateProgressBar();
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        }
+
+        function addPerson() {
+            personCount++;
+            const container = document.getElementById('peopleContainer');
+            const personDiv = document.createElement('div');
+            personDiv.className = 'person-entry';
+            personDiv.innerHTML = `
+                <button type="button" class="remove-btn" onclick="removePerson(this)">Supprimer</button>
+                <div class="form-row">
+                    <div>
+                        <label>Nom complet</label>
+                        <input type="text" name="personName[]" placeholder="Rubinstein, Ida">
+                    </div>
+                    <div>
+                        <label>Identifiant de référence</label>
+                        <input type="text" name="personRef[]" placeholder="Rubinstein_Ida">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label>VIAF ID</label>
+                        <input type="text" name="personViaf[]" placeholder="29614722">
+                    </div>
+                    <div></div>
+                </div>
+            `;
+            container.appendChild(personDiv);
+        }
+
+        function removePerson(button) {
+            button.parentNode.remove();
+        }
+
+        function addPlace() {
+            placeCount++;
+            const container = document.getElementById('placesContainer');
+            const placeDiv = document.createElement('div');
+            placeDiv.className = 'place-entry';
+            placeDiv.innerHTML = `
+                <button type="button" class="remove-btn" onclick="removePlace(this)">Supprimer</button>
+                <div class="form-row">
+                    <div>
+                        <label>Nom du lieu</label>
+                        <input type="text" name="placeName[]" placeholder="Théâtre des Champs-Élysées">
+                    </div>
+                    <div>
+                        <label>Identifiant de référence</label>
+                        <input type="text" name="placeRef[]" placeholder="Theatre_ChampsElysees">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label>Coordonnées GPS</label>
+                        <input type="text" name="placeGeo[]" placeholder="48.8656 2.3081">
+                    </div>
+                    <div></div>
+                </div>
+            `;
+            container.appendChild(placeDiv);
+        }
+
+        function removePlace(button) {
+            button.parentNode.remove();
+        }
+
+        function generateTEI() {
+            const formData = collectFormData();
+            const teiXml = buildTEIHeader(formData);
+            document.getElementById('output').textContent = teiXml;
+            document.getElementById('output').style.display = 'block';
+            document.getElementById('copyBtn').style.display = 'inline-block';
+        }
+
+        function collectFormData() {
+            const data = {
+                letterTitleFr: document.getElementById('letterTitleFr').value,
+                letterTitleEn: document.getElementById('letterTitleEn').value,
+                titleLangFr: document.getElementById('titleLangFr').value,
+                titleLangEn: document.getElementById('titleLangEn').value,
+                transcriber: document.getElementById('transcriber').value,
+                transcriberOrcid: document.getElementById('transcriberOrcid').value,
+                spaId: document.getElementById('spaId').value,
+                editionDate: document.getElementById('editionDate').value,
+                summaryFr: document.getElementById('summaryFr').value,
+                summaryEn: document.getElementById('summaryEn').value,
+                incipit: document.getElementById('incipit').value,
+                letterLang: document.getElementById('letterLang').value,
+                senderName: document.getElementById('senderName').value,
+                senderRef: document.getElementById('senderRef').value,
+                senderViaf: document.getElementById('senderViaf').value,
+                senderAddress: document.getElementById('senderAddress').value,
+                senderStreet: document.getElementById('senderStreet').value,
+                senderCity: document.getElementById('senderCity').value,
+                senderCountry: document.getElementById('senderCountry').value,
+                senderGeo: document.getElementById('senderGeo').value,
+                sentDate: document.getElementById('sentDate').value,
+                sentDateDisplay: document.getElementById('sentDateDisplay').value,
+                recipientName: document.getElementById('recipientName').value,
+                recipientRef: document.getElementById('recipientRef').value,
+                recipientViaf: document.getElementById('recipientViaf').value,
+                receivedDate: document.getElementById('receivedDate').value,
+                country: document.getElementById('country').value,
+                settlement: document.getElementById('settlement').value,
+                repository: document.getElementById('repository').value,
+                boxId: document.getElementById('boxId').value,
+                pages: document.getElementById('pages').value,
+                supportType: document.getElementById('supportType').value,
+                formType: document.getElementById('formType').value,
+                provenance: document.getElementById('provenance').value,
+                facsimile1: document.getElementById('facsimile1').value,
+                facsimile2: document.getElementById('facsimile2').value,
+                holdingGeo: document.getElementById('holdingGeo').value
+            };
+
+            // Récupérer les personnes
+            const personNames = document.querySelectorAll('input[name="personName[]"]');
+            const personRefs = document.querySelectorAll('input[name="personRef[]"]');
+            const personViafs = document.querySelectorAll('input[name="personViaf[]"]');
+            
+            data.people = [];
+            for (let i = 0; i < personNames.length; i++) {
+                if (personNames[i].value) {
+                    data.people.push({
+                        name: personNames[i].value,
+                        ref: personRefs[i].value,
+                        viaf: personViafs[i].value
+                    });
+                }
+            }
+
+            // Récupérer les lieux
+            const placeNames = document.querySelectorAll('input[name="placeName[]"]');
+            const placeRefs = document.querySelectorAll('input[name="placeRef[]"]');
+            const placeGeos = document.querySelectorAll('input[name="placeGeo[]"]');
+            
+            data.places = [];
+            for (let i = 0; i < placeNames.length; i++) {
+                if (placeNames[i].value) {
+                    data.places.push({
+                        name: placeNames[i].value,
+                        ref: placeRefs[i].value,
+                        geo: placeGeos[i].value
+                    });
+                }
+            }
+
+            return data;
+        }
+
+        function buildTEIHeader(data) {
+            const currentDate = new Date().toISOString().split('T')[0];
+            const editionDate = data.editionDate || currentDate;
+            const editionDateFr = new Date(editionDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            const sentDateFr = data.sentDate ? new Date(data.sentDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+            const receivedDateFr = data.receivedDate ? new Date(data.receivedDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+            
+            return `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml"
+    schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+   <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title level="s" xml:lang="en" type="main">Proko24, Digital Edition</title>
+            <title level="s" xml:lang="fr" type="trl">Proko24, Édition Numérique</title>
+            <title level="a" xml:lang="${data.titleLangFr}" type="sub">${data.letterTitleFr}</title>
+            <title level="a" xml:lang="${data.titleLangEn}" type="sub">${data.letterTitleEn}</title>
+            <author ref="#NclsMrn" role="aut">${data.transcriber}</author>
+            <editor role="transcriber" ref="#NclsMrn">${data.transcriber}</editor>
+         </titleStmt>
+         <editionStmt>
+            <edition n="1">Première transcription et édition - Version du ${editionDateFr}</edition>
+         </editionStmt>
+         <publicationStmt>
+            <publisher>
+               <n>Prokorresp</n>
+            </publisher>
+            <date when="${new Date().getFullYear()}">${new Date().getFullYear()}</date>
+            <idno type="SPArchive_ID">${data.spaId}</idno>
+            <availability status="restricted">
+               <licence target="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+                  rend="translation">Translation Rights</licence>
+               <licence target="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+                  rend="reproduction">Reproduction Rights</licence>
+               <licence target="https://creativecommons.org/licenses/by-nc-sa/4.0/" rend="access"
+                  >Accessibility Rights</licence>
+               <p>The digitized letter is available for educational and research purposes,
+                  accessible upon request to qualified individuals or institutions.</p>
+            </availability>
+         </publicationStmt>
+         <notesStmt>
+            <note type="summary" xml:lang="fr">${data.summaryFr}</note>
+            <note type="incipit">${data.incipit}</note>
+            <note type="summary" xml:lang="en">${data.summaryEn}</note>
+         </notesStmt>
+         <sourceDesc>
+            <msDesc>
+               <msIdentifier>
+                  <country>${data.country}</country>
+                  <settlement>${data.settlement}</settlement>
+                  <repository>${data.repository}</repository>
+                  <idno type="Box">${data.boxId}</idno>
+                  <idno type="SPA_ID">${data.spaId}</idno>
+               </msIdentifier>
+               <msContents>
+                  <msItem>
+                     <title xml:lang="fr">Lettre de ${data.senderName.split(',').reverse().join(' ')} à ${data.recipientName.split(',').reverse().join(' ')}</title>
+                     <title xml:lang="en">Letter from ${data.senderName.split(',').reverse().join(' ')} to ${data.recipientName.split(',').reverse().join(' ')}</title>
+                     <docAuthor ref="#${data.senderRef}">
+                        <persName>${data.senderName}</persName>
+                     </docAuthor>
+                  </msItem>
+               </msContents>
+               <physDesc>
+                  <objectDesc form="${data.formType}">
+                     <supportDesc>
+                        <support>
+                           <p>${data.supportType}</p>
+                        </support>
+                        <extent>
+                           <measure unit="pages">${data.pages}</measure>
+                        </extent>
+                     </supportDesc>
+                  </objectDesc>
+                  <handDesc>
+                     <handNote xml:id="${data.senderRef}Hand" scribeRef="#${data.senderRef}">Écriture de ${data.senderName.split(',').reverse().join(' ')},
+                        à l'encre noire</handNote>
+                     <handNote xml:id="${data.recipientRef}Hand" scribeRef="#${data.recipientRef}">Annotations de ${data.recipientName.split(',').reverse().join(' ')}, au
+                        crayon</handNote>
+                  </handDesc>
+               </physDesc>
+               <history>
+                  <provenance>${data.provenance}</provenance>
+               </history>
+            </msDesc>
+            <listPlace>
+               <place xml:id="Sender_Address">
+                  <placeName>${data.senderAddress}</placeName>
+                  <location>
+                     <geo>${data.senderGeo}</geo>
+                  </location>
+               </place>
+               <place xml:id="Recipient_Address">
+                  <placeName>Unknown</placeName>
+                  <location>
+                     <geo>Unknown</geo>
+                  </location>
+               </place>
+               <place xml:id="Holding_place">
+                  <placeName>${data.repository}</placeName>
+                  <location>
+                     <geo>${data.holdingGeo}</geo>
+                  </location>
+               </place>${data.places.map(place => `
+               <place xml:id="${place.ref}">
+                  <placeName>${place.name}</placeName>
+                  <location>
+                     <geo>${place.geo}</geo>
+                  </location>
+               </place>`).join('')}
+            </listPlace>
+         </sourceDesc>
+      </fileDesc>
+      <encodingDesc>
+         <projectDesc>
+            <p>Prokofiev 1924, Complete correspondence</p>
+         </projectDesc>
+         <editorialDecl>
+            <p>Transcription and coding follows the Editorial Guidelines of Proko24</p>
+         </editorialDecl>
+         <tagsDecl partial="false">
+            <rendition xml:id="pencil" scheme="css">
+               <label>Texte ajouté au crayon</label>
+            </rendition>
+            <rendition xml:id="encircled" scheme="css">
+               <label>Texte entouré</label>
+            </rendition>
+            <rendition xml:id="topLeft" scheme="css">
+               <label>Positionné en haut à gauche</label>
+            </rendition>
+            <rendition xml:id="topRight" scheme="css">
+               <label>Positionné en haut à droite</label>
+            </rendition>
+            <namespace name="http://www.tei-c.org/ns/1.0">
+               <tagUsage gi="add"
+                  ana="Texte ajouté par une autre main, souvent une annotation ou une correction."/>
+               <tagUsage gi="persName" ana="Noms de personnes référencées dans le texte."/>
+               <tagUsage gi="placeName" ana="Noms de lieux mentionnés ou pertinents pour le texte."/>
+               <tagUsage gi="handNote" ana="Description de l'écriture d'un scribe ou annotateur."/>
+               <tagUsage gi="note"
+                  ana="Notes ajoutées pour fournir des informations supplémentaires telles que des résumés, des incipits ou des références."/>
+               <tagUsage gi="ref"
+                  ana="Référence à une ressource externe ou à une cible interne au document."/>
+               <tagUsage gi="title" ana="Titres d'œuvres ou de sections au sein du document."/>
+               <tagUsage gi="date"
+                  ana="Dates indiquées dans le texte, soit du document original, soit en tant qu'annotations."/>
+               <tagUsage gi="measure"
+                  ana="Mesures, pour indiquer l'étendue physique, telle que le nombre de pages."/>
+            </namespace>
+         </tagsDecl>
+         <classDecl>
+            <taxonomy xml:id="noteTypes">
+               <category xml:id="handwritten">
+                  <catDesc>Annotations manuscrites</catDesc>
+               </category>
+               <category xml:id="editorial">
+                  <catDesc>Notes éditoriales ajoutées par l'éditeur</catDesc>
+               </category>
+               <category xml:id="explanatory">
+                  <catDesc>Notes explicatives apportant des clarifications</catDesc>
+               </category>
+               <category xml:id="layout">
+                  <catDesc>Informations de mise en page</catDesc>
+               </category>
+               <category xml:id="summary">
+                  <catDesc>Résummé du contenu de la lettre</catDesc>
+               </category>
+               <category xml:id="incipit">
+                  <catDesc>Incipit de la lettre</catDesc>
+               </category>
+               <category xml:id="Work">
+                  <catDesc>Identifie une oeuvre</catDesc>
+               </category>
+            </taxonomy>
+         </classDecl>
+      </encodingDesc>
+      <profileDesc>
+         <langUsage>
+            <language ident="${data.letterLang}">French</language>
+         </langUsage>
+         <correspDesc>
+            <correspAction type="sent">
+               <persName ref="#${data.senderRef}">${data.senderName}</persName>
+               <address>
+                  <street>${data.senderStreet || data.senderAddress.split(',')[0]}</street>
+                  <settlement>${data.senderCity || data.senderAddress.split(',')[1]?.trim()}</settlement>
+                  <country>${data.senderCountry}</country>
+               </address>
+               <location>
+                  <geo>${data.senderGeo}</geo>
+               </location>
+               <date when="${data.sentDate}">${sentDateFr}</date>
+            </correspAction>
+            <correspAction type="received">
+               <persName ref="#${data.recipientRef}">${data.recipientName}</persName>
+               ${data.receivedDate ? `<date when="${data.receivedDate}">${receivedDateFr}</date>` : ''}
+            </correspAction>
+         </correspDesc>
+         <particDesc>
+            <listPerson>
+               <person xml:id="${data.recipientRef}">
+                  <persName>${data.recipientName}</persName>
+                  ${data.recipientViaf ? `<idno type="VIAF">${data.recipientViaf}</idno>` : ''}
+               </person>
+               <person xml:id="${data.senderRef}">
+                  <persName>${data.senderName}</persName>
+                  ${data.senderViaf ? `<idno type="VIAF">${data.senderViaf}</idno>` : ''}
+               </person>${data.people.map(person => `
+               <person xml:id="${person.ref}">
+                  <persName>${person.name}</persName>
+                  ${person.viaf ? `<idno type="VIAF">${person.viaf}</idno>` : ''}
+               </person>`).join('')}
+               <person xml:id="NclsMrn">
+                  <persName>${data.transcriber}</persName>
+                  <idno type="ORCID">${data.transcriberOrcid}</idno>
+               </person>
+            </listPerson>
+         </particDesc>
+      </profileDesc>
+      <revisionDesc>
+         <listChange type="research">
+            <change when="${editionDate}" who="#NclsMrn">Encodage TEI initial après transcription et
+               étude du contexte historique.</change>
+         </listChange>
+         <listChange type="publication">
+            <change when="${editionDate}" who="#NclsMrn">Affinage de l'encodage TEI basé sur les modèles
+               de WeGA, avec l'assistance du GPT Grimoire, de ProKorresp, un GPT personnel développé
+               sur ChatGPT, et les recommandations du consortium Cahier
+               (https://cahier.hypotheses.org/).</change>
+         </listChange>
+      </revisionDesc>
+   </teiHeader>
+   <facsimile>${data.facsimile1 ? `
+      <graphic n="1" xml:id="${data.spaId}_1"
+         url="${data.facsimile1}"/>` : ''}${data.facsimile2 ? `
+      <graphic n="2" xml:id="${data.spaId}_2"
+         url="${data.facsimile2}"/>` : ''}
+   </facsimile>
+   <text type="letter">
+      <body>
+         <div type="letter" xml:id="${data.spaId}" hand="#${data.senderRef}Hand">
+            <opener>
+               <address rend="topLeft">
+                  <addrLine>${data.senderStreet || data.senderAddress.split(',')[0]}.</addrLine>
+               </address>
+               <dateline rend="topRight">
+                  <date when="${data.sentDate}">${data.sentDateDisplay || data.senderCity + ', ' + sentDateFr}.</date>
+               </dateline>
+               <salute>Cher monsieur,</salute>
+            </opener>
+            <!-- Le contenu de la lettre sera transcrit ici -->
+         </div>
+      </body>
+   </text>
+</TEI>`;
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            navigator.clipboard.writeText(output.textContent).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copié !';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Fermer les modals en cliquant à l'extérieur
+        window.onclick = function(event) {
+            const catalogueModal = document.getElementById('catalogueModal');
+            const transcriptionModal = document.getElementById('transcriptionModal');
+            
+            if (event.target === catalogueModal) {
+                catalogueModal.style.display = 'none';
+            }
+            if (event.target === transcriptionModal) {
+                transcriptionModal.style.display = 'none';
+            }
+        };
+
+        // Initialisation
+        window.onload = function() {
+            updateProgressBar();
+            
+            // Remplir la date d'édition avec la date actuelle
+            document.getElementById('editionDate').value = new Date().toISOString().split('T')[0];
+            
+            // Initialiser les valeurs par défaut
+            document.getElementById('recipientName').value = 'Prokofiev, Sergei';
+            document.getElementById('recipientRef').value = 'SSP';
+            document.getElementById('recipientViaf').value = '71579098';
+            
+            // Ajouter les event listeners pour la détection de changements
+            document.getElementById('senderName').addEventListener('input', updateLetterTitles);
+            document.getElementById('recipientName').addEventListener('input', updateLetterTitles);
+            document.getElementById('senderCity').addEventListener('input', suggestDateFormat);
+        };
+    </script>
+</body>
+</html>
