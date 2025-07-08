@@ -848,6 +848,253 @@
             font-size: 0.8rem;
         }
 
+        /* Styles VIAF */
+        .viaf-search-container {
+            position: relative;
+        }
+
+        .viaf-search-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .viaf-search-btn:hover {
+            background: #6d28d9;
+        }
+
+        .viaf-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .viaf-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s ease;
+        }
+
+        .viaf-result-item:hover {
+            background: #f8fafc;
+        }
+
+        .viaf-result-item.selected {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .viaf-result-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .viaf-result-details {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .viaf-result-item.selected .viaf-result-details {
+            color: #e2e8f0;
+        }
+
+        .viaf-result-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .viaf-result-item.selected .viaf-result-id {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .viaf-loading {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+
+        .viaf-no-results {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .viaf-error {
+            text-align: center;
+            padding: 20px;
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .viaf-filled-field {
+            border-color: #7c3aed !important;
+            background: #f3e8ff;
+        }
+
+        .viaf-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #7c3aed;
+            border-radius: 50%;
+            margin-left: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Styles pour les œuvres */
+        .work-entry {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+        }
+
+        .work-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .work-type-btn {
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .work-type-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .work-type-btn.selected {
+            background: #d4845a;
+            color: white;
+            border-color: #d4845a;
+        }
+
+        /* Styles pour la recherche GPS */
+        .gps-search-container {
+            position: relative;
+        }
+
+        .gps-search-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .gps-search-btn:hover {
+            background: #059669;
+        }
+
+        .gps-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .gps-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s ease;
+        }
+
+        .gps-result-item:hover {
+            background: #f8fafc;
+        }
+
+        .gps-result-item.selected {
+            background: #10b981;
+            color: white;
+        }
+
+        .gps-result-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .gps-result-details {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .gps-result-item.selected .gps-result-details {
+            color: #e2e8f0;
+        }
+
+        .gps-result-coords {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .gps-result-item.selected .gps-result-coords {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .gps-filled-field {
+            border-color: #10b981 !important;
+            background: #f0fdf4;
+        }
+
         .tabs {
             display: flex;
             border-bottom: 2px solid #e2e8f0;
@@ -1068,6 +1315,10 @@
                 </div>
                 <div class="progress-step" data-step="6" onclick="showStep(6)">
                     <span>6</span>
+                    <div class="step-label">Œuvres</div>
+                </div>
+                <div class="progress-step" data-step="7" onclick="showStep(7)">
+                    <span>7</span>
                     <div class="step-label">Génération</div>
                 </div>
             </div>
@@ -1306,7 +1557,11 @@
                         <div class="form-row">
                             <div>
                                 <label for="senderViaf">VIAF ID de l'expéditeur</label>
-                                <input type="text" id="senderViaf" placeholder="39088295">
+                                <div class="viaf-search-container">
+                                    <input type="text" id="senderViaf" placeholder="39088295">
+                                    <button type="button" class="viaf-search-btn" onclick="searchViaf('senderViaf', document.getElementById('senderName').value)">🔍 VIAF</button>
+                                    <div id="senderViafResults" class="viaf-results"></div>
+                                </div>
                             </div>
                             <div>
                                 <label for="senderAddress">Adresse complète <span class="required">*</span></label>
@@ -1336,7 +1591,11 @@
                             </div>
                             <div>
                                 <label for="senderGeo">Coordonnées GPS</label>
-                                <input type="text" id="senderGeo" placeholder="48.87985, 2.30983">
+                                <div class="gps-search-container">
+                                    <input type="text" id="senderGeo" placeholder="48.87985, 2.30983">
+                                    <button type="button" class="gps-search-btn" onclick="searchGPS('senderGeo', getSenderFullAddress())">🌍 GPS</button>
+                                    <div id="senderGeoResults" class="gps-results"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1373,7 +1632,11 @@
                         <div class="form-row">
                             <div>
                                 <label for="recipientViaf">VIAF ID du destinataire</label>
-                                <input type="text" id="recipientViaf" value="71579098">
+                                <div class="viaf-search-container">
+                                    <input type="text" id="recipientViaf" value="71579098">
+                                    <button type="button" class="viaf-search-btn" onclick="searchViaf('recipientViaf', document.getElementById('recipientName').value)">🔍 VIAF</button>
+                                    <div id="recipientViafResults" class="viaf-results"></div>
+                                </div>
                             </div>
                             <div>
                                 <label for="receivedDate">Date de réception</label>
@@ -1421,10 +1684,27 @@
                     </div>
                 </div>
 
-                <!-- Étape 6: Génération -->
+                <!-- Étape 6: Œuvres -->
                 <div class="step-content" data-step="6">
+                    <h2>🎵 Œuvres mentionnées</h2>
+                    <p class="help-text">Liste des œuvres musicales, littéraires ou artistiques évoquées dans la lettre</p>
+                    
+                    <div id="primaSuggestedWorks" style="display: none;">
+                        <h3>🏷️ Œuvres détectées dans Prima XML :</h3>
+                        <div id="primaWorksList"></div>
+                    </div>
+
+                    <button type="button" class="add-btn" onclick="addWork()">+ Ajouter une œuvre</button>
+                    <div id="worksContainer">
+                        <!-- Les œuvres seront ajoutées ici dynamiquement -->
+                    </div>
+                </div>
+
+                <!-- Étape 7: Génération -->
+                <!-- Étape 7: Génération -->
+                <div class="step-content" data-step="7">
                     <h2>📄 Génération du XML TEI</h2>
-                    <p class="help-text">Vérifiez vos informations et générez le fichier XML TEI complet</p>
+                    <p class="help-text">Vérifiez vos informations et générez le fichier XML TEI complet avec toutes les métadonnées enrichies</p>
                     
                     <div id="aiAnalysisPanel" class="ai-analysis-panel" style="display: none;">
                         <h3>🤖 Analyse IA de la transcription</h3>
@@ -1436,7 +1716,7 @@
                         <div id="primaSuggestions"></div>
                     </div>
                     
-                    <button class="generate-btn" onclick="generateTEI()">📄 Générer le XML TEI</button>
+                    <button class="generate-btn" onclick="generateTEI()">📄 Générer le XML TEI enrichi</button>
 
                     <div id="output" class="output"></div>
                     <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()" style="display: none;">📋 Copier le XML</button>
@@ -1453,9 +1733,10 @@
     <script>
         // Variables globales existantes
         let currentStep = 1;
-        let totalSteps = 6;
+        let totalSteps = 7;
         let personCount = 0;
         let placeCount = 0;
+        let workCount = 0;
         let currentMode = 'full';
         let lastSpaId = 2508;
         let catalogueData = null;
@@ -1478,6 +1759,10 @@
             'work': 'title',
             'organization': 'orgName'
         };
+
+        // Variables pour la recherche VIAF
+        let viafCache = new Map();
+        let activeViafSearch = null;
 
         // Base de données des correspondants avec VIAF (conservée)
         const correspondentsDB = {
@@ -1889,6 +2174,28 @@
                 
                 container.style.display = 'block';
             }
+
+            // Afficher les suggestions d'œuvres
+            if (primaEntities.works.length > 0) {
+                const container = document.getElementById('primaSuggestedWorks');
+                const listContainer = document.getElementById('primaWorksList');
+                
+                listContainer.innerHTML = '';
+                primaEntities.works.forEach((work, index) => {
+                    const suggestion = document.createElement('div');
+                    suggestion.className = 'ai-suggestion';
+                    suggestion.innerHTML = `
+                        <div class="ai-suggestion-header">
+                            <div class="ai-suggestion-title">${work.text}</div>
+                            <button class="add-btn" onclick="addPrimaWork('${work.text}')">+ Ajouter</button>
+                        </div>
+                        <p>Détecté comme: <strong>œuvre</strong></p>
+                    `;
+                    listContainer.appendChild(suggestion);
+                });
+                
+                container.style.display = 'block';
+            }
             
             // Afficher le panneau d'analyse Prima
             const panel = document.getElementById('primaAnalysisPanel');
@@ -1930,6 +2237,19 @@
             
             lastEntry.querySelector('input[name="placeName[]"]').value = name;
             lastEntry.querySelector('input[name="placeRef[]"]').value = generateReference(name);
+            
+            // Marquer comme ajouté par Prima
+            lastEntry.style.borderColor = '#f59e0b';
+            setTimeout(() => lastEntry.style.borderColor = '#e2e8f0', 3000);
+        }
+
+        function addPrimaWork(title) {
+            addWork();
+            const entries = document.querySelectorAll('.work-entry');
+            const lastEntry = entries[entries.length - 1];
+            
+            lastEntry.querySelector('input[name="workTitle[]"]').value = title;
+            lastEntry.querySelector('input[name="workRef[]"]').value = generateReference(title);
             
             // Marquer comme ajouté par Prima
             lastEntry.style.borderColor = '#f59e0b';
@@ -2685,12 +3005,14 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
             const container = document.getElementById('peopleContainer');
             const personDiv = document.createElement('div');
             personDiv.className = 'person-entry';
+            const viafId = 'personViaf_' + personCount;
+            const nameId = 'personName_' + personCount;
             personDiv.innerHTML = `
                 <button type="button" class="remove-btn" onclick="removePerson(this)">Supprimer</button>
                 <div class="form-row">
                     <div>
                         <label>Nom complet</label>
-                        <input type="text" name="personName[]" placeholder="Rubinstein, Ida">
+                        <input type="text" name="personName[]" id="${nameId}" placeholder="Rubinstein, Ida">
                     </div>
                     <div>
                         <label>Identifiant de référence</label>
@@ -2700,7 +3022,11 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                 <div class="form-row">
                     <div>
                         <label>VIAF ID</label>
-                        <input type="text" name="personViaf[]" placeholder="29614722">
+                        <div class="viaf-search-container">
+                            <input type="text" name="personViaf[]" id="${viafId}" placeholder="29614722">
+                            <button type="button" class="viaf-search-btn" onclick="searchViafForPerson('${viafId}', '${nameId}')">🔍 VIAF</button>
+                            <div id="${viafId}Results" class="viaf-results"></div>
+                        </div>
                     </div>
                     <div></div>
                 </div>
@@ -2717,12 +3043,14 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
             const container = document.getElementById('placesContainer');
             const placeDiv = document.createElement('div');
             placeDiv.className = 'place-entry';
+            const gpsId = 'placeGeo_' + placeCount;
+            const nameId = 'placeName_' + placeCount;
             placeDiv.innerHTML = `
                 <button type="button" class="remove-btn" onclick="removePlace(this)">Supprimer</button>
                 <div class="form-row">
                     <div>
                         <label>Nom du lieu</label>
-                        <input type="text" name="placeName[]" placeholder="Théâtre des Champs-Élysées">
+                        <input type="text" name="placeName[]" id="${nameId}" placeholder="Théâtre des Champs-Élysées">
                     </div>
                     <div>
                         <label>Identifiant de référence</label>
@@ -2732,7 +3060,321 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                 <div class="form-row">
                     <div>
                         <label>Coordonnées GPS</label>
-                        <input type="text" name="placeGeo[]" placeholder="48.8656 2.3081">
+                        <div class="gps-search-container">
+                            <input type="text" name="placeGeo[]" id="${gpsId}" placeholder="48.8656 2.3081">
+                            <button type="button" class="gps-search-btn" onclick="searchGPSForPlace('${gpsId}', '${nameId}')">🌍 GPS</button>
+                            <div id="${gpsId}Results" class="gps-results"></div>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
+            `;
+            container.appendChild(placeDiv);
+        }
+
+        function removePlace(button) {
+            button.parentNode.remove();
+        }
+
+        function addWork() {
+            workCount++;
+            const container = document.getElementById('worksContainer');
+            const workDiv = document.createElement('div');
+            workDiv.className = 'work-entry';
+            const viafId = 'workViaf_' + workCount;
+            const titleId = 'workTitle_' + workCount;
+            workDiv.innerHTML = `
+                <button type="button" class="remove-btn" onclick="removeWork(this)">Supprimer</button>
+                
+                <div class="work-type-selector">
+                    <div class="work-type-btn selected" onclick="selectWorkType(this, 'musical')">🎵 Œuvre musicale</div>
+                    <div class="work-type-btn" onclick="selectWorkType(this, 'literary')">📚 Œuvre littéraire</div>
+                    <div class="work-type-btn" onclick="selectWorkType(this, 'theatrical')">🎭 Œuvre théâtrale</div>
+                    <div class="work-type-btn" onclick="selectWorkType(this, 'other')">🎨 Autre</div>
+                </div>
+                <input type="hidden" name="workType[]" value="musical">
+                
+                <div class="form-row">
+                    <div>
+                        <label>Titre de l'œuvre</label>
+                        <input type="text" name="workTitle[]" id="${titleId}" placeholder="Roméo et Juliette">
+                    </div>
+                    <div>
+                        <label>Identifiant de référence</label>
+                        <input type="text" name="workRef[]" placeholder="Romeo_Juliette_Prokofiev">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div>
+                        <label>Compositeur/Auteur</label>
+                        <input type="text" name="workComposer[]" placeholder="Prokofiev, Sergei">
+                    </div>
+                    <div>
+                        <label>Date de composition</label>
+                        <input type="text" name="workDate[]" placeholder="1935-1936">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div>
+                        <label>VIAF ID de l'œuvre</label>
+                        <div class="viaf-search-container">
+                            <input type="text" name="workViaf[]" id="${viafId}" placeholder="185796205">
+                            <button type="button" class="viaf-search-btn" onclick="searchViafForWork('${viafId}', '${titleId}')">🔍 VIAF</button>
+                            <div id="${viafId}Results" class="viaf-results"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <label>Tonalité/Opus (si applicable)</label>
+                        <input type="text" name="workOpus[]" placeholder="Op. 64">
+                    </div>
+                </div>
+                
+                <div class="form-row full">
+                    <div>
+                        <label>Description/Contexte</label>
+                        <textarea name="workDescription[]" placeholder="Ballet en trois actes, créé au Théâtre Kirov en 1940"></textarea>
+                    </div>
+                </div>
+            `;
+            container.appendChild(workDiv);
+        }
+
+        function removeWork(button) {
+            button.parentNode.remove();
+        }
+
+        function selectWorkType(button, type) {
+            // Désélectionner tous les boutons de ce groupe
+            const container = button.closest('.work-entry');
+            container.querySelectorAll('.work-type-btn').forEach(btn => btn.classList.remove('selected'));
+            
+            // Sélectionner le bouton cliqué
+            button.classList.add('selected');
+            
+            // Mettre à jour le champ caché
+            container.querySelector('input[name="workType[]"]').value = type;
+        }
+
+        function searchViafForWork(viafInputId, titleInputId) {
+            const titleInput = document.getElementById(titleInputId);
+            if (titleInput && titleInput.value) {
+                searchViaf(viafInputId, titleInput.value);
+            } else {
+                showViafError(viafInputId + 'Results', 'Veuillez d\'abord saisir un titre d\'œuvre');
+            }
+        }
+
+        // Fonctions de recherche GPS
+        async function searchGPS(inputId, searchTerm) {
+            if (!searchTerm || searchTerm.trim().length < 3) {
+                showGPSError(inputId + 'Results', 'Veuillez saisir au moins 3 caractères');
+                return;
+            }
+
+            const resultsContainer = document.getElementById(inputId + 'Results');
+            const searchBtn = document.querySelector(`[onclick*="${inputId}"]`);
+            
+            // Afficher le loading
+            showGPSLoading(resultsContainer);
+            searchBtn.innerHTML = '⏳ Recherche...';
+
+            try {
+                // Utiliser l'API Nominatim d'OpenStreetMap (gratuite)
+                const encodedQuery = encodeURIComponent(searchTerm);
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodedQuery}&limit=10&addressdetails=1`;
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'User-Agent': 'Proko24-TEI-Generator/2.1'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur géocodage: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Parser les résultats
+                const results = parseGPSResults(data);
+                
+                // Afficher les résultats
+                displayGPSResults(inputId, results);
+                
+            } catch (error) {
+                console.error('Erreur recherche GPS:', error);
+                showGPSError(inputId + 'Results', 'Erreur lors de la recherche de coordonnées');
+            } finally {
+                searchBtn.innerHTML = '🌍 GPS';
+            }
+        }
+
+        function parseGPSResults(data) {
+            const results = [];
+            
+            if (data && Array.isArray(data)) {
+                data.forEach(item => {
+                    if (item.lat && item.lon && item.display_name) {
+                        results.push({
+                            name: item.display_name,
+                            lat: parseFloat(item.lat),
+                            lon: parseFloat(item.lon),
+                            type: item.type || 'location',
+                            country: item.address?.country || ''
+                        });
+                    }
+                });
+            }
+            
+            return results.slice(0, 8); // Limiter à 8 résultats
+        }
+
+        function showGPSLoading(container) {
+            container.innerHTML = '<div class="viaf-loading">🌍 Recherche en cours...</div>';
+            container.style.display = 'block';
+        }
+
+        function showGPSError(containerId, message) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="viaf-error">❌ ${message}</div>`;
+            container.style.display = 'block';
+            
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 3000);
+        }
+
+        function displayGPSResults(inputId, results) {
+            const container = document.getElementById(inputId + 'Results');
+            
+            if (!results || results.length === 0) {
+                container.innerHTML = '<div class="viaf-no-results">Aucun résultat trouvé</div>';
+                container.style.display = 'block';
+                setTimeout(() => {
+                    container.style.display = 'none';
+                }, 3000);
+                return;
+            }
+
+            let html = '';
+            results.forEach((result, index) => {
+                const coords = `${result.lat.toFixed(6)}, ${result.lon.toFixed(6)}`;
+                html += `
+                    <div class="gps-result-item" onclick="selectGPSResult('${inputId}', '${coords}', '${result.name.replace(/'/g, "\\'")}')">
+                        <div class="gps-result-name">${result.name}</div>
+                        <div class="gps-result-details">${result.type} - ${result.country}</div>
+                        <div class="gps-result-coords">${coords}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            container.style.display = 'block';
+
+            // Fermer au clic à l'extérieur
+            document.addEventListener('click', function closeGPSResults(e) {
+                if (!container.contains(e.target) && !e.target.closest('.gps-search-btn')) {
+                    container.style.display = 'none';
+                    document.removeEventListener('click', closeGPSResults);
+                }
+            });
+        }
+
+        function selectGPSResult(inputId, coords, name) {
+            const input = document.getElementById(inputId);
+            const container = document.getElementById(inputId + 'Results');
+            
+            // Remplir le champ coordonnées
+            input.value = coords;
+            input.classList.add('gps-filled-field');
+            
+            // Fermer les résultats
+            container.style.display = 'none';
+            
+            // Ajouter un indicateur visuel
+            setTimeout(() => {
+                input.classList.remove('gps-filled-field');
+            }, 3000);
+            
+            // Notification
+            showGPSSuccess(`Coordonnées trouvées: ${coords} pour "${name}"`);
+        }
+
+        function searchGPSForPlace(gpsInputId, nameInputId) {
+            const nameInput = document.getElementById(nameInputId);
+            if (nameInput && nameInput.value) {
+                searchGPS(gpsInputId, nameInput.value);
+            } else {
+                showGPSError(gpsInputId + 'Results', 'Veuillez d\'abord saisir un nom de lieu');
+            }
+        }
+
+        function getSenderFullAddress() {
+            const street = document.getElementById('senderStreet').value || '';
+            const city = document.getElementById('senderCity').value || '';
+            const country = document.getElementById('senderCountry').value || '';
+            return [street, city, country].filter(s => s.trim()).join(', ');
+        }
+
+        function showGPSSuccess(message) {
+            // Créer une notification temporaire
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10b981;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = '✅ ' + message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        function addPlace() {
+            placeCount++;
+            const container = document.getElementById('placesContainer');
+            const placeDiv = document.createElement('div');
+            placeDiv.className = 'place-entry';
+            const gpsId = 'placeGeo_' + placeCount;
+            const nameId = 'placeName_' + placeCount;
+            placeDiv.innerHTML = `
+                <button type="button" class="remove-btn" onclick="removePlace(this)">Supprimer</button>
+                <div class="form-row">
+                    <div>
+                        <label>Nom du lieu</label>
+                        <input type="text" name="placeName[]" id="${nameId}" placeholder="Théâtre des Champs-Élysées">
+                    </div>
+                    <div>
+                        <label>Identifiant de référence</label>
+                        <input type="text" name="placeRef[]" placeholder="Theatre_ChampsElysees">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label>Coordonnées GPS</label>
+                        <div class="gps-search-container">
+                            <input type="text" name="placeGeo[]" id="${gpsId}" placeholder="48.8656 2.3081">
+                            <button type="button" class="gps-search-btn" onclick="searchGPSForPlace('${gpsId}', '${nameId}')">🌍 GPS</button>
+                            <div id="${gpsId}Results" class="gps-results"></div>
+                        </div>
                     </div>
                     <div></div>
                 </div>
@@ -2821,6 +3463,32 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                         name: placeNames[i].value,
                         ref: placeRefs[i].value,
                         geo: placeGeos[i].value
+                    });
+                }
+            }
+
+            // Récupérer les œuvres
+            const workTitles = document.querySelectorAll('input[name="workTitle[]"]');
+            const workRefs = document.querySelectorAll('input[name="workRef[]"]');
+            const workComposers = document.querySelectorAll('input[name="workComposer[]"]');
+            const workDates = document.querySelectorAll('input[name="workDate[]"]');
+            const workViafs = document.querySelectorAll('input[name="workViaf[]"]');
+            const workOpuses = document.querySelectorAll('input[name="workOpus[]"]');
+            const workDescriptions = document.querySelectorAll('textarea[name="workDescription[]"]');
+            const workTypes = document.querySelectorAll('input[name="workType[]"]');
+            
+            data.works = [];
+            for (let i = 0; i < workTitles.length; i++) {
+                if (workTitles[i].value) {
+                    data.works.push({
+                        title: workTitles[i].value,
+                        ref: workRefs[i].value,
+                        composer: workComposers[i].value,
+                        date: workDates[i].value,
+                        viaf: workViafs[i].value,
+                        opus: workOpuses[i].value,
+                        description: workDescriptions[i].value,
+                        type: workTypes[i].value
                     });
                 }
             }
@@ -3057,6 +3725,48 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                </person>
             </listPerson>
          </particDesc>
+         <settingDesc>
+            <listPlace>
+               <place xml:id="Sender_Address">
+                  <placeName>${data.senderAddress}</placeName>
+                  <location>
+                     <geo>${data.senderGeo}</geo>
+                  </location>
+               </place>
+               <place xml:id="Recipient_Address">
+                  <placeName>Unknown</placeName>
+                  <location>
+                     <geo>Unknown</geo>
+                  </location>
+               </place>
+               <place xml:id="Holding_place">
+                  <placeName>${data.repository}</placeName>
+                  <location>
+                     <geo>${data.holdingGeo}</geo>
+                  </location>
+               </place>${data.places.map(place => `
+               <place xml:id="${place.ref}">
+                  <placeName>${place.name}</placeName>
+                  <location>
+                     <geo>${place.geo}</geo>
+                  </location>
+               </place>`).join('')}
+            </listPlace>
+         </settingDesc>
+         ${data.works && data.works.length > 0 ? `
+         <textClass>
+            <listBibl>
+               <head>Œuvres mentionnées</head>${data.works.map(work => `
+               <bibl xml:id="${work.ref}" type="${work.type}">
+                  <title>${work.title}</title>
+                  ${work.composer ? `<author>${work.composer}</author>` : ''}
+                  ${work.date ? `<date>${work.date}</date>` : ''}
+                  ${work.opus ? `<biblScope unit="opus">${work.opus}</biblScope>` : ''}
+                  ${work.viaf ? `<idno type="VIAF">${work.viaf}</idno>` : ''}
+                  ${work.description ? `<note>${work.description}</note>` : ''}
+               </bibl>`).join('')}
+            </listBibl>
+         </textClass>` : ''}
       </profileDesc>
       <revisionDesc>
          <listChange type="research">
@@ -3142,6 +3852,217 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
          `;
         }
 
+        // Fonctions de recherche VIAF
+        async function searchViaf(inputId, searchTerm) {
+            if (!searchTerm || searchTerm.trim().length < 3) {
+                showViafError(inputId + 'Results', 'Veuillez saisir au moins 3 caractères');
+                return;
+            }
+
+            const resultsContainer = document.getElementById(inputId + 'Results');
+            const searchBtn = document.querySelector(`[onclick*="${inputId}"]`);
+            
+            // Annuler la recherche précédente
+            if (activeViafSearch) {
+                activeViafSearch.abort();
+            }
+
+            // Vérifier le cache
+            const cacheKey = searchTerm.toLowerCase().trim();
+            if (viafCache.has(cacheKey)) {
+                displayViafResults(inputId, viafCache.get(cacheKey));
+                return;
+            }
+
+            // Afficher le loading
+            showViafLoading(resultsContainer);
+            searchBtn.innerHTML = '⏳ Recherche...';
+
+            try {
+                activeViafSearch = new AbortController();
+                
+                // Utiliser l'API VIAF AutoSuggest
+                const encodedQuery = encodeURIComponent(searchTerm);
+                const url = `https://viaf.org/viaf/AutoSuggest?query=${encodedQuery}`;
+                
+                const response = await fetch(url, {
+                    signal: activeViafSearch.signal,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur VIAF: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Parser les résultats VIAF
+                const results = parseViafResults(data);
+                
+                // Mettre en cache
+                viafCache.set(cacheKey, results);
+                
+                // Afficher les résultats
+                displayViafResults(inputId, results);
+                
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('Erreur recherche VIAF:', error);
+                    showViafError(inputId + 'Results', 'Erreur lors de la recherche VIAF');
+                }
+            } finally {
+                searchBtn.innerHTML = '🔍 VIAF';
+                activeViafSearch = null;
+            }
+        }
+
+        function parseViafResults(data) {
+            const results = [];
+            
+            if (data && data.result) {
+                data.result.forEach(item => {
+                    if (item.viafid && item.term) {
+                        results.push({
+                            id: item.viafid,
+                            name: item.term,
+                            details: item.nametype || 'Personal',
+                            sources: item.source || []
+                        });
+                    }
+                });
+            }
+            
+            return results.slice(0, 10); // Limiter à 10 résultats
+        }
+
+        function showViafLoading(container) {
+            container.innerHTML = '<div class="viaf-loading">🔍 Recherche en cours...</div>';
+            container.style.display = 'block';
+        }
+
+        function showViafError(containerId, message) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="viaf-error">❌ ${message}</div>`;
+            container.style.display = 'block';
+            
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 3000);
+        }
+
+        function displayViafResults(inputId, results) {
+            const container = document.getElementById(inputId + 'Results');
+            
+            if (!results || results.length === 0) {
+                container.innerHTML = '<div class="viaf-no-results">Aucun résultat trouvé</div>';
+                container.style.display = 'block';
+                setTimeout(() => {
+                    container.style.display = 'none';
+                }, 3000);
+                return;
+            }
+
+            let html = '';
+            results.forEach((result, index) => {
+                html += `
+                    <div class="viaf-result-item" onclick="selectViafResult('${inputId}', '${result.id}', '${result.name.replace(/'/g, "\\'")}')">
+                        <div class="viaf-result-name">${result.name}</div>
+                        <div class="viaf-result-details">${result.details}</div>
+                        <div class="viaf-result-id">VIAF: ${result.id}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            container.style.display = 'block';
+
+            // Fermer au clic à l'extérieur
+            document.addEventListener('click', function closeViafResults(e) {
+                if (!container.contains(e.target) && !e.target.closest('.viaf-search-btn')) {
+                    container.style.display = 'none';
+                    document.removeEventListener('click', closeViafResults);
+                }
+            });
+        }
+
+        function selectViafResult(inputId, viafId, name) {
+            const input = document.getElementById(inputId);
+            const container = document.getElementById(inputId + 'Results');
+            
+            // Remplir le champ VIAF ID
+            input.value = viafId;
+            input.classList.add('viaf-filled-field');
+            
+            // Fermer les résultats
+            container.style.display = 'none';
+            
+            // Ajouter un indicateur visuel
+            setTimeout(() => {
+                input.classList.remove('viaf-filled-field');
+            }, 3000);
+            
+            // Notification
+            showViafSuccess(`VIAF ID trouvé: ${viafId} pour "${name}"`);
+        }
+
+        function searchViafForPerson(viafInputId, nameInputId) {
+            const nameInput = document.getElementById(nameInputId);
+            if (nameInput && nameInput.value) {
+                searchViaf(viafInputId, nameInput.value);
+            } else {
+                showViafError(viafInputId + 'Results', 'Veuillez d\'abord saisir un nom');
+            }
+        }
+
+        function showViafSuccess(message) {
+            // Créer une notification temporaire
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #7c3aed;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = '✅ ' + message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Ajouter les animations CSS pour les notifications
+        if (!document.getElementById('viafAnimations')) {
+            const style = document.createElement('style');
+            style.id = 'viafAnimations';
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
         function copyToClipboard() {
             const output = document.getElementById('output');
             navigator.clipboard.writeText(output.textContent).then(() => {
@@ -3187,6 +4108,38 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
             document.getElementById('senderName').addEventListener('input', updateLetterTitles);
             document.getElementById('recipientName').addEventListener('input', updateLetterTitles);
             document.getElementById('senderCity').addEventListener('input', suggestDateFormat);
+            
+            // Event listeners pour la recherche VIAF automatique
+            document.getElementById('senderName').addEventListener('blur', function() {
+                if (this.value && !document.getElementById('senderViaf').value) {
+                    setTimeout(() => searchViaf('senderViaf', this.value), 500);
+                }
+            });
+            
+            document.getElementById('recipientName').addEventListener('blur', function() {
+                if (this.value && !document.getElementById('recipientViaf').value) {
+                    setTimeout(() => searchViaf('recipientViaf', this.value), 500);
+                }
+            });
+
+            // Event listeners pour la recherche GPS automatique
+            document.getElementById('senderStreet').addEventListener('blur', function() {
+                if (this.value && !document.getElementById('senderGeo').value) {
+                    const fullAddress = getSenderFullAddress();
+                    if (fullAddress.length > 5) {
+                        setTimeout(() => searchGPS('senderGeo', fullAddress), 500);
+                    }
+                }
+            });
+
+            document.getElementById('senderCity').addEventListener('blur', function() {
+                if (this.value && !document.getElementById('senderGeo').value) {
+                    const fullAddress = getSenderFullAddress();
+                    if (fullAddress.length > 5) {
+                        setTimeout(() => searchGPS('senderGeo', fullAddress), 500);
+                    }
+                }
+            });
         };
     </script>
 </body>
