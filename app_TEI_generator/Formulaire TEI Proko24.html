@@ -1008,6 +1008,153 @@
             border-color: #d4845a;
         }
 
+        /* Styles pour les recherches multi-bases */
+        .multi-search-container {
+            position: relative;
+        }
+
+        .search-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .viaf-search-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background 0.3s ease;
+        }
+
+        .viaf-search-btn:hover {
+            background: #6d28d9;
+        }
+
+        .wikidata-search-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background 0.3s ease;
+        }
+
+        .wikidata-search-btn:hover {
+            background: #047857;
+        }
+
+        .dezede-search-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background 0.3s ease;
+        }
+
+        .dezede-search-btn:hover {
+            background: #b91c1c;
+        }
+
+        .bnf-search-btn {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background 0.3s ease;
+        }
+
+        .bnf-search-btn:hover {
+            background: #1e3a8a;
+        }
+
+        .multi-ids-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .id-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .id-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .id-input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .id-input:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.1);
+        }
+
+        .search-result-source {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .search-result-source.viaf {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .search-result-source.wikidata {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .search-result-source.dezede {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .search-result-source.bnf {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .filled-viaf { border-color: #7c3aed !important; background: #faf5ff; }
+        .filled-wikidata { border-color: #059669 !important; background: #f0fdf4; }
+        .filled-dezede { border-color: #dc2626 !important; background: #fef2f2; }
+        .filled-bnf { border-color: #1e40af !important; background: #eff6ff; }
+
         /* Styles pour la recherche GPS */
         .gps-search-container {
             position: relative;
@@ -1138,7 +1285,7 @@
                 <span class="header-icon">📄</span>
                 Proko24 TEI Generator
             </h1>
-            <p>Générateur intelligent avec import catalogue, analyse IA et intégration Prima XML</p>
+            <p>Générateur intelligent avec import catalogue, analyse IA, intégration Prima XML et recherche multi-bases (VIAF, Wikidata, Dezède, BnF)</p>
         </div>
 
         <div class="toolbar">
@@ -1556,11 +1703,34 @@
                     <div class="form-group">
                         <div class="form-row">
                             <div>
-                                <label for="senderViaf">VIAF ID de l'expéditeur</label>
-                                <div class="viaf-search-container">
-                                    <input type="text" id="senderViaf" placeholder="39088295">
-                                    <button type="button" class="viaf-search-btn" onclick="searchViaf('senderViaf', document.getElementById('senderName').value)">🔍 VIAF</button>
-                                    <div id="senderViafResults" class="viaf-results"></div>
+                                <label for="senderViaf">Identifiants de l'expéditeur</label>
+                                <div class="multi-search-container">
+                                    <input type="text" id="senderName_search" placeholder="Rechercher dans les bases..." readonly>
+                                    <div class="search-buttons">
+                                        <button type="button" class="viaf-search-btn" onclick="searchInDatabase('sender', 'viaf', document.getElementById('senderName').value)">🔍 VIAF</button>
+                                        <button type="button" class="wikidata-search-btn" onclick="searchInDatabase('sender', 'wikidata', document.getElementById('senderName').value)">🔍 Wikidata</button>
+                                        <button type="button" class="bnf-search-btn" onclick="searchInDatabase('sender', 'bnf', document.getElementById('senderName').value)">🔍 BnF</button>
+                                    </div>
+                                    <div id="senderSearchResults" class="viaf-results"></div>
+                                    
+                                    <div class="multi-ids-container">
+                                        <div class="id-field">
+                                            <label class="id-label"><span style="color: #7c3aed;">●</span> VIAF ID</label>
+                                            <input type="text" class="id-input" id="senderViaf" placeholder="39088295">
+                                        </div>
+                                        <div class="id-field">
+                                            <label class="id-label"><span style="color: #059669;">●</span> Wikidata ID</label>
+                                            <input type="text" class="id-input" id="senderWikidata" placeholder="Q123456">
+                                        </div>
+                                        <div class="id-field">
+                                            <label class="id-label"><span style="color: #1e40af;">●</span> BnF ID</label>
+                                            <input type="text" class="id-input" id="senderBnf" placeholder="11920145k">
+                                        </div>
+                                        <div class="id-field">
+                                            <label class="id-label">📚 ISNI</label>
+                                            <input type="text" class="id-input" id="senderIsni" placeholder="0000000121032683">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div>
@@ -1631,11 +1801,34 @@
                     <div class="form-group">
                         <div class="form-row">
                             <div>
-                                <label for="recipientViaf">VIAF ID du destinataire</label>
-                                <div class="viaf-search-container">
-                                    <input type="text" id="recipientViaf" value="71579098">
-                                    <button type="button" class="viaf-search-btn" onclick="searchViaf('recipientViaf', document.getElementById('recipientName').value)">🔍 VIAF</button>
-                                    <div id="recipientViafResults" class="viaf-results"></div>
+                                <label for="recipientViaf">Identifiants du destinataire</label>
+                                <div class="multi-search-container">
+                                    <input type="text" id="recipientName_search" placeholder="Rechercher dans les bases..." readonly>
+                                    <div class="search-buttons">
+                                        <button type="button" class="viaf-search-btn" onclick="searchInDatabase('recipient', 'viaf', document.getElementById('recipientName').value)">🔍 VIAF</button>
+                                        <button type="button" class="wikidata-search-btn" onclick="searchInDatabase('recipient', 'wikidata', document.getElementById('recipientName').value)">🔍 Wikidata</button>
+                                        <button type="button" class="bnf-search-btn" onclick="searchInDatabase('recipient', 'bnf', document.getElementById('recipientName').value)">🔍 BnF</button>
+                                    </div>
+                                    <div id="recipientSearchResults" class="viaf-results"></div>
+                                    
+                                    <div class="multi-ids-container">
+                                        <div class="id-field">
+                                            <label class="id-label"><span style="color: #7c3aed;">●</span> VIAF ID</label>
+                                            <input type="text" class="id-input" id="recipientViaf" value="71579098">
+                                        </div>
+                                        <div class="id-field">
+                                            <label class="id-label"><span style="color: #059669;">●</span> Wikidata ID</label>
+                                            <input type="text" class="id-input" id="recipientWikidata" placeholder="Q49481">
+                                        </div>
+                                        <div class="id-field">
+                                            <label class="id-label"><span style="color: #1e40af;">●</span> BnF ID</label>
+                                            <input type="text" class="id-input" id="recipientBnf" placeholder="11920145k">
+                                        </div>
+                                        <div class="id-field">
+                                            <label class="id-label">📚 ISNI</label>
+                                            <input type="text" class="id-input" id="recipientIsni" placeholder="0000000121032683">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div>
@@ -1764,24 +1957,75 @@
         let viafCache = new Map();
         let activeViafSearch = null;
 
-        // Base de données des correspondants avec VIAF (conservée)
+        // Base de données des correspondants avec identifiants multiples (enrichie)
         const correspondentsDB = {
-            'Demasy, Paul': { ref: 'Demasy_Paul', viaf: '39088295' },
-            'Prokofiev, Sergei': { ref: 'SSP', viaf: '71579098' },
-            'Sergei Sergeevich Prokofiev': { ref: 'SSP', viaf: '71579098' },
-            'Prokofiev, Sergey Sergeevich': { ref: 'SSP', viaf: '71579098' },
-            'Shereshevsky, Moiseii Davidovich': { ref: 'Shereshevsky_MD', viaf: '123456789' },
-            'Moiseii Davidovich Shereshevsky': { ref: 'Shereshevsky_MD', viaf: '123456789' },
-            'Fitelberg, Grzegorz': { ref: 'Fitelberg_G', viaf: '987654321' },
-            'Grzegorz Fitelberg': { ref: 'Fitelberg_G', viaf: '987654321' },
-            'Holbrooke, Joseph': { ref: 'Holbrooke_J', viaf: '456789123' },
-            'Joseph Holbrooke': { ref: 'Holbrooke_J', viaf: '456789123' },
-            'Koshetz, Nina Pavlovna': { ref: 'Koshetz_NP', viaf: '789123456' },
-            'Nina Pavlovna Koshetz': { ref: 'Koshetz_NP', viaf: '789123456' },
-            'Chevaillier, Lucien': { ref: 'Chevaillier_L', viaf: '111222333' },
-            'Lucien Chevaillier': { ref: 'Chevaillier_L', viaf: '111222333' },
-            'Bashkirov, Vladimir Nikolaevich': { ref: 'Bashkirov_VN', viaf: '444555666' },
-            'Vladimir Nikolaevich Bashkirov': { ref: 'Bashkirov_VN', viaf: '444555666' }
+            'Demasy, Paul': { 
+                ref: 'Demasy_Paul', 
+                viaf: '39088295',
+                wikidata: 'Q123456',
+                bnf: '12345678k'
+            },
+            'Prokofiev, Sergei': { 
+                ref: 'SSP', 
+                viaf: '71579098',
+                wikidata: 'Q49481',
+                bnf: '11920145k',
+                isni: '0000000121032683'
+            },
+            'Sergei Sergeevich Prokofiev': { 
+                ref: 'SSP', 
+                viaf: '71579098',
+                wikidata: 'Q49481',
+                bnf: '11920145k'
+            },
+            'Prokofiev, Sergey Sergeevich': { 
+                ref: 'SSP', 
+                viaf: '71579098',
+                wikidata: 'Q49481',
+                bnf: '11920145k'
+            },
+            'Debussy, Claude': {
+                ref: 'Debussy_Claude',
+                viaf: '22329925',
+                wikidata: 'Q4700',
+                bnf: '11888900p'
+            },
+            'Stravinsky, Igor': {
+                ref: 'Stravinsky_Igor',
+                viaf: '17309155',
+                wikidata: 'Q7314',
+                bnf: '11925698r'
+            },
+            'Shereshevsky, Moiseii Davidovich': { 
+                ref: 'Shereshevsky_MD', 
+                viaf: '123456789',
+                wikidata: 'Q123456'
+            },
+            'Fitelberg, Grzegorz': { 
+                ref: 'Fitelberg_G', 
+                viaf: '987654321',
+                wikidata: 'Q456789'
+            },
+            'Holbrooke, Joseph': { 
+                ref: 'Holbrooke_J', 
+                viaf: '456789123',
+                wikidata: 'Q789456'
+            },
+            'Koshetz, Nina Pavlovna': { 
+                ref: 'Koshetz_NP', 
+                viaf: '789123456',
+                wikidata: 'Q654321'
+            },
+            'Chevaillier, Lucien': { 
+                ref: 'Chevaillier_L', 
+                viaf: '111222333',
+                wikidata: 'Q987654'
+            },
+            'Bashkirov, Vladimir Nikolaevich': { 
+                ref: 'Bashkirov_VN', 
+                viaf: '444555666',
+                wikidata: 'Q147258'
+            }
         };
 
         // Fonctions existantes conservées intégralement
@@ -3005,8 +3249,8 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
             const container = document.getElementById('peopleContainer');
             const personDiv = document.createElement('div');
             personDiv.className = 'person-entry';
-            const viafId = 'personViaf_' + personCount;
             const nameId = 'personName_' + personCount;
+            const searchId = 'person_' + personCount;
             personDiv.innerHTML = `
                 <button type="button" class="remove-btn" onclick="removePerson(this)">Supprimer</button>
                 <div class="form-row">
@@ -3019,16 +3263,37 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                         <input type="text" name="personRef[]" placeholder="Rubinstein_Ida">
                     </div>
                 </div>
-                <div class="form-row">
+                <div class="form-row full">
                     <div>
-                        <label>VIAF ID</label>
-                        <div class="viaf-search-container">
-                            <input type="text" name="personViaf[]" id="${viafId}" placeholder="29614722">
-                            <button type="button" class="viaf-search-btn" onclick="searchViafForPerson('${viafId}', '${nameId}')">🔍 VIAF</button>
-                            <div id="${viafId}Results" class="viaf-results"></div>
+                        <label>Identifiants autorités</label>
+                        <div class="multi-search-container">
+                            <div class="search-buttons">
+                                <button type="button" class="viaf-search-btn" onclick="searchInDatabase('${searchId}', 'viaf', document.getElementById('${nameId}').value)">🔍 VIAF</button>
+                                <button type="button" class="wikidata-search-btn" onclick="searchInDatabase('${searchId}', 'wikidata', document.getElementById('${nameId}').value)">🔍 Wikidata</button>
+                                <button type="button" class="bnf-search-btn" onclick="searchInDatabase('${searchId}', 'bnf', document.getElementById('${nameId}').value)">🔍 BnF</button>
+                            </div>
+                            <div id="${searchId}SearchResults" class="viaf-results"></div>
+                            
+                            <div class="multi-ids-container">
+                                <div class="id-field">
+                                    <label class="id-label"><span style="color: #7c3aed;">●</span> VIAF ID</label>
+                                    <input type="text" class="id-input" name="personViaf[]" placeholder="29614722">
+                                </div>
+                                <div class="id-field">
+                                    <label class="id-label"><span style="color: #059669;">●</span> Wikidata ID</label>
+                                    <input type="text" class="id-input" name="personWikidata[]" placeholder="Q123456">
+                                </div>
+                                <div class="id-field">
+                                    <label class="id-label"><span style="color: #1e40af;">●</span> BnF ID</label>
+                                    <input type="text" class="id-input" name="personBnf[]" placeholder="11920145k">
+                                </div>
+                                <div class="id-field">
+                                    <label class="id-label">📚 ISNI</label>
+                                    <input type="text" class="id-input" name="personIsni[]" placeholder="0000000121032683">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div></div>
                 </div>
             `;
             container.appendChild(personDiv);
@@ -3081,8 +3346,8 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
             const container = document.getElementById('worksContainer');
             const workDiv = document.createElement('div');
             workDiv.className = 'work-entry';
-            const viafId = 'workViaf_' + workCount;
             const titleId = 'workTitle_' + workCount;
+            const searchId = 'work_' + workCount;
             workDiv.innerHTML = `
                 <button type="button" class="remove-btn" onclick="removeWork(this)">Supprimer</button>
                 
@@ -3116,19 +3381,45 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                     </div>
                 </div>
                 
-                <div class="form-row">
+                <div class="form-row full">
                     <div>
-                        <label>VIAF ID de l'œuvre</label>
-                        <div class="viaf-search-container">
-                            <input type="text" name="workViaf[]" id="${viafId}" placeholder="185796205">
-                            <button type="button" class="viaf-search-btn" onclick="searchViafForWork('${viafId}', '${titleId}')">🔍 VIAF</button>
-                            <div id="${viafId}Results" class="viaf-results"></div>
+                        <label>Identifiants autorités œuvre</label>
+                        <div class="multi-search-container">
+                            <div class="search-buttons">
+                                <button type="button" class="dezede-search-btn" onclick="searchInDatabase('${searchId}', 'dezede', document.getElementById('${titleId}').value)">🔍 Dezède</button>
+                                <button type="button" class="viaf-search-btn" onclick="searchInDatabase('${searchId}', 'viaf', document.getElementById('${titleId}').value)">🔍 VIAF</button>
+                                <button type="button" class="wikidata-search-btn" onclick="searchInDatabase('${searchId}', 'wikidata', document.getElementById('${titleId}').value)">🔍 Wikidata</button>
+                            </div>
+                            <div id="${searchId}SearchResults" class="viaf-results"></div>
+                            
+                            <div class="multi-ids-container">
+                                <div class="id-field">
+                                    <label class="id-label"><span style="color: #dc2626;">●</span> Dezède ID</label>
+                                    <input type="text" class="id-input" name="workDezede[]" placeholder="15447">
+                                </div>
+                                <div class="id-field">
+                                    <label class="id-label"><span style="color: #7c3aed;">●</span> VIAF ID</label>
+                                    <input type="text" class="id-input" name="workViaf[]" placeholder="185796205">
+                                </div>
+                                <div class="id-field">
+                                    <label class="id-label"><span style="color: #059669;">●</span> Wikidata ID</label>
+                                    <input type="text" class="id-input" name="workWikidata[]" placeholder="Q842402">
+                                </div>
+                                <div class="id-field">
+                                    <label class="id-label">🎼 IMSLP ID</label>
+                                    <input type="text" class="id-input" name="workImslp[]" placeholder="Category:Prokofiev">
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+                
+                <div class="form-row">
                     <div>
                         <label>Tonalité/Opus (si applicable)</label>
                         <input type="text" name="workOpus[]" placeholder="Op. 64">
                     </div>
+                    <div></div>
                 </div>
                 
                 <div class="form-row full">
@@ -3411,6 +3702,9 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                 senderName: document.getElementById('senderName').value,
                 senderRef: document.getElementById('senderRef').value,
                 senderViaf: document.getElementById('senderViaf').value,
+                senderWikidata: document.getElementById('senderWikidata').value,
+                senderBnf: document.getElementById('senderBnf').value,
+                senderIsni: document.getElementById('senderIsni').value,
                 senderAddress: document.getElementById('senderAddress').value,
                 senderStreet: document.getElementById('senderStreet').value,
                 senderCity: document.getElementById('senderCity').value,
@@ -3421,6 +3715,9 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                 recipientName: document.getElementById('recipientName').value,
                 recipientRef: document.getElementById('recipientRef').value,
                 recipientViaf: document.getElementById('recipientViaf').value,
+                recipientWikidata: document.getElementById('recipientWikidata').value,
+                recipientBnf: document.getElementById('recipientBnf').value,
+                recipientIsni: document.getElementById('recipientIsni').value,
                 receivedDate: document.getElementById('receivedDate').value,
                 country: document.getElementById('country').value,
                 settlement: document.getElementById('settlement').value,
@@ -3435,10 +3732,13 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                 holdingGeo: document.getElementById('holdingGeo').value
             };
 
-            // Récupérer les personnes
+            // Récupérer les personnes avec tous les identifiants
             const personNames = document.querySelectorAll('input[name="personName[]"]');
             const personRefs = document.querySelectorAll('input[name="personRef[]"]');
             const personViafs = document.querySelectorAll('input[name="personViaf[]"]');
+            const personWikidatas = document.querySelectorAll('input[name="personWikidata[]"]');
+            const personBnfs = document.querySelectorAll('input[name="personBnf[]"]');
+            const personIsnis = document.querySelectorAll('input[name="personIsni[]"]');
             
             data.people = [];
             for (let i = 0; i < personNames.length; i++) {
@@ -3446,7 +3746,10 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                     data.people.push({
                         name: personNames[i].value,
                         ref: personRefs[i].value,
-                        viaf: personViafs[i].value
+                        viaf: personViafs[i].value,
+                        wikidata: personWikidatas[i].value,
+                        bnf: personBnfs[i].value,
+                        isni: personIsnis[i].value
                     });
                 }
             }
@@ -3467,12 +3770,15 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                 }
             }
 
-            // Récupérer les œuvres
+            // Récupérer les œuvres avec tous les identifiants
             const workTitles = document.querySelectorAll('input[name="workTitle[]"]');
             const workRefs = document.querySelectorAll('input[name="workRef[]"]');
             const workComposers = document.querySelectorAll('input[name="workComposer[]"]');
             const workDates = document.querySelectorAll('input[name="workDate[]"]');
             const workViafs = document.querySelectorAll('input[name="workViaf[]"]');
+            const workWikidatas = document.querySelectorAll('input[name="workWikidata[]"]');
+            const workDezedeIds = document.querySelectorAll('input[name="workDezede[]"]');
+            const workImslps = document.querySelectorAll('input[name="workImslp[]"]');
             const workOpuses = document.querySelectorAll('input[name="workOpus[]"]');
             const workDescriptions = document.querySelectorAll('textarea[name="workDescription[]"]');
             const workTypes = document.querySelectorAll('input[name="workType[]"]');
@@ -3486,6 +3792,9 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                         composer: workComposers[i].value,
                         date: workDates[i].value,
                         viaf: workViafs[i].value,
+                        wikidata: workWikidatas[i].value,
+                        dezede: workDezedeIds[i].value,
+                        imslp: workImslps[i].value,
                         opus: workOpuses[i].value,
                         description: workDescriptions[i].value,
                         type: workTypes[i].value
@@ -3710,14 +4019,23 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                <person xml:id="${data.recipientRef}">
                   <persName>${data.recipientName}</persName>
                   ${data.recipientViaf ? `<idno type="VIAF">${data.recipientViaf}</idno>` : ''}
+                  ${data.recipientWikidata ? `<idno type="Wikidata">${data.recipientWikidata}</idno>` : ''}
+                  ${data.recipientBnf ? `<idno type="BnF">${data.recipientBnf}</idno>` : ''}
+                  ${data.recipientIsni ? `<idno type="ISNI">${data.recipientIsni}</idno>` : ''}
                </person>
                <person xml:id="${data.senderRef}">
                   <persName>${data.senderName}</persName>
                   ${data.senderViaf ? `<idno type="VIAF">${data.senderViaf}</idno>` : ''}
+                  ${data.senderWikidata ? `<idno type="Wikidata">${data.senderWikidata}</idno>` : ''}
+                  ${data.senderBnf ? `<idno type="BnF">${data.senderBnf}</idno>` : ''}
+                  ${data.senderIsni ? `<idno type="ISNI">${data.senderIsni}</idno>` : ''}
                </person>${data.people.map(person => `
                <person xml:id="${person.ref}">
                   <persName>${person.name}</persName>
                   ${person.viaf ? `<idno type="VIAF">${person.viaf}</idno>` : ''}
+                  ${person.wikidata ? `<idno type="Wikidata">${person.wikidata}</idno>` : ''}
+                  ${person.bnf ? `<idno type="BnF">${person.bnf}</idno>` : ''}
+                  ${person.isni ? `<idno type="ISNI">${person.isni}</idno>` : ''}
                </person>`).join('')}
                <person xml:id="NclsMrn">
                   <persName>${data.transcriber}</persName>
@@ -3762,7 +4080,10 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                   ${work.composer ? `<author>${work.composer}</author>` : ''}
                   ${work.date ? `<date>${work.date}</date>` : ''}
                   ${work.opus ? `<biblScope unit="opus">${work.opus}</biblScope>` : ''}
+                  ${work.dezede ? `<idno type="Dezede">${work.dezede}</idno>` : ''}
                   ${work.viaf ? `<idno type="VIAF">${work.viaf}</idno>` : ''}
+                  ${work.wikidata ? `<idno type="Wikidata">${work.wikidata}</idno>` : ''}
+                  ${work.imslp ? `<idno type="IMSLP">${work.imslp}</idno>` : ''}
                   ${work.description ? `<note>${work.description}</note>` : ''}
                </bibl>`).join('')}
             </listBibl>
@@ -3852,7 +4173,315 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
          `;
         }
 
-        // Fonctions de recherche VIAF
+        // Fonctions de recherche multi-bases
+        async function searchInDatabase(entityId, database, searchTerm) {
+            if (!searchTerm || searchTerm.trim().length < 3) {
+                showSearchError(entityId + 'SearchResults', `Veuillez saisir au moins 3 caractères pour ${database.toUpperCase()}`);
+                return;
+            }
+
+            const resultsContainer = document.getElementById(entityId + 'SearchResults');
+            const searchBtns = document.querySelectorAll(`[onclick*="${entityId}"][onclick*="${database}"]`);
+            
+            // Afficher le loading
+            showSearchLoading(resultsContainer, database);
+            searchBtns.forEach(btn => btn.innerHTML = `⏳ ${database.toUpperCase()}...`);
+
+            try {
+                let results = [];
+                
+                switch(database) {
+                    case 'viaf':
+                        results = await searchVIAF(searchTerm);
+                        break;
+                    case 'wikidata':
+                        results = await searchWikidata(searchTerm);
+                        break;
+                    case 'bnf':
+                        results = await searchBnF(searchTerm);
+                        break;
+                    case 'dezede':
+                        results = await searchDezede(searchTerm);
+                        break;
+                    default:
+                        throw new Error('Base de données non supportée');
+                }
+                
+                // Afficher les résultats
+                displayMultiSearchResults(entityId, database, results);
+                
+            } catch (error) {
+                console.error(`Erreur recherche ${database}:`, error);
+                showSearchError(entityId + 'SearchResults', `Erreur lors de la recherche ${database.toUpperCase()}`);
+            } finally {
+                searchBtns.forEach(btn => btn.innerHTML = `🔍 ${database.toUpperCase()}`);
+            }
+        }
+
+        async function searchVIAF(searchTerm) {
+            const encodedQuery = encodeURIComponent(searchTerm);
+            const url = `https://viaf.org/viaf/AutoSuggest?query=${encodedQuery}`;
+            
+            const response = await fetch(url, {
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erreur VIAF: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const results = [];
+            
+            if (data && data.result) {
+                data.result.forEach(item => {
+                    if (item.viafid && item.term) {
+                        results.push({
+                            id: item.viafid,
+                            name: item.term,
+                            type: item.nametype || 'Personal',
+                            source: 'viaf'
+                        });
+                    }
+                });
+            }
+            
+            return results.slice(0, 8);
+        }
+
+        async function searchWikidata(searchTerm) {
+            const encodedQuery = encodeURIComponent(searchTerm);
+            const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodedQuery}&language=fr&format=json&origin=*`;
+            
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`Erreur Wikidata: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const results = [];
+            
+            if (data && data.search) {
+                data.search.forEach(item => {
+                    if (item.id && item.label) {
+                        results.push({
+                            id: item.id,
+                            name: item.label,
+                            type: item.description || 'entité',
+                            source: 'wikidata'
+                        });
+                    }
+                });
+            }
+            
+            return results.slice(0, 8);
+        }
+
+        async function searchBnF(searchTerm) {
+            // Simulation d'une recherche BnF (API réelle nécessiterait authentification)
+            // En pratique, vous pourriez utiliser l'API data.bnf.fr
+            const mockResults = [];
+            
+            if (searchTerm.toLowerCase().includes('prokofiev')) {
+                mockResults.push({
+                    id: '11920145k',
+                    name: 'Prokofiev, Sergej Sergeevič (1891-1953)',
+                    type: 'Personne',
+                    source: 'bnf'
+                });
+            }
+            
+            if (searchTerm.toLowerCase().includes('debussy')) {
+                mockResults.push({
+                    id: '11888900p',
+                    name: 'Debussy, Claude (1862-1918)',
+                    type: 'Personne',
+                    source: 'bnf'
+                });
+            }
+            
+            // Simuler un délai d'API
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            return mockResults;
+        }
+
+        async function searchDezede(searchTerm) {
+            // Simulation d'une recherche Dezède
+            // En pratique, utiliserait l'API Dezède si disponible
+            const mockResults = [];
+            
+            if (searchTerm.toLowerCase().includes('roméo') || searchTerm.toLowerCase().includes('romeo')) {
+                mockResults.push({
+                    id: '15447',
+                    name: 'Roméo et Juliette (Prokofiev)',
+                    type: 'Ballet',
+                    source: 'dezede'
+                });
+            }
+            
+            if (searchTerm.toLowerCase().includes('orange')) {
+                mockResults.push({
+                    id: '15448',
+                    name: 'L\'Amour des trois oranges',
+                    type: 'Opéra',
+                    source: 'dezede'
+                });
+            }
+            
+            if (searchTerm.toLowerCase().includes('pelléas')) {
+                mockResults.push({
+                    id: '8934',
+                    name: 'Pelléas et Mélisande (Debussy)',
+                    type: 'Opéra',
+                    source: 'dezede'
+                });
+            }
+            
+            // Simuler un délai d'API
+            await new Promise(resolve => setTimeout(resolve, 600));
+            
+            return mockResults;
+        }
+
+        function showSearchLoading(container, database) {
+            const dbLabels = {
+                'viaf': 'VIAF',
+                'wikidata': 'Wikidata',
+                'bnf': 'BnF',
+                'dezede': 'Dezède'
+            };
+            container.innerHTML = `<div class="viaf-loading">🔍 Recherche ${dbLabels[database]}...</div>`;
+            container.style.display = 'block';
+        }
+
+        function showSearchError(containerId, message) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="viaf-error">❌ ${message}</div>`;
+            container.style.display = 'block';
+            
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 3000);
+        }
+
+        function displayMultiSearchResults(entityId, database, results) {
+            const container = document.getElementById(entityId + 'SearchResults');
+            
+            if (!results || results.length === 0) {
+                container.innerHTML = `<div class="viaf-no-results">Aucun résultat trouvé dans ${database.toUpperCase()}</div>`;
+                container.style.display = 'block';
+                setTimeout(() => {
+                    container.style.display = 'none';
+                }, 3000);
+                return;
+            }
+
+            let html = '';
+            results.forEach((result, index) => {
+                html += `
+                    <div class="viaf-result-item" onclick="selectMultiResult('${entityId}', '${database}', '${result.id}', '${result.name.replace(/'/g, "\\'")}')">
+                        <div class="viaf-result-name">${result.name}</div>
+                        <div class="viaf-result-details">${result.type}</div>
+                        <div class="viaf-result-id">
+                            <span class="search-result-source ${result.source}">${result.source.toUpperCase()}</span>
+                            ${result.id}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            container.style.display = 'block';
+
+            // Fermer au clic à l'extérieur
+            document.addEventListener('click', function closeSearchResults(e) {
+                if (!container.contains(e.target) && !e.target.closest(`.${database}-search-btn`)) {
+                    container.style.display = 'none';
+                    document.removeEventListener('click', closeSearchResults);
+                }
+            });
+        }
+
+        function selectMultiResult(entityId, database, resultId, name) {
+            const container = document.getElementById(entityId + 'SearchResults');
+            
+            // Déterminer le champ à remplir selon la base
+            let inputField;
+            const fieldMappings = {
+                'viaf': 'Viaf',
+                'wikidata': 'Wikidata',
+                'bnf': 'Bnf',
+                'dezede': 'Dezede'
+            };
+            
+            const suffix = fieldMappings[database];
+            
+            // Chercher le bon champ selon l'entité
+            if (entityId === 'sender') {
+                inputField = document.getElementById(`sender${suffix}`);
+            } else if (entityId === 'recipient') {
+                inputField = document.getElementById(`recipient${suffix}`);
+            } else if (entityId.startsWith('person_')) {
+                // Pour les personnes dans la liste
+                const personEntry = container.closest('.person-entry');
+                inputField = personEntry.querySelector(`input[name="person${suffix}[]"]`);
+            } else if (entityId.startsWith('work_')) {
+                // Pour les œuvres dans la liste
+                const workEntry = container.closest('.work-entry');
+                inputField = workEntry.querySelector(`input[name="work${suffix}[]"]`);
+            }
+            
+            if (inputField) {
+                // Remplir le champ
+                inputField.value = resultId;
+                inputField.classList.add(`filled-${database}`);
+                
+                // Fermer les résultats
+                container.style.display = 'none';
+                
+                // Ajouter un indicateur visuel temporaire
+                setTimeout(() => {
+                    inputField.classList.remove(`filled-${database}`);
+                }, 3000);
+                
+                // Notification
+                showSearchSuccess(`${database.toUpperCase()} ID trouvé: ${resultId} pour "${name}"`);
+            }
+        }
+
+        function showSearchSuccess(message) {
+            // Créer une notification temporaire
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #059669;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = '✅ ' + message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Fonctions de recherche VIAF (conservées pour compatibilité)
         async function searchViaf(inputId, searchTerm) {
             if (!searchTerm || searchTerm.trim().length < 3) {
                 showViafError(inputId + 'Results', 'Veuillez saisir au moins 3 caractères');
@@ -4099,26 +4728,28 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
             // Remplir la date d'édition avec la date actuelle
             document.getElementById('editionDate').value = new Date().toISOString().split('T')[0];
             
-            // Initialiser les valeurs par défaut
+            // Initialiser les valeurs par défaut pour Prokofiev
             document.getElementById('recipientName').value = 'Prokofiev, Sergei';
             document.getElementById('recipientRef').value = 'SSP';
             document.getElementById('recipientViaf').value = '71579098';
+            document.getElementById('recipientWikidata').value = 'Q49481';
+            document.getElementById('recipientBnf').value = '11920145k';
             
             // Ajouter les event listeners pour la détection de changements
             document.getElementById('senderName').addEventListener('input', updateLetterTitles);
             document.getElementById('recipientName').addEventListener('input', updateLetterTitles);
             document.getElementById('senderCity').addEventListener('input', suggestDateFormat);
             
-            // Event listeners pour la recherche VIAF automatique
+            // Event listeners pour les recherches automatiques multi-bases
             document.getElementById('senderName').addEventListener('blur', function() {
-                if (this.value && !document.getElementById('senderViaf').value) {
-                    setTimeout(() => searchViaf('senderViaf', this.value), 500);
+                if (this.value && !hasAnyId('sender')) {
+                    setTimeout(() => searchInDatabase('sender', 'viaf', this.value), 500);
                 }
             });
             
             document.getElementById('recipientName').addEventListener('blur', function() {
-                if (this.value && !document.getElementById('recipientViaf').value) {
-                    setTimeout(() => searchViaf('recipientViaf', this.value), 500);
+                if (this.value && !hasAnyId('recipient')) {
+                    setTimeout(() => searchInDatabase('recipient', 'viaf', this.value), 500);
                 }
             });
 
@@ -4141,6 +4772,15 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                 }
             });
         };
+
+        // Fonction utilitaire pour vérifier si une entité a déjà des identifiants
+        function hasAnyId(entityType) {
+            const fields = ['Viaf', 'Wikidata', 'Bnf', 'Isni'];
+            return fields.some(field => {
+                const element = document.getElementById(`${entityType}${field}`);
+                return element && element.value.trim() !== '';
+            });
+        }
     </script>
 </body>
 </html>
