@@ -1242,6 +1242,165 @@
             background: #f0fdf4;
         }
 
+        /* Styles pour l'import multi-pages */
+        .pages-container {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .page-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-number {
+            background: #f59e0b;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .page-info {
+            flex: 1;
+        }
+
+        .page-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .page-details {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s ease;
+        }
+
+        .page-btn:hover {
+            background: #475569;
+        }
+
+        .page-btn.up {
+            background: #10b981;
+        }
+
+        .page-btn.up:hover {
+            background: #059669;
+        }
+
+        .page-btn.down {
+            background: #f59e0b;
+        }
+
+        .page-btn.down:hover {
+            background: #d97706;
+        }
+
+        .page-btn.remove {
+            background: #ef4444;
+        }
+
+        .page-btn.remove:hover {
+            background: #dc2626;
+        }
+
+        .multi-file-input {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .multi-file-input:hover {
+            border-color: #d97706;
+            background: #fde68a;
+        }
+
+        .multi-file-input.drag-over {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .incipit-preview {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .incipit-preview-header {
+            font-weight: 600;
+            color: #0ea5e9;
+            margin-bottom: 8px;
+        }
+
+        .incipit-preview-text {
+            font-style: italic;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .text-stats {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .text-stat {
+            text-align: center;
+        }
+
+        .text-stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0ea5e9;
+        }
+
+        .text-stat-label {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
         .tabs {
             display: flex;
             border-bottom: 2px solid #e2e8f0;
@@ -1285,7 +1444,7 @@
                 <span class="header-icon">📄</span>
                 Proko24 TEI Generator
             </h1>
-            <p>Générateur intelligent avec import catalogue, analyse IA, intégration Prima XML et recherche multi-bases (VIAF, Wikidata, Dezède, BnF)</p>
+            <p>Générateur intelligent avec import catalogue, analyse IA, intégration Prima XML multi-pages et recherche multi-bases (VIAF, Wikidata, Dezède, BnF)</p>
         </div>
 
         <div class="toolbar">
@@ -1312,7 +1471,7 @@
 
             <input type="file" id="catalogueFile" accept=".xlsx,.csv" style="display: none;" onchange="loadCatalogue(event)">
             <input type="file" id="transcriptionFile" accept=".xml,.txt" style="display: none;" onchange="loadTranscription(event)">
-            <input type="file" id="primaFile" accept=".xml" style="display: none;" onchange="loadPrimaXML(event)">
+            <input type="file" id="primaFile" accept=".xml" multiple style="display: none;" onchange="loadMultiplePrimaXML(event)">
         </div>
 
         <!-- Modal de sélection de lettre -->
@@ -1939,6 +2098,7 @@
 
         // Nouvelles variables pour Prima XML
         let primaXMLData = null;
+        let primaPages = []; // Array pour stocker plusieurs pages
         let primaEntities = {
             persons: [],
             places: [],
@@ -1953,7 +2113,7 @@
             'organization': 'orgName'
         };
 
-        // Variables pour la recherche VIAF
+        // Variables pour la recherche multi-bases
         let viafCache = new Map();
         let activeViafSearch = null;
 
@@ -2083,6 +2243,362 @@
             document.getElementById('prima' + tabName.charAt(0).toUpperCase() + tabName.slice(1) + 'Tab').classList.add('active');
         }
 
+        // Nouvelles fonctions pour Prima XML multi-pages
+        async function loadMultiplePrimaXML(event) {
+            const files = Array.from(event.target.files);
+            if (!files.length) return;
+
+            try {
+                // Réinitialiser les pages
+                primaPages = [];
+                
+                // Charger tous les fichiers
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const text = await file.text();
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(text, 'text/xml');
+                    
+                    // Vérifier si c'est un fichier Prima XML valide
+                    if (!xmlDoc.querySelector('PcGts') && !xmlDoc.querySelector('Page')) {
+                        alert(`❌ Le fichier "${file.name}" ne semble pas être un Prima XML valide`);
+                        continue;
+                    }
+                    
+                    // Ajouter la page
+                    primaPages.push({
+                        filename: file.name,
+                        xmlDoc: xmlDoc,
+                        pageNumber: i + 1
+                    });
+                }
+                
+                if (primaPages.length === 0) {
+                    alert('❌ Aucun fichier Prima XML valide trouvé');
+                    return;
+                }
+                
+                // Trier les pages par nom de fichier (pour gérer les noms comme "page_1.xml", "page_2.xml", etc.)
+                primaPages.sort((a, b) => {
+                    const aNum = extractPageNumber(a.filename);
+                    const bNum = extractPageNumber(b.filename);
+                    return aNum - bNum;
+                });
+                
+                // Réassigner les numéros de pages
+                primaPages.forEach((page, index) => {
+                    page.pageNumber = index + 1;
+                });
+                
+                // Analyser toutes les pages
+                analyzeMultiplePrimaXML();
+                
+                // Générer l'incipit automatiquement
+                generateIncipitFromFirstPage();
+                
+                // Afficher l'interface
+                displayPagesInterface();
+                
+                document.getElementById('primaStatus').className = 'status-indicator status-prima';
+                alert(`✅ ${primaPages.length} page(s) Prima XML chargée(s) avec succès!`);
+                
+            } catch (error) {
+                alert('❌ Erreur lors du chargement des fichiers: ' + error.message);
+            }
+        }
+
+        function extractPageNumber(filename) {
+            // Extraire le numéro de page du nom de fichier
+            // Supporte les formats : page_1.xml, p1.xml, 001.xml, etc.
+            const matches = filename.match(/(\d+)/g);
+            if (matches) {
+                return parseInt(matches[matches.length - 1]); // Prendre le dernier nombre trouvé
+            }
+            return 0;
+        }
+
+        function displayPagesInterface() {
+            const container = document.getElementById('pagesContainer');
+            const pagesList = document.getElementById('pagesList');
+            
+            // Afficher le conteneur
+            container.style.display = 'block';
+            
+            // Vider la liste
+            pagesList.innerHTML = '';
+            
+            // Afficher chaque page
+            primaPages.forEach((page, index) => {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = 'page-item';
+                
+                const regions = page.xmlDoc.querySelectorAll('TextRegion').length;
+                const lines = page.xmlDoc.querySelectorAll('TextLine').length;
+                const words = page.xmlDoc.querySelectorAll('Word').length;
+                
+                pageDiv.innerHTML = `
+                    <div class="page-number">${page.pageNumber}</div>
+                    <div class="page-info">
+                        <div class="page-title">${page.filename}</div>
+                        <div class="page-details">${regions} régions, ${lines} lignes, ${words} mots</div>
+                    </div>
+                    <div class="page-actions">
+                        ${index > 0 ? `<button class="page-btn up" onclick="movePageUp(${index})">↑</button>` : ''}
+                        ${index < primaPages.length - 1 ? `<button class="page-btn down" onclick="movePageDown(${index})">↓</button>` : ''}
+                        <button class="page-btn remove" onclick="removePage(${index})">✕</button>
+                    </div>
+                `;
+                
+                pagesList.appendChild(pageDiv);
+            });
+            
+            // Mettre à jour les statistiques
+            updateTextStats();
+        }
+
+        function updateTextStats() {
+            let totalRegions = 0;
+            let totalLines = 0;
+            let totalWords = 0;
+            
+            primaPages.forEach(page => {
+                totalRegions += page.xmlDoc.querySelectorAll('TextRegion').length;
+                totalLines += page.xmlDoc.querySelectorAll('TextLine').length;
+                totalWords += page.xmlDoc.querySelectorAll('Word').length;
+            });
+            
+            document.getElementById('totalPages').textContent = primaPages.length;
+            document.getElementById('totalRegions').textContent = totalRegions;
+            document.getElementById('totalLines').textContent = totalLines;
+            document.getElementById('totalWords').textContent = totalWords;
+        }
+
+        function movePageUp(index) {
+            if (index > 0) {
+                [primaPages[index], primaPages[index - 1]] = [primaPages[index - 1], primaPages[index]];
+                // Réassigner les numéros
+                primaPages.forEach((page, i) => page.pageNumber = i + 1);
+                displayPagesInterface();
+                generateIncipitFromFirstPage(); // Régénérer l'incipit si la première page change
+            }
+        }
+
+        function movePageDown(index) {
+            if (index < primaPages.length - 1) {
+                [primaPages[index], primaPages[index + 1]] = [primaPages[index + 1], primaPages[index]];
+                // Réassigner les numéros
+                primaPages.forEach((page, i) => page.pageNumber = i + 1);
+                displayPagesInterface();
+                generateIncipitFromFirstPage(); // Régénérer l'incipit si la première page change
+            }
+        }
+
+        function removePage(index) {
+            if (confirm(`Êtes-vous sûr de vouloir supprimer la page ${primaPages[index].pageNumber} ?`)) {
+                primaPages.splice(index, 1);
+                // Réassigner les numéros
+                primaPages.forEach((page, i) => page.pageNumber = i + 1);
+                displayPagesInterface();
+                if (index === 0) generateIncipitFromFirstPage(); // Régénérer l'incipit si on supprime la première page
+            }
+        }
+
+        function generateIncipitFromFirstPage() {
+            if (primaPages.length === 0) return;
+            
+            const firstPage = primaPages[0];
+            const textLines = firstPage.xmlDoc.querySelectorAll('TextLine');
+            
+            let incipitLines = [];
+            let lineCount = 0;
+            
+            // Prendre les deux premières lignes avec du texte
+            for (let line of textLines) {
+                const textEquiv = line.querySelector('TextEquiv Unicode');
+                if (textEquiv && textEquiv.textContent.trim()) {
+                    incipitLines.push(textEquiv.textContent.trim());
+                    lineCount++;
+                    if (lineCount >= 2) break;
+                }
+            }
+            
+            if (incipitLines.length > 0) {
+                const generatedIncipit = incipitLines.join(' ').substring(0, 100);
+                document.getElementById('incipitText').textContent = generatedIncipit + (generatedIncipit.length >= 100 ? '...' : '');
+                document.getElementById('incipitPreview').style.display = 'block';
+            }
+        }
+
+        function applyGeneratedIncipit() {
+            const incipitText = document.getElementById('incipitText').textContent;
+            document.getElementById('incipit').value = incipitText;
+            document.getElementById('incipit').classList.add('prima-filled-field');
+            setTimeout(() => document.getElementById('incipit').classList.remove('prima-filled-field'), 3000);
+            showSearchSuccess('Incipit appliqué automatiquement depuis la première page');
+        }
+
+        function analyzeMultiplePrimaXML() {
+            // Combiner toutes les pages pour l'analyse
+            let totalRegions = 0;
+            let totalLines = 0;
+            let totalWords = 0;
+            let totalTags = 0;
+            
+            // Réinitialiser les entités
+            primaEntities = {
+                persons: [],
+                places: [],
+                dates: [],
+                works: []
+            };
+            
+            // Analyser chaque page
+            primaPages.forEach(page => {
+                const regions = page.xmlDoc.querySelectorAll('TextRegion');
+                const lines = page.xmlDoc.querySelectorAll('TextLine');
+                const words = page.xmlDoc.querySelectorAll('Word');
+                const tags = page.xmlDoc.querySelectorAll('Word[custom]');
+                
+                totalRegions += regions.length;
+                totalLines += lines.length;
+                totalWords += words.length;
+                totalTags += tags.length;
+                
+                // Analyser les entités de cette page
+                analyzePrimaEntitiesFromPage(page.xmlDoc);
+            });
+            
+            // Mettre à jour les statistiques
+            document.getElementById('primaRegions').textContent = totalRegions;
+            document.getElementById('primaLines').textContent = totalLines;
+            document.getElementById('primaWords').textContent = totalWords;
+            document.getElementById('primaTags').textContent = totalTags;
+            
+            // Construire l'arbre de structure pour toutes les pages
+            buildMultiPageStructureTree();
+            
+            // Afficher les entités
+            displayPrimaEntities();
+            
+            // Créer le texte combiné pour l'analyse IA
+            createCombinedTranscriptionText();
+            
+            // Afficher les onglets d'analyse
+            document.getElementById('primaContent').style.display = 'block';
+        }
+
+        function analyzePrimaEntitiesFromPage(xmlDoc) {
+            const wordsWithTags = xmlDoc.querySelectorAll('Word[custom]');
+            
+            wordsWithTags.forEach(word => {
+                const customAttr = word.getAttribute('custom');
+                const wordText = word.querySelector('TextEquiv Unicode');
+                const text = wordText ? wordText.textContent : '';
+                
+                const tags = parsePrimaCustomTags(customAttr);
+                tags.forEach(tag => {
+                    const entity = { text, tag, element: word };
+                    
+                    switch(tag.type) {
+                        case 'person':
+                            primaEntities.persons.push(entity);
+                            break;
+                        case 'place':
+                            primaEntities.places.push(entity);
+                            break;
+                        case 'date':
+                            primaEntities.dates.push(entity);
+                            break;
+                        case 'work':
+                            primaEntities.works.push(entity);
+                            break;
+                    }
+                });
+            });
+        }
+
+        function buildMultiPageStructureTree() {
+            const container = document.getElementById('primaStructure');
+            container.innerHTML = '';
+            
+            primaPages.forEach((page, pageIndex) => {
+                // En-tête de page
+                const pageHeader = document.createElement('div');
+                pageHeader.className = 'prima-node region';
+                pageHeader.innerHTML = `📄 Page ${page.pageNumber} - ${page.filename}`;
+                pageHeader.style.backgroundColor = '#f0f9ff';
+                pageHeader.style.fontWeight = 'bold';
+                container.appendChild(pageHeader);
+                
+                const regions = page.xmlDoc.querySelectorAll('TextRegion');
+                
+                regions.forEach((region, regionIndex) => {
+                    const regionNode = document.createElement('div');
+                    regionNode.className = 'prima-node region';
+                    regionNode.innerHTML = `📄 Région ${regionIndex + 1}`;
+                    regionNode.style.marginLeft = '20px';
+                    container.appendChild(regionNode);
+                    
+                    const lines = region.querySelectorAll('TextLine');
+                    lines.forEach((line, lineIndex) => {
+                        const lineNode = document.createElement('div');
+                        lineNode.className = 'prima-node line';
+                        const textEquiv = line.querySelector('TextEquiv Unicode');
+                        const lineText = textEquiv ? textEquiv.textContent.substring(0, 50) + '...' : `Ligne ${lineIndex + 1}`;
+                        lineNode.innerHTML = `📝 ${lineText}`;
+                        lineNode.style.marginLeft = '40px';
+                        container.appendChild(lineNode);
+                        
+                        const words = line.querySelectorAll('Word');
+                        words.forEach((word, wordIndex) => {
+                            const customAttr = word.getAttribute('custom');
+                            if (customAttr) {
+                                const wordNode = document.createElement('div');
+                                wordNode.className = 'prima-node word';
+                                const wordText = word.querySelector('TextEquiv Unicode');
+                                wordNode.innerHTML = `🏷️ ${wordText ? wordText.textContent : 'Mot ' + (wordIndex + 1)}`;
+                                wordNode.style.marginLeft = '60px';
+                                container.appendChild(wordNode);
+                                
+                                const tags = parsePrimaCustomTags(customAttr);
+                                tags.forEach(tag => {
+                                    const tagNode = document.createElement('div');
+                                    tagNode.className = 'prima-node tag';
+                                    tagNode.innerHTML = `🏷️ ${tag.type}: ${tag.value}`;
+                                    tagNode.style.marginLeft = '80px';
+                                    container.appendChild(tagNode);
+                                });
+                            }
+                        });
+                    });
+                });
+            });
+        }
+
+        function createCombinedTranscriptionText() {
+            // Combiner le texte de toutes les pages pour l'analyse IA
+            let combinedText = '';
+            
+            primaPages.forEach((page, pageIndex) => {
+                combinedText += `\n\n=== PAGE ${page.pageNumber} ===\n\n`;
+                
+                const lines = page.xmlDoc.querySelectorAll('TextLine');
+                lines.forEach(line => {
+                    const textEquiv = line.querySelector('TextEquiv Unicode');
+                    if (textEquiv && textEquiv.textContent.trim()) {
+                        combinedText += textEquiv.textContent.trim() + '\n';
+                    }
+                });
+            });
+            
+            // Stocker le texte combiné pour l'analyse IA
+            transcriptionText = combinedText.trim();
+            
+            // Activer le bouton d'analyse IA
+            document.getElementById('aiBtn').disabled = false;
+        }
+
+        // Fonction Prima XML originale (conservée pour compatibilité)
         async function loadPrimaXML(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -2836,21 +3352,40 @@
         }
 
         async function runAIAnalysis() {
+            // Vérifier si nous avons du texte à analyser
+            if (!transcriptionText && primaPages.length === 0) {
+                alert('Veuillez d\'abord charger une transcription Transkribus ou des fichiers Prima XML');
+                return;
+            }
+            
+            // Si pas de transcriptionText mais qu'on a des pages Prima, créer le texte combiné
+            if (!transcriptionText && primaPages.length > 0) {
+                createCombinedTranscriptionText();
+            }
+            
             if (!transcriptionText) {
-                alert('Veuillez d\'abord charger une transcription Transkribus');
+                alert('Impossible d\'extraire le texte pour l\'analyse');
                 return;
             }
             
             document.getElementById('aiBtn').innerHTML = '🤖 Analyse en cours... <span class="loading"></span>';
             
             try {
+                // Vérifier si l'API Claude est configurée
                 const apiKey = localStorage.getItem('claude_api_key');
                 if (!apiKey) {
                     showAPIKeyDialog();
                     return;
                 }
                 
+                console.log('Démarrage analyse IA avec texte:', transcriptionText.substring(0, 100) + '...');
+                
+                // Analyser avec Claude API
                 const analysisResults = await analyzeWithClaude(transcriptionText, apiKey);
+                
+                console.log('Résultats analyse IA:', analysisResults);
+                
+                // Afficher les résultats avec validation humaine
                 displayAIAnalysisWithValidation(analysisResults);
                 
                 document.getElementById('aiStatus').className = 'status-indicator status-complete';
@@ -2858,30 +3393,40 @@
                 
             } catch (error) {
                 console.error('Erreur analyse IA:', error);
-                alert('Erreur lors de l\'analyse IA: ' + error.message + '\nVérifiez votre clé API Claude.');
+                alert('Erreur lors de l\'analyse IA: ' + error.message + '\n\nVérifiez votre clé API Claude ou votre connexion internet.');
                 document.getElementById('aiBtn').innerHTML = '🤖 Analyse IA';
             }
         }
 
         function showAPIKeyDialog() {
-            const apiKey = prompt(`🔑 Configuration API Claude
+            const existingKey = localStorage.getItem('claude_api_key');
+            const message = existingKey ? 
+                'Votre clé API Claude semble invalide. Veuillez la mettre à jour :' : 
+                `🔑 Configuration API Claude
 
 Pour utiliser l'analyse IA, vous devez configurer votre clé API Claude :
 
 1. Créez un compte sur console.anthropic.com
-2. Générez une clé API
-3. Entrez-la ci-dessous (elle sera stockée localement)
+2. Générez une clé API (commence par "sk-ant-")
+3. Entrez-la ci-dessous (elle sera stockée localement)`;
 
-Clé API Claude :`);
+            const apiKey = prompt(message + '\n\nClé API Claude :', existingKey || '');
             
             if (apiKey && apiKey.trim()) {
+                if (!apiKey.startsWith('sk-ant-')) {
+                    alert('⚠️ La clé API Claude doit commencer par "sk-ant-". Veuillez vérifier votre clé.');
+                    return;
+                }
                 localStorage.setItem('claude_api_key', apiKey.trim());
+                console.log('Clé API Claude configurée');
                 runAIAnalysis();
             }
         }
 
         async function analyzeWithClaude(text, apiKey) {
             const prompt = buildAnalysisPrompt(text);
+            
+            console.log('Envoi à Claude API...');
             
             const response = await fetch('https://api.anthropic.com/v1/messages', {
                 method: 'POST',
@@ -2900,11 +3445,17 @@ Clé API Claude :`);
                 })
             });
 
+            console.log('Réponse Claude API status:', response.status);
+
             if (!response.ok) {
-                throw new Error(`Erreur API Claude: ${response.status}`);
+                const errorText = await response.text();
+                console.error('Erreur API Claude:', errorText);
+                throw new Error(`Erreur API Claude (${response.status}): ${errorText}`);
             }
 
             const data = await response.json();
+            console.log('Données reçues de Claude:', data);
+            
             return parseClaudeResponse(data.content[0].text);
         }
 
@@ -2966,15 +3517,24 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
 
         function parseClaudeResponse(responseText) {
             try {
+                console.log('Parsing réponse Claude:', responseText);
+                
+                // Nettoyer la réponse et extraire le JSON
                 const jsonMatch = responseText.match(/\{[\s\S]*\}/);
                 if (!jsonMatch) {
-                    throw new Error('Format de réponse invalide');
+                    throw new Error('Format de réponse invalide - aucun JSON trouvé');
                 }
                 
-                return JSON.parse(jsonMatch[0]);
+                const jsonStr = jsonMatch[0];
+                console.log('JSON extrait:', jsonStr);
+                
+                const parsed = JSON.parse(jsonStr);
+                console.log('JSON parsé:', parsed);
+                
+                return parsed;
             } catch (error) {
-                console.error('Erreur parsing Claude:', error);
-                throw new Error('Impossible de parser la réponse de Claude');
+                console.error('Erreur parsing Claude:', error, 'Texte:', responseText);
+                throw new Error('Impossible de parser la réponse de Claude: ' + error.message);
             }
         }
 
@@ -3808,6 +4368,12 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                 data.primaEntities = primaEntities;
             }
 
+            // Ajouter les données multi-pages si disponibles
+            if (primaPages && primaPages.length > 0) {
+                data.primaPages = primaPages;
+                data.totalPages = primaPages.length;
+            }
+
             return data;
         }
 
@@ -4106,7 +4672,11 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
       <graphic n="1" xml:id="${data.spaId}_1"
          url="${data.facsimile1}"/>` : ''}${data.facsimile2 ? `
       <graphic n="2" xml:id="${data.spaId}_2"
-         url="${data.facsimile2}"/>` : ''}
+         url="${data.facsimile2}"/>` : ''}${data.totalPages ? 
+         // Générer les facsimilés pour toutes les pages Prima
+         Array.from({length: data.totalPages}, (_, i) => `
+      <graphic n="${i + 1}" xml:id="${data.spaId}_${i + 1}"
+         url="[URL_FACSIMILE_PAGE_${i + 1}]"/>`).join('') : ''}
    </facsimile>
    <text type="letter">
       <body>
@@ -4128,6 +4698,12 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
         }
 
         function generateTEIBodyFromPrima(xmlDoc) {
+            // Si on a plusieurs pages, utiliser la nouvelle fonction
+            if (primaPages && primaPages.length > 0) {
+                return generateTEIBodyFromMultiplePages();
+            }
+            
+            // Fonction originale pour une seule page
             let teiBody = '';
             const regions = xmlDoc.querySelectorAll('TextRegion');
             
@@ -4159,6 +4735,55 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                     
                     teiBody += processedText.trim();
                     teiBody += '</l>';
+                });
+                
+                teiBody += '\n            </div>';
+            });
+            
+            return teiBody + '\n         ';
+        }
+
+        function generateTEIBodyFromMultiplePages() {
+            let teiBody = '';
+            
+            primaPages.forEach((page, pageIndex) => {
+                // Div pour chaque page
+                teiBody += `\n            <pb n="${page.pageNumber}" facs="#${document.getElementById('spaId').value || 'SPA_XXXX'}_${page.pageNumber}"/>`;
+                teiBody += `\n            <div type="page" n="${page.pageNumber}">`;
+                
+                const regions = page.xmlDoc.querySelectorAll('TextRegion');
+                
+                regions.forEach((region, regionIndex) => {
+                    teiBody += `\n               <div type="region" n="${regionIndex + 1}">`;
+                    
+                    const lines = region.querySelectorAll('TextLine');
+                    lines.forEach((line, lineIndex) => {
+                        teiBody += `\n                  <l n="${lineIndex + 1}">`;
+                        
+                        const words = line.querySelectorAll('Word');
+                        let processedText = '';
+                        
+                        words.forEach(word => {
+                            const wordText = word.querySelector('TextEquiv Unicode');
+                            const text = wordText ? wordText.textContent : '';
+                            const customAttr = word.getAttribute('custom');
+                            
+                            if (customAttr) {
+                                const tags = parsePrimaCustomTags(customAttr);
+                                tags.forEach(tag => {
+                                    const mappedElement = primaMappingRules[tag.type] || tag.type;
+                                    processedText += `<${mappedElement}>${text}</${mappedElement}> `;
+                                });
+                            } else {
+                                processedText += text + ' ';
+                            }
+                        });
+                        
+                        teiBody += processedText.trim();
+                        teiBody += '</l>';
+                    });
+                    
+                    teiBody += '\n               </div>';
                 });
                 
                 teiBody += '\n            </div>';
@@ -4721,6 +5346,55 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
             }
         };
 
+        // Gestion du drag & drop pour Prima XML
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.querySelector('.multi-file-input');
+            
+            if (dropZone) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, preventDefaults, false);
+                });
+
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight(e) {
+                    dropZone.classList.add('drag-over');
+                }
+
+                function unhighlight(e) {
+                    dropZone.classList.remove('drag-over');
+                }
+
+                dropZone.addEventListener('drop', handleDrop, false);
+
+                function handleDrop(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    
+                    // Simuler le changement d'input file
+                    const fileInput = document.getElementById('primaFile');
+                    const event = new Event('change');
+                    Object.defineProperty(event, 'target', {
+                        writable: false,
+                        value: { files: files }
+                    });
+                    
+                    loadMultiplePrimaXML(event);
+                }
+            }
+        });
+
         // Initialisation
         window.onload = function() {
             updateProgressBar();
@@ -4771,7 +5445,53 @@ IMPORTANT : Réponds UNIQUEMENT avec le JSON, aucun autre texte.`;
                     }
                 }
             });
+
+            // Initialiser le drag & drop pour Prima XML
+            initializeDragAndDrop();
         };
+
+        // Fonction pour initialiser le drag & drop
+        function initializeDragAndDrop() {
+            const dropZone = document.querySelector('.multi-file-input');
+            
+            if (dropZone) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, preventDefaults, false);
+                });
+
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight(e) {
+                    dropZone.classList.add('drag-over');
+                }
+
+                function unhighlight(e) {
+                    dropZone.classList.remove('drag-over');
+                }
+
+                dropZone.addEventListener('drop', handleDrop, false);
+
+                function handleDrop(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    
+                    // Créer un event object compatible
+                    const event = { target: { files: files } };
+                    loadMultiplePrimaXML(event);
+                }
+            }
+        }
 
         // Fonction utilitaire pour vérifier si une entité a déjà des identifiants
         function hasAnyId(entityType) {
