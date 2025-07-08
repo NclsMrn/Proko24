@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helper TEI - Corrections éditoriales</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c5aa0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .correction-tool {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .tool-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #0ea5e9;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #0284c7;
+        }
+
+        .output {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+
+        .examples {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .example {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: #047857;
+            margin-bottom: 8px;
+        }
+
+        .example-content {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .copy-btn {
+            background: #8b7355;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #6b5a43;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .quick-action {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action:hover {
+            background: #fde68a;
+            transform: translateY(-2px);
+        }
+
+        .quick-action-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 5px;
+        }
+
+        .quick-action-desc {
+            font-size: 0.8rem;
+            color: #a16207;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Helper TEI - Corrections éditoriales</h1>
+        <p style="text-align: center; color: #64748b; margin-bottom: 30px;">
+            Outil pour générer les éléments TEI de correction éditoriale selon les standards Proko24
+        </p>
+
+        <!-- Actions rapides -->
+        <div class="quick-actions">
+            <div class="quick-action" onclick="setQuickCorrection()">
+                <div class="quick-action-title">🔤 Correction simple</div>
+                <div class="quick-action-desc">Erreur d'orthographe manifeste</div>
+            </div>
+            <div class="quick-action" onclick="setQuickRegularization()">
+                <div class="quick-action-title">📝 Régularisation</div>
+                <div class="quick-action-desc">Modernisation orthographique</div>
+            </div>
+            <div class="quick-action" onclick="setQuickSupplied()">
+                <div class="quick-action-title">➕ Texte ajouté</div>
+                <div class="quick-action-desc">Lettre(s) omise(s)</div>
+            </div>
+            <div class="quick-action" onclick="setQuickUnclear()">
+                <div class="quick-action-title">❓ Texte incertain</div>
+                <div class="quick-action-desc">Lecture difficile</div>
+            </div>
+        </div>
+
+        <!-- Outil principal -->
+        <div class="correction-tool">
+            <div class="tool-header">
+                <span>⚡</span>
+                Générateur de corrections TEI
+            </div>
+
+            <div class="form-group">
+                <label for="correctionType">Type de correction</label>
+                <select id="correctionType" onchange="updateForm()">
+                    <option value="sic-corr">Erreur à corriger (sic/corr)</option>
+                    <option value="orig-reg">Régularisation (orig/reg)</option>
+                    <option value="supplied">Texte ajouté par l'éditeur (supplied)</option>
+                    <option value="unclear">Texte incertain (unclear)</option>
+                    <option value="gap">Texte manquant (gap)</option>
+                </select>
+            </div>
+
+            <div id="sicCorrForm">
+                <div class="form-group">
+                    <label for="originalText">Texte original (comme écrit dans la lettre)</label>
+                    <input type="text" id="originalText" placeholder="Schweighauser">
+                    <div class="help-text">Texte tel qu'il apparaît dans le manuscrit</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="correctedText">Texte corrigé</label>
+                    <input type="text" id="correctedText" placeholder="Schweighaeuser">
+                    <div class="help-text">Forme correcte du mot</div>
+                </div>
+            </div>
+
+            <div id="suppliedForm" style="display: none;">
+                <div class="form-group">
+                    <label for="beforeSupplied">Texte avant</label>
+                    <input type="text" id="beforeSupplied" placeholder="Schweigha">
+                </div>
+
+                <div class="form-group">
+                    <label for="suppliedText">Texte ajouté</label>
+                    <input type="text" id="suppliedText" placeholder="e">
+                    <div class="help-text">Lettre(s) ou mot(s) ajouté(s) par l'éditeur</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="afterSupplied">Texte après</label>
+                    <input type="text" id="afterSupplied" placeholder="user">
+                </div>
+
+                <div class="form-group">
+                    <label for="suppliedReason">Raison de l'ajout</label>
+                    <select id="suppliedReason">
+                        <option value="omitted">Omission évidente</option>
+                        <option value="illegible">Texte illisible</option>
+                        <option value="lost">Texte perdu (dégradation)</option>
+                        <option value="editorial">Clarification éditoriale</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="unclearForm" style="display: none;">
+                <div class="form-group">
+                    <label for="unclearText">Texte incertain</label>
+                    <input type="text" id="unclearText" placeholder="Schweighauser">
+                    <div class="help-text">Transcription probable mais incertaine</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="unclearReason">Raison de l'incertitude</label>
+                    <select id="unclearReason">
+                        <option value="illegible">Écriture illisible</option>
+                        <option value="damage">Dégradation du support</option>
+                        <option value="faded">Encre effacée</option>
+                        <option value="ambiguous">Lecture ambiguë</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="gapForm" style="display: none;">
+                <div class="form-group">
+                    <label for="gapReason">Type de lacune</label>
+                    <select id="gapReason">
+                        <option value="illegible">Illisible</option>
+                        <option value="lost">Perdu (dégradation)</option>
+                        <option value="omitted">Omis par le scripteur</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="gapUnit">Unité</label>
+                    <select id="gapUnit">
+                        <option value="chars">Caractères</option>
+                        <option value="words">Mots</option>
+                        <option value="lines">Lignes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="gapQuantity">Quantité (optionnel)</label>
+                    <input type="number" id="gapQuantity" placeholder="3">
+                    <div class="help-text">Nombre estimé d'unités manquantes</div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="generateTEI()">🚀 Générer le TEI</button>
+
+            <div id="output" class="output" style="display: none;"></div>
+            <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()" style="display: none;">📋 Copier</button>
+        </div>
+
+        <!-- Exemples -->
+        <div class="examples">
+            <h3 style="color: #047857; margin-bottom: 15px;">📚 Exemples d'usage</h3>
+
+            <div class="example">
+                <div class="example-title">1. Faute d'orthographe simple</div>
+                <div class="example-content">&lt;choice&gt;&lt;sic&gt;Schweighauser&lt;/sic&gt;&lt;corr&gt;Schweighaeuser&lt;/corr&gt;&lt;/choice&gt;</div>
+                <div class="help-text">Pour une erreur manifeste d'orthographe</div>
+            </div>
+
+            <div class="example">
+                <div class="example-title">2. Lettre omise évidente</div>
+                <div class="example-content">Schweigha&lt;supplied reason="omitted"&gt;e&lt;/supplied&gt;user</div>
+                <div class="help-text">Quand une lettre a été oubliée par le scripteur</div>
+            </div>
+
+            <div class="example">
+                <div class="example-title">3. Modernisation orthographique</div>
+                <div class="example-content">&lt;choice&gt;&lt;orig&gt;françois&lt;/orig&gt;&lt;reg&gt;français&lt;/reg&gt;&lt;/choice&gt;</div>
+                <div class="help-text">Pour une régularisation selon l'usage moderne</div>
+            </div>
+
+            <div class="example">
+                <div class="example-title">4. Lecture incertaine</div>
+                <div class="example-content">&lt;unclear reason="illegible"&gt;Schweighauser&lt;/unclear&gt;</div>
+                <div class="help-text">Quand la lecture n'est pas certaine</div>
+            </div>
+
+            <div class="example">
+                <div class="example-title">5. Texte manquant</div>
+                <div class="example-content">&lt;gap reason="illegible" unit="chars" quantity="3"/&gt;</div>
+                <div class="help-text">Pour signaler une lacune dans le texte</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateForm() {
+            const type = document.getElementById('correctionType').value;
+            
+            // Cacher tous les formulaires
+            document.getElementById('sicCorrForm').style.display = 'none';
+            document.getElementById('suppliedForm').style.display = 'none';
+            document.getElementById('unclearForm').style.display = 'none';
+            document.getElementById('gapForm').style.display = 'none';
+            
+            // Afficher le bon formulaire
+            switch(type) {
+                case 'sic-corr':
+                case 'orig-reg':
+                    document.getElementById('sicCorrForm').style.display = 'block';
+                    break;
+                case 'supplied':
+                    document.getElementById('suppliedForm').style.display = 'block';
+                    break;
+                case 'unclear':
+                    document.getElementById('unclearForm').style.display = 'block';
+                    break;
+                case 'gap':
+                    document.getElementById('gapForm').style.display = 'block';
+                    break;
+            }
+        }
+
+        function setQuickCorrection() {
+            document.getElementById('correctionType').value = 'sic-corr';
+            document.getElementById('originalText').value = 'Schweighauser';
+            document.getElementById('correctedText').value = 'Schweighaeuser';
+            updateForm();
+            generateTEI();
+        }
+
+        function setQuickRegularization() {
+            document.getElementById('correctionType').value = 'orig-reg';
+            document.getElementById('originalText').value = 'françois';
+            document.getElementById('correctedText').value = 'français';
+            updateForm();
+            generateTEI();
+        }
+
+        function setQuickSupplied() {
+            document.getElementById('correctionType').value = 'supplied';
+            document.getElementById('beforeSupplied').value = 'Schweigha';
+            document.getElementById('suppliedText').value = 'e';
+            document.getElementById('afterSupplied').value = 'user';
+            document.getElementById('suppliedReason').value = 'omitted';
+            updateForm();
+            generateTEI();
+        }
+
+        function setQuickUnclear() {
+            document.getElementById('correctionType').value = 'unclear';
+            document.getElementById('unclearText').value = 'Schweighauser';
+            document.getElementById('unclearReason').value = 'illegible';
+            updateForm();
+            generateTEI();
+        }
+
+        function generateTEI() {
+            const type = document.getElementById('correctionType').value;
+            let teiCode = '';
+            
+            switch(type) {
+                case 'sic-corr':
+                    const originalSic = document.getElementById('originalText').value;
+                    const correctedSic = document.getElementById('correctedText').value;
+                    if (originalSic && correctedSic) {
+                        teiCode = `<choice><sic>${originalSic}</sic><corr>${correctedSic}</corr></choice>`;
+                    }
+                    break;
+                    
+                case 'orig-reg':
+                    const originalReg = document.getElementById('originalText').value;
+                    const correctedReg = document.getElementById('correctedText').value;
+                    if (originalReg && correctedReg) {
+                        teiCode = `<choice><orig>${originalReg}</orig><reg>${correctedReg}</reg></choice>`;
+                    }
+                    break;
+                    
+                case 'supplied':
+                    const before = document.getElementById('beforeSupplied').value;
+                    const supplied = document.getElementById('suppliedText').value;
+                    const after = document.getElementById('afterSupplied').value;
+                    const reason = document.getElementById('suppliedReason').value;
+                    if (supplied) {
+                        teiCode = `${before}<supplied reason="${reason}">${supplied}</supplied>${after}`;
+                    }
+                    break;
+                    
+                case 'unclear':
+                    const unclearText = document.getElementById('unclearText').value;
+                    const unclearReason = document.getElementById('unclearReason').value;
+                    if (unclearText) {
+                        teiCode = `<unclear reason="${unclearReason}">${unclearText}</unclear>`;
+                    }
+                    break;
+                    
+                case 'gap':
+                    const gapReason = document.getElementById('gapReason').value;
+                    const gapUnit = document.getElementById('gapUnit').value;
+                    const gapQuantity = document.getElementById('gapQuantity').value;
+                    
+                    teiCode = `<gap reason="${gapReason}" unit="${gapUnit}"`;
+                    if (gapQuantity) {
+                        teiCode += ` quantity="${gapQuantity}"`;
+                    }
+                    teiCode += '/>';
+                    break;
+            }
+            
+            if (teiCode) {
+                document.getElementById('output').textContent = teiCode;
+                document.getElementById('output').style.display = 'block';
+                document.getElementById('copyBtn').style.display = 'inline-block';
+            }
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            navigator.clipboard.writeText(output.textContent).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copié !';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Initialisation
+        window.onload = function() {
+            updateForm();
+        };
+    </script>
+</body>
+</html>
