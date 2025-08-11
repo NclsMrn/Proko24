@@ -5,7 +5,6 @@
   "label": "SPA_2469",
   "attribution": "Nicolas Moron / NAKALA",
   "license": "http://creativecommons.org/licenses/by-nc/4.0/",
-  "logo": "https://nakala.fr/logo/",
   "metadata": [
     {
       "label": "Id",
@@ -22,10 +21,6 @@
     {
       "label": "Date Issued",
       "value": "1924-01-01"
-    },
-    {
-      "label": "Type",
-      "value": "manuscript"
     }
   ],
   "sequences": [
