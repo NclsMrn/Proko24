@@ -1,6 +1,6 @@
 {
   "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501.json",
+  "@id": "https://cdn.jsdelivr.net/gh/NclsMrn/Proko24@main/Manifests%20iiiF/janvier%201924/SPA_2501.json",
   "@type": "sc:Manifest",
   "label": "SPA_2501 Letter from Clerical assistant to Sergei Sergeevich Prokofiev",
   "attribution": "Nicolas Moron / NAKALA",
