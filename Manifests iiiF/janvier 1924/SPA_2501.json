@@ -5,6 +5,7 @@
   "label": "SPA_2501",
   "attribution": "Nicolas Moron / NAKALA",
   "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+  "logo": "https://nakala.fr/logo/",
   "metadata": [
     {
       "label": "Id",
@@ -16,11 +17,21 @@
     },
     {
       "label": "Creator",
-      "value": "Clerical assistant"
+      "value": {
+        "givenname": "Nicolas",
+        "surname": "Moron",
+        "orcid": "https://orcid.org/0000-0001-7861-3382",
+        "authorId": "55c6c899-a44b-4aea-b06a-a55e95590ac9",
+        "fullName": "Nicolas Moron"
+      }
     },
     {
       "label": "Date Issued",
       "value": "1924-01"
+    },
+    {
+      "label": "Type",
+      "value": "manuscript"
     }
   ],
   "sequences": [
