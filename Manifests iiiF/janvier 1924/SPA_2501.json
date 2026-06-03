@@ -1,6 +1,6 @@
 {
   "@context": "http://iiif.io/api/presentation/3/context.json",
-  "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501.json",
+  "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501.json",
   "type": "Manifest",
   "label": {
     "fr": [
@@ -91,7 +91,7 @@
   ],
   "items": [
     {
-      "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/canvas/p1",
+      "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/canvas/p1",
       "type": "Canvas",
       "label": {
         "none": [
@@ -116,11 +116,11 @@
       ],
       "items": [
         {
-          "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/page/p1/1",
+          "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/page/p1/1",
           "type": "AnnotationPage",
           "items": [
             {
-              "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/annotation/p1-image",
+              "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/annotation/p1-image",
               "type": "Annotation",
               "motivation": "painting",
               "body": {
@@ -137,14 +137,14 @@
                   }
                 ]
               },
-              "target": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/canvas/p1"
+              "target": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/canvas/p1"
             }
           ]
         }
       ]
     },
     {
-      "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/canvas/p2",
+      "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/canvas/p2",
       "type": "Canvas",
       "label": {
         "none": [
@@ -169,11 +169,11 @@
       ],
       "items": [
         {
-          "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/page/p2/1",
+          "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/page/p2/1",
           "type": "AnnotationPage",
           "items": [
             {
-              "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/annotation/p2-image",
+              "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/annotation/p2-image",
               "type": "Annotation",
               "motivation": "painting",
               "body": {
@@ -190,14 +190,14 @@
                   }
                 ]
               },
-              "target": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/canvas/p2"
+              "target": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/canvas/p2"
             }
           ]
         }
       ]
     },
     {
-      "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/canvas/p3",
+      "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/canvas/p3",
       "type": "Canvas",
       "label": {
         "none": [
@@ -222,11 +222,11 @@
       ],
       "items": [
         {
-          "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/page/p3/1",
+          "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/page/p3/1",
           "type": "AnnotationPage",
           "items": [
             {
-              "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/annotation/p3-image",
+              "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/annotation/p3-image",
               "type": "Annotation",
               "motivation": "painting",
               "body": {
@@ -243,7 +243,7 @@
                   }
                 ]
               },
-              "target": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/canvas/p3"
+              "target": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/canvas/p3"
             }
           ]
         }
