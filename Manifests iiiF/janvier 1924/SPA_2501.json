@@ -1,126 +1,249 @@
 {
-  "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/manifest",
-  "@type": "sc:Manifest",
-  "label": "SPA_2501 Letter from Clerical assistant to Sergei Sergeevich Prokofiev",
-  "attribution": "Nicolas Moron / NAKALA",
-  "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501.json",
+  "type": "Manifest",
+  "label": {
+    "fr": [
+      "SPA_2501"
+    ],
+    "none": [
+      "SPA_2501 Letter from Clerical assistant to Sergei Sergeevich Prokofiev"
+    ]
+  },
   "metadata": [
     {
-      "label": "Identifier",
-      "value": "SPA_2501"
+      "label": {
+        "en": [
+          "Identifier"
+        ],
+        "fr": [
+          "Identifiant"
+        ]
+      },
+      "value": {
+        "none": [
+          "SPA_2501"
+        ]
+      }
     },
     {
-      "label": "Title",
-      "value": "SPA_2501 Letter from Clerical assistant to Sergei Sergeevich Prokofiev"
+      "label": {
+        "en": [
+          "Title"
+        ],
+        "fr": [
+          "Titre"
+        ]
+      },
+      "value": {
+        "none": [
+          "SPA_2501 Letter from Clerical assistant to Sergei Sergeevich Prokofiev"
+        ]
+      }
     },
     {
-      "label": "Creator",
-      "value": "Clerical assistant"
+      "label": {
+        "en": [
+          "Creator"
+        ],
+        "fr": [
+          "Créateur"
+        ]
+      },
+      "value": {
+        "none": [
+          "Clerical assistant"
+        ]
+      }
     },
     {
-      "label": "Date",
-      "value": "1924-01"
+      "label": {
+        "en": [
+          "Date"
+        ]
+      },
+      "value": {
+        "none": [
+          "1924-01"
+        ]
+      }
     }
   ],
-  "sequences": [
+  "rights": "http://creativecommons.org/licenses/by-nc/4.0/",
+  "requiredStatement": {
+    "label": {
+      "en": [
+        "Attribution"
+      ]
+    },
+    "value": {
+      "en": [
+        "Nicolas Moron / NAKALA"
+      ]
+    }
+  },
+  "thumbnail": [
     {
-      "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/sequence/normal",
-      "@type": "sc:Sequence",
-      "label": "SPA_2501",
-      "viewingHint": "paged",
-      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page1",
-      "canvases": [
+      "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/fb89440333f982850386cfe841fba41c726d1697/full/,150/0/default.jpg",
+      "type": "Image",
+      "format": "image/jpeg"
+    }
+  ],
+  "items": [
+    {
+      "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/canvas/p1",
+      "type": "Canvas",
+      "label": {
+        "none": [
+          "p. 1"
+        ]
+      },
+      "width": 5569,
+      "height": 6981,
+      "thumbnail": [
         {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page1",
-          "@type": "sc:Canvas",
-          "label": "Page 1",
-          "height": 6981,
-          "width": 5569,
-          "thumbnail": {
-            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/fb89440333f982850386cfe841fba41c726d1697/full/,150/0/default.jpg",
-            "@type": "dctypes:Image"
-          },
-          "images": [
+          "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/fb89440333f982850386cfe841fba41c726d1697/full/,150/0/default.jpg",
+          "type": "Image",
+          "format": "image/jpeg",
+          "service": [
             {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/annotation/page1",
-              "@type": "oa:Annotation",
-              "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page1",
-              "resource": {
-                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/fb89440333f982850386cfe841fba41c726d1697/full/full/0/default.jpg",
-                "@type": "dctypes:Image",
+              "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/fb89440333f982850386cfe841fba41c726d1697",
+              "type": "ImageService3",
+              "profile": "level2"
+            }
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/page/p1/1",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/annotation/p1-image",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/fb89440333f982850386cfe841fba41c726d1697/full/max/0/default.jpg",
+                "type": "Image",
                 "format": "image/jpeg",
-                "height": 6981,
                 "width": 5569,
-                "service": {
-                  "@context": "http://iiif.io/api/image/2/context.json",
-                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/fb89440333f982850386cfe841fba41c726d1697",
-                  "profile": "http://iiif.io/api/image/2/level2.json"
-                }
-              }
+                "height": 6981,
+                "service": [
+                  {
+                    "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/fb89440333f982850386cfe841fba41c726d1697",
+                    "type": "ImageService3",
+                    "profile": "level2"
+                  }
+                ]
+              },
+              "target": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/canvas/p1"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/canvas/p2",
+      "type": "Canvas",
+      "label": {
+        "none": [
+          "p. 2"
+        ]
+      },
+      "width": 5560,
+      "height": 6956,
+      "thumbnail": [
         {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page2",
-          "@type": "sc:Canvas",
-          "label": "Page 2",
-          "height": 6956,
-          "width": 5560,
-          "thumbnail": {
-            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/874dc48bef0ab8b79d6337b0cf8180cab34e6a37/full/,150/0/default.jpg",
-            "@type": "dctypes:Image"
-          },
-          "images": [
+          "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/874dc48bef0ab8b79d6337b0cf8180cab34e6a37/full/,150/0/default.jpg",
+          "type": "Image",
+          "format": "image/jpeg",
+          "service": [
             {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/annotation/page2",
-              "@type": "oa:Annotation",
-              "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page2",
-              "resource": {
-                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/874dc48bef0ab8b79d6337b0cf8180cab34e6a37/full/full/0/default.jpg",
-                "@type": "dctypes:Image",
+              "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/874dc48bef0ab8b79d6337b0cf8180cab34e6a37",
+              "type": "ImageService3",
+              "profile": "level2"
+            }
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/page/p2/1",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/annotation/p2-image",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/874dc48bef0ab8b79d6337b0cf8180cab34e6a37/full/max/0/default.jpg",
+                "type": "Image",
                 "format": "image/jpeg",
-                "height": 6956,
                 "width": 5560,
-                "service": {
-                  "@context": "http://iiif.io/api/image/2/context.json",
-                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/874dc48bef0ab8b79d6337b0cf8180cab34e6a37",
-                  "profile": "http://iiif.io/api/image/2/level2.json"
-                }
-              }
+                "height": 6956,
+                "service": [
+                  {
+                    "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/874dc48bef0ab8b79d6337b0cf8180cab34e6a37",
+                    "type": "ImageService3",
+                    "profile": "level2"
+                  }
+                ]
+              },
+              "target": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/canvas/p2"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/canvas/p3",
+      "type": "Canvas",
+      "label": {
+        "none": [
+          "p. 3"
+        ]
+      },
+      "width": 5516,
+      "height": 6942,
+      "thumbnail": [
         {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page3",
-          "@type": "sc:Canvas",
-          "label": "Page 3",
-          "height": 6942,
-          "width": 5516,
-          "thumbnail": {
-            "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/b5d8d6c8e511609e8a52e72c57b3ede55312c351/full/,150/0/default.jpg",
-            "@type": "dctypes:Image"
-          },
-          "images": [
+          "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/b5d8d6c8e511609e8a52e72c57b3ede55312c351/full/,150/0/default.jpg",
+          "type": "Image",
+          "format": "image/jpeg",
+          "service": [
             {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/annotation/page3",
-              "@type": "oa:Annotation",
-              "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page3",
-              "resource": {
-                "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/b5d8d6c8e511609e8a52e72c57b3ede55312c351/full/full/0/default.jpg",
-                "@type": "dctypes:Image",
+              "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/b5d8d6c8e511609e8a52e72c57b3ede55312c351",
+              "type": "ImageService3",
+              "profile": "level2"
+            }
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/page/p3/1",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501/annotation/p3-image",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/b5d8d6c8e511609e8a52e72c57b3ede55312c351/full/max/0/default.jpg",
+                "type": "Image",
                 "format": "image/jpeg",
-                "height": 6942,
                 "width": 5516,
-                "service": {
-                  "@context": "http://iiif.io/api/image/2/context.json",
-                  "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/b5d8d6c8e511609e8a52e72c57b3ede55312c351",
-                  "profile": "http://iiif.io/api/image/2/level2.json"
-                }
-              }
+                "height": 6942,
+                "service": [
+                  {
+                    "id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/b5d8d6c8e511609e8a52e72c57b3ede55312c351",
+                    "type": "ImageService3",
+                    "profile": "level2"
+                  }
+                ]
+              },
+              "target": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests iiiF/janvier 1924/SPA_2501/canvas/p3"
             }
           ]
         }
