@@ -1,6 +1,6 @@
 {
   "@context": "http://iiif.io/api/presentation/2/context.json",
-  "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/manifest",
+  "@id": "https://raw.githubusercontent.com/NclsMrn/Proko24/main/Manifests%20iiiF/janvier%201924/SPA_2501.json",
   "@type": "sc:Manifest",
   "label": "SPA_2501 Letter from Clerical assistant to Sergei Sergeevich Prokofiev",
   "attribution": "Nicolas Moron / NAKALA",
@@ -25,14 +25,14 @@
   ],
   "sequences": [
     {
-      "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/sequence/normal",
+      "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/sequence/normal",
       "@type": "sc:Sequence",
       "label": "SPA_2501",
       "viewingHint": "paged",
-      "startCanvas": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page1",
+      "startCanvas": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page1",
       "canvases": [
         {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page1",
+          "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page1",
           "@type": "sc:Canvas",
           "label": "Page 1",
           "height": 6981,
@@ -43,10 +43,10 @@
           },
           "images": [
             {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/annotation/page1",
+              "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/annotation/page1",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page1",
+              "on": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page1",
               "resource": {
                 "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/fb89440333f982850386cfe841fba41c726d1697/full/full/0/default.jpg",
                 "@type": "dctypes:Image",
@@ -63,7 +63,7 @@
           ]
         },
         {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page2",
+          "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page2",
           "@type": "sc:Canvas",
           "label": "Page 2",
           "height": 6956,
@@ -74,10 +74,10 @@
           },
           "images": [
             {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/annotation/page2",
+              "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/annotation/page2",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page2",
+              "on": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page2",
               "resource": {
                 "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/874dc48bef0ab8b79d6337b0cf8180cab34e6a37/full/full/0/default.jpg",
                 "@type": "dctypes:Image",
@@ -94,7 +94,7 @@
           ]
         },
         {
-          "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page3",
+          "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page3",
           "@type": "sc:Canvas",
           "label": "Page 3",
           "height": 6942,
@@ -105,10 +105,10 @@
           },
           "images": [
             {
-              "@id": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/annotation/page3",
+              "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/annotation/page3",
               "@type": "oa:Annotation",
               "motivation": "sc:painting",
-              "on": "https://nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page3",
+              "on": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/canvas/page3",
               "resource": {
                 "@id": "https://api.nakala.fr/iiif/10.34847/nkl.bc41cz1e/b5d8d6c8e511609e8a52e72c57b3ede55312c351/full/full/0/default.jpg",
                 "@type": "dctypes:Image",
