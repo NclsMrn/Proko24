@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Générateur IIIF v3.0 — Edition Améliorée</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      line-height: 1.5;
+      background: linear-gradient(135deg, #e8f4f8, #c0dde8);
+      color: #10303a;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark { background: linear-gradient(135deg, #1a2837, #0f1b26); color: #e8f0f2; }
+
+    .app { max-width: 1200px; margin: 24px auto; padding: 24px; background: rgba(255,255,255,0.95);
+           border-radius: 16px; box-shadow: 0 8px 32px rgba(16,48,58,0.1); backdrop-filter: blur(10px); }
+    body.dark .app { background: rgba(26,40,55,0.95); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+
+    .header { display: flex; justify-content: space-between; align-items: center;
+              margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #e0d6ca; }
+    body.dark .header { border-bottom-color: #34495e; }
+    h1 { font-size: 24px; font-weight: 700;
+         background: linear-gradient(135deg, #2c4a5c, #4a8b8b);
+         -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .lead { color: #375b63; font-size: 14px; margin-top: 4px; }
+    body.dark .lead { color: #b3c7d1; }
+    .controls { display: flex; gap: 12px; align-items: center; }
+
+    /* Token warning */
+    .token-warning { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.4);
+                     border-radius: 8px; padding: 10px 14px; margin-bottom: 16px;
+                     font-size: 12px; color: #92400e; display: flex; align-items: center; gap: 8px; }
+    body.dark .token-warning { color: #fcd34d; background: rgba(245,158,11,0.1); }
+
+    .theme-toggle, .lang-toggle { background: linear-gradient(135deg,#2c4a5c,#4a8b8b); color: white;
+      border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; font-size: 18px;
+      transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
+    .lang-toggle { border-radius: 8px; width: auto; padding: 8px 12px; font-size: 12px; font-weight: 600; }
+    .theme-toggle:hover, .lang-toggle:hover { transform: scale(1.1); box-shadow: 0 4px 12px rgba(44,74,92,0.3); }
+
+    .wizard-steps { display: flex; gap: 12px; margin-bottom: 24px; background: rgba(240,246,248,0.8);
+                    padding: 8px; border-radius: 12px; }
+    body.dark .wizard-steps { background: rgba(44,74,92,0.3); }
+    .step { flex: 1; padding: 12px 16px; border-radius: 8px; text-align: center; font-weight: 600;
+            font-size: 14px; background: transparent; color: #6b8794; cursor: pointer; transition: all 0.3s; }
+    .step.active { background: linear-gradient(135deg,#2c4a5c,#4a8b8b); color: white;
+                   box-shadow: 0 4px 12px rgba(44,74,92,0.3); }
+    .step.completed { background: linear-gradient(135deg,#10b981,#059669); color: white; }
+    .step:hover:not(.active) { background: rgba(44,74,92,0.1); }
+
+    .cols { display: grid; grid-template-columns: 1fr 360px; gap: 24px; }
+    @media (max-width:1024px) { .cols { grid-template-columns: 1fr; } .app { margin: 12px; padding: 16px; } }
+
+    .card { background: linear-gradient(180deg,#faf8f5,#f5f2ec); padding: 20px; border-radius: 12px;
+            border: 1px solid #e0d6ca; box-shadow: 0 2px 8px rgba(44,74,92,0.05); margin-bottom: 16px; }
+    body.dark .card { background: linear-gradient(180deg,#243447,#1d2a3a); border-color: #34495e; }
+    .card h3, .card h4 { margin-bottom: 12px; color: #2c4a5c; }
+    body.dark .card h3, body.dark .card h4 { color: #e8f0f2; }
+
+    label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: #374151; }
+    body.dark label { color: #d1d5db; }
+    input[type=text], input[type=file], input[type=password], select, textarea {
+      width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #d1d5db;
+      background: white; font-size: 14px; transition: all 0.2s; }
+    body.dark input[type=text], body.dark input[type=file], body.dark input[type=password],
+    body.dark select, body.dark textarea { background: #2c3e50; border-color: #4a6380; color: #e8f0f2; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #4a8b8b;
+      box-shadow: 0 0 0 3px rgba(74,139,139,0.1); }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 8px;
+           border: none; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; text-decoration: none; }
+    .btn-primary { background: linear-gradient(135deg,#2c4a5c,#4a8b8b); color: white;
+                   box-shadow: 0 2px 8px rgba(44,74,92,0.2); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(44,74,92,0.3); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-secondary { background: rgba(74,139,139,0.1); color: #2c4a5c; border: 1px solid #4a8b8b; }
+    body.dark .btn-secondary { color: #4a8b8b; background: rgba(74,139,139,0.2); }
+    .btn-secondary:hover { background: rgba(74,139,139,0.2); }
+    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-danger { background: linear-gradient(135deg,#dc2626,#b91c1c); color: white; }
+    .btn-danger:hover { transform: translateY(-1px); }
+    .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn.small { padding: 6px 12px; font-size: 12px; }
+    .btn.transkribus { background: linear-gradient(135deg,#DAA520,#B8860B); color: white; font-weight: 700; }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .meta { font-size: 12px; color: #6b7280; }
+    body.dark .meta { color: #9ca3af; }
+    .error { color: #dc2626; font-size: 12px; }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(74,139,139,0.3);
+               border-top-color: #4a8b8b; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .drag-zone { border: 2px dashed #d1d5db; border-radius: 12px; padding: 40px; text-align: center;
+                 cursor: pointer; transition: all 0.2s; }
+    .drag-zone:hover, .drag-zone.over { border-color: #4a8b8b; background: rgba(74,139,139,0.05); }
+
+    .file-info { font-size: 13px; color: #6b7280; margin-top: 8px; padding: 8px 12px;
+                 background: rgba(74,139,139,0.05); border-radius: 6px; }
+    body.dark .file-info { color: #9ca3af; background: rgba(74,139,139,0.1); }
+
+    .pages-list { margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
+    .page-item { display: flex; gap: 12px; align-items: center; padding: 12px;
+                 background: rgba(255,255,255,0.7); border: 1px solid #e0d6ca; border-radius: 8px;
+                 transition: all 0.2s; }
+    body.dark .page-item { background: rgba(255,255,255,0.05); border-color: #34495e; }
+    .page-item.dragging { opacity: 0.4; }
+    .page-item.drag-over { border-color: #4a8b8b; background: rgba(74,139,139,0.08); }
+    .drag-handle { cursor: grab; color: #9ca3af; font-size: 18px; padding: 0 4px; user-select: none;
+                   display: flex; flex-direction: column; gap: 2px; }
+    .drag-handle:active { cursor: grabbing; }
+    .drag-handle span { display: block; width: 16px; height: 2px; background: currentColor; border-radius: 2px; }
+
+    .validation-status { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 12px; }
+    .validation-status.valid { color: #059669; }
+    .validation-status.invalid { color: #dc2626; }
+
+    .status-indicator { padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; }
+    .status-indicator.success { background: rgba(16,185,129,0.1); color: #059669; border: 1px solid rgba(16,185,129,0.2); }
+    .status-indicator.warning { background: rgba(245,158,11,0.1); color: #92400e; border: 1px solid rgba(245,158,11,0.2); }
+    body.dark .status-indicator.warning { color: #fcd34d; }
+    .status-indicator.error { background: rgba(220,38,38,0.1); color: #dc2626; border: 1px solid rgba(220,38,38,0.2); }
+
+    .github-config { margin-top: 16px; padding: 16px; background: rgba(44,74,92,0.05);
+                     border-radius: 8px; border: 1px solid rgba(44,74,92,0.1); }
+    body.dark .github-config { background: rgba(44,74,92,0.2); border-color: rgba(44,74,92,0.3); }
+    .form-row { display: flex; gap: 12px; margin-bottom: 16px; }
+    .form-row > div { flex: 1; }
+
+    /* Toasts */
+    .toasts { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column;
+              gap: 10px; z-index: 9999; max-width: 360px; }
+    .toast { padding: 12px 16px; border-radius: 10px; background: #1e293b; color: #f1f5f9;
+             font-size: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: slideIn 0.25s ease; }
+    .toast.success { background: #064e3b; border-left: 3px solid #10b981; }
+    .toast.error   { background: #7f1d1d; border-left: 3px solid #ef4444; }
+    .toast.info    { background: #0c4a6e; border-left: 3px solid #38bdf8; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* Modal */
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
+             display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .dialog { background: white; border-radius: 16px; padding: 28px; max-width: 520px; width: 100%;
+              box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    body.dark .dialog { background: #1e2d3d; color: #e8f0f2; }
+    .dialog-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #2c4a5c; }
+    body.dark .dialog-title { color: #e8f0f2; }
+    .dialog-body { font-size: 14px; color: #374151; margin-bottom: 20px; line-height: 1.6; }
+    body.dark .dialog-body { color: #d1d5db; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
+    .node { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; }
+    .node:hover { background: rgba(74,139,139,0.1); }
+    .children { margin-left: 16px; border-left: 1px dashed #d1d5db; padding-left: 8px; margin-top: 4px; }
+
+    /* History */
+    .history { display: flex; flex-direction: column; gap: 8px; }
+    .hist-item { display: flex; justify-content: space-between; align-items: center;
+                 padding: 10px 12px; background: rgba(74,139,139,0.06); border-radius: 8px;
+                 cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
+    .hist-item:hover { border-color: #4a8b8b; background: rgba(74,139,139,0.12); }
+    .hist-item .restore-hint { font-size: 10px; color: #4a8b8b; opacity: 0; transition: opacity 0.2s; }
+    .hist-item:hover .restore-hint { opacity: 1; }
+
+    /* Batch */
+    .batch-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+    .batch-table th { text-align: left; padding: 8px 10px; border-bottom: 2px solid #e0d6ca;
+                      color: #6b7280; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+    .batch-table td { padding: 8px 10px; border-bottom: 1px solid #e0d6ca; vertical-align: middle; }
+    body.dark .batch-table th, body.dark .batch-table td { border-color: #34495e; }
+    .batch-status { display: inline-flex; align-items: center; gap: 5px; font-size: 12px;
+                    padding: 2px 8px; border-radius: 20px; }
+    .batch-status.pending  { background: #f3f4f6; color: #6b7280; }
+    .batch-status.running  { background: rgba(74,139,139,0.1); color: #2c4a5c; }
+    .batch-status.done     { background: rgba(16,185,129,0.1); color: #059669; }
+    .batch-status.error    { background: rgba(220,38,38,0.1); color: #dc2626; }
+    .batch-status.skipped  { background: rgba(245,158,11,0.1); color: #92400e; }
+    .progress-bar-wrap { background: #e0d6ca; border-radius: 99px; height: 8px; overflow: hidden; margin: 12px 0; }
+    .progress-bar { background: linear-gradient(90deg,#2c4a5c,#4a8b8b); height: 100%;
+                    border-radius: 99px; transition: width 0.3s; }
+
+    /* Preview viewer */
+    #osd-preview { width: 100%; height: 400px; border-radius: 8px; overflow: hidden; background: #1a2837; }
+
+    .page-preview-item { border: 1px solid #e0d6ca; border-radius: 8px; padding: 12px;
+                         background: rgba(255,255,255,0.7); transition: all 0.2s; }
+    body.dark .page-preview-item { background: rgba(255,255,255,0.05); border-color: #34495e; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+  const { useState, useEffect, useRef, useCallback, useContext, createContext, useReducer } = React;
+
+  // ═══════════════════════════════════════════════════════════
+  // TRANSLATIONS
+  // ═══════════════════════════════════════════════════════════
+  const TRANSLATIONS = {
+    fr: {
+      title: 'Générateur IIIF v3.0', subtitle: 'Édition Améliorée — Presentation API v3 + Image API v3',
+      step1: '1. Import CSV', step2: '2. Métadonnées', step3: '3. Génération', step4: '4. Export & GitHub',
+      importCsv: 'Importer un CSV Nakala', dragDropCsv: 'Glisser-déposer un fichier CSV', clickToBrowse: 'ou cliquer pour parcourir',
+      selectLetter: 'Sélectionner une lettre', chooseLetter: '— Choisir une lettre —',
+      doiCombined: 'Identifiant combiné DOI/hash (raccourci)', doiNakala: 'DOI Nakala',
+      letterId: 'Identifiant lettre', date: 'Date', creator: 'Créateur',
+      pages: 'Pages', addPage: '+ Page', autoFetch: '⚡ Auto-fetch',
+      openNakala: 'Nakala ↗', workflowTip: 'Collez le DOI+hash de la 1re image pour pré-remplir.',
+      validDoi: 'DOI valide', invalidDoi: 'Format DOI invalide (10.xxxxx/…)',
+      validHash: 'Hash valide (SHA-1)', invalidHash: 'Hash invalide (40 caractères hex)',
+      generation: 'Génération du Manifest', generate: '🚀 Générer le Manifest',
+      manifestPreview: 'Aperçu du manifest généré (IIIF Presentation v3)',
+      validForm: '✅ Formulaire complet — prêt à générer', invalidForm: '❌ Champs obligatoires manquants ou invalides',
+      reset: 'Réinitialiser', dataReset: 'Données réinitialisées',
+      exportGithub: 'Export & GitHub', download: '⬇ Télécharger JSON', copyJson: '📋 Copier JSON',
+      openJson: '🔗 Ouvrir JSON', downloaded: 'Fichier téléchargé', copied: 'Copié dans le presse-papiers',
+      githubIntegration: 'Intégration GitHub', openExplorer: '📂 Explorateur',
+      username: 'Utilisateur GitHub', repository: 'Dépôt', branch: 'Branche', path: 'Chemin', token: 'Token GitHub',
+      tokenHelp: 'Token avec droits "Contents" en écriture. Stocké localement.',
+      tokenWarning: '⚠ Votre token GitHub est stocké en clair dans le localStorage de ce navigateur. N\'utilisez pas cette application sur un ordinateur partagé.',
+      pushGithub: '🚀 Pousser sur GitHub', pushSuccess: 'Manifest poussé avec succès !', pushError: 'Erreur GitHub',
+      pushCancelled: 'Push annulé', manifestUpdated: 'Manifest mis à jour sur GitHub',
+      confirmOverwrite: 'Un manifest existe déjà pour', willOverwrite: 'Un nouveau push écrasera le fichier existant.',
+      githubMissing: 'Token GitHub manquant ou manifest non généré',
+      checkingGithub: 'Vérification sur GitHub', checking: 'Vérification…', checkFile: 'Vérifier',
+      fileExists: 'Manifest existant trouvé sur GitHub', fileNotExists: 'Aucun manifest existant — prêt à créer',
+      viewExisting: '👁 Voir existant', openOnGithub: 'GitHub ↗',
+      manifestUrl: 'URL du manifest :', testManifest: 'Tester ↗', proTip: 'URL raw GitHub générée automatiquement.',
+      validateManifest: '✔ Valider (IIIF)', previewManifest: '🔭 Aperçu viewer',
+      openTranskribus: '🚀 Ouvrir Transkribus', copyUrlOnly: '📋 Copier URL', urlCopiedTranskribus: 'URL copiée — collez dans Transkribus',
+      copyUrlFallback: 'Copiez manuellement :',
+      quickActions: 'Actions rapides', import: 'Import', metadata: 'Métadonnées', generation2: 'Génération', export: 'Export',
+      history: 'Historique', help: 'Aide', shortcuts: 'Raccourcis clavier', autoSave: '💾 Sauvegarde auto activée',
+      csvExample: 'CSV exemple', linesImported: 'lignes importées', letterSelected: 'Lettre sélectionnée',
+      fetchingFiles: 'Récupération des fichiers Nakala…', filesDetected: 'fichiers détectés', fetchError: 'Erreur de récupération',
+      pageAdded: 'Page ajoutée', pageRemoved: 'Page supprimée', manifestGenerated: 'Manifest IIIF v3 généré !',
+      folderChosen: 'Dossier sélectionné', githubExplorer: 'Explorateur GitHub',
+      noSubfolders: 'Aucun sous-dossier', fetching: 'Chargement…', parent: 'Parent', foldersOnly: 'Dossiers uniquement',
+      directPath: 'Ou saisir le chemin directement', close: 'Fermer', open: 'Ouvrir', choose: 'Choisir',
+      navigate: 'Naviguer', purge: '🗑 Purger données',
+      confirmTitle: 'Confirmer', confirmOk: 'Confirmer', confirmCancel: 'Annuler',
+      confirmPurgeMsg: 'Effacer toutes les données locales (formulaire, GitHub, historique) ?',
+      confirmOverwriteMsg: 'Un manifest existe déjà',
+      restoreHistory: 'Cliquer pour restaurer',
+      batchTitle: 'Traitement par lot', batchDesc: 'Générer et pousser les manifests pour toutes les lettres du CSV.',
+      batchStart: '▶ Lancer le traitement', batchStop: '⏹ Arrêter', batchProgress: 'Progression',
+      batchResults: 'Résultats', batchSkip: 'Ignorer existants',
+      reorderTip: '↕ Glisser pour réordonner les pages',
+      previewPages: 'Prévisualisation',
+    },
+    en: {
+      title: 'IIIF v3.0 Generator', subtitle: 'Improved Edition — Presentation API v3 + Image API v3',
+      step1: '1. Import CSV', step2: '2. Metadata', step3: '3. Generation', step4: '4. Export & GitHub',
+      importCsv: 'Import Nakala CSV', dragDropCsv: 'Drag & drop a CSV file', clickToBrowse: 'or click to browse',
+      selectLetter: 'Select a letter', chooseLetter: '— Choose a letter —',
+      doiCombined: 'Combined DOI/hash identifier (shortcut)', doiNakala: 'Nakala DOI',
+      letterId: 'Letter ID', date: 'Date', creator: 'Creator',
+      pages: 'Pages', addPage: '+ Page', autoFetch: '⚡ Auto-fetch',
+      openNakala: 'Nakala ↗', workflowTip: 'Paste the DOI+hash of the first image to pre-fill.',
+      validDoi: 'Valid DOI', invalidDoi: 'Invalid DOI format (10.xxxxx/…)',
+      validHash: 'Valid hash (SHA-1)', invalidHash: 'Invalid hash (40 hex chars)',
+      generation: 'Manifest Generation', generate: '🚀 Generate Manifest',
+      manifestPreview: 'Generated manifest preview (IIIF Presentation v3)',
+      validForm: '✅ Form complete — ready to generate', invalidForm: '❌ Required fields missing or invalid',
+      reset: 'Reset', dataReset: 'Data reset',
+      exportGithub: 'Export & GitHub', download: '⬇ Download JSON', copyJson: '📋 Copy JSON',
+      openJson: '🔗 Open JSON', downloaded: 'File downloaded', copied: 'Copied to clipboard',
+      githubIntegration: 'GitHub Integration', openExplorer: '📂 Explorer',
+      username: 'GitHub Username', repository: 'Repository', branch: 'Branch', path: 'Path', token: 'GitHub Token',
+      tokenHelp: 'Token with "Contents" write access. Stored locally.',
+      tokenWarning: '⚠ Your GitHub token is stored in plain text in this browser\'s localStorage. Do not use this app on a shared computer.',
+      pushGithub: '🚀 Push to GitHub', pushSuccess: 'Manifest pushed successfully!', pushError: 'GitHub error',
+      pushCancelled: 'Push cancelled', manifestUpdated: 'Manifest updated on GitHub',
+      confirmOverwrite: 'A manifest already exists for', willOverwrite: 'A new push will overwrite the existing file.',
+      githubMissing: 'GitHub token missing or manifest not generated',
+      checkingGithub: 'Checking on GitHub', checking: 'Checking…', checkFile: 'Check',
+      fileExists: 'Existing manifest found on GitHub', fileNotExists: 'No existing manifest — ready to create',
+      viewExisting: '👁 View existing', openOnGithub: 'GitHub ↗',
+      manifestUrl: 'Manifest URL:', testManifest: 'Test ↗', proTip: 'Raw GitHub URL generated automatically.',
+      validateManifest: '✔ Validate (IIIF)', previewManifest: '🔭 Preview viewer',
+      openTranskribus: '🚀 Open Transkribus', copyUrlOnly: '📋 Copy URL', urlCopiedTranskribus: 'URL copied — paste in Transkribus',
+      copyUrlFallback: 'Copy manually:',
+      quickActions: 'Quick actions', import: 'Import', metadata: 'Metadata', generation2: 'Generation', export: 'Export',
+      history: 'History', help: 'Help', shortcuts: 'Keyboard shortcuts', autoSave: '💾 Auto-save active',
+      csvExample: 'CSV example', linesImported: 'lines imported', letterSelected: 'Letter selected',
+      fetchingFiles: 'Fetching Nakala files…', filesDetected: 'files detected', fetchError: 'Fetch error',
+      pageAdded: 'Page added', pageRemoved: 'Page removed', manifestGenerated: 'IIIF v3 Manifest generated!',
+      folderChosen: 'Folder selected', githubExplorer: 'GitHub Explorer',
+      noSubfolders: 'No subfolders', fetching: 'Loading…', parent: 'Parent', foldersOnly: 'Folders only',
+      directPath: 'Or type the path directly', close: 'Close', open: 'Open', choose: 'Choose',
+      navigate: 'Navigate', purge: '🗑 Purge data',
+      confirmTitle: 'Confirm', confirmOk: 'Confirm', confirmCancel: 'Cancel',
+      confirmPurgeMsg: 'Clear all local data (form, GitHub config, history)?',
+      confirmOverwriteMsg: 'A manifest already exists',
+      restoreHistory: 'Click to restore',
+      batchTitle: 'Batch processing', batchDesc: 'Generate and push manifests for all letters in the CSV.',
+      batchStart: '▶ Start batch', batchStop: '⏹ Stop', batchProgress: 'Progress',
+      batchResults: 'Results', batchSkip: 'Skip existing',
+      reorderTip: '↕ Drag to reorder pages',
+      previewPages: 'Preview',
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════════
+  // TOAST CONTEXT  (remplace window.__showToast)
+  // ═══════════════════════════════════════════════════════════
+  const ToastContext = createContext(null);
+
+  function ToastProvider({ children }) {
+    const [toasts, setToasts] = useState([]);
+    const showToast = useCallback((toast) => {
+      const id = Date.now() + Math.random();
+      setToasts(prev => [...prev, { id, ...toast }]);
+      setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), toast.duration || 4000);
+    }, []);
+    return (
+      <ToastContext.Provider value={showToast}>
+        {children}
+        <div className="toasts">
+          {toasts.map(t => (
+            <div key={t.id} className={`toast ${t.level || ''}`}>
+              {t.title && <strong style={{display:'block',marginBottom:4}}>{t.title}</strong>}
+              {t.message}
+            </div>
+          ))}
+        </div>
+      </ToastContext.Provider>
+    );
+  }
+  const useToast = () => useContext(ToastContext);
+
+  // ═══════════════════════════════════════════════════════════
+  // CONFIRM MODAL  (remplace confirm())
+  // ═══════════════════════════════════════════════════════════
+  const ConfirmContext = createContext(null);
+
+  function ConfirmProvider({ children }) {
+    const [state, setState] = useState(null);
+    const resolveRef = useRef(null);
+
+    const confirm = useCallback(({ title, body, okLabel, cancelLabel }) => {
+      return new Promise(resolve => {
+        resolveRef.current = resolve;
+        setState({ title, body, okLabel, cancelLabel });
+      });
+    }, []);
+
+    const handle = (val) => { setState(null); resolveRef.current?.(val); };
+
+    return (
+      <ConfirmContext.Provider value={confirm}>
+        {children}
+        {state && (
+          <div className="modal" onClick={() => handle(false)}>
+            <div className="dialog" onClick={e => e.stopPropagation()}>
+              <div className="dialog-title">{state.title}</div>
+              <div className="dialog-body">{state.body}</div>
+              <div className="dialog-actions">
+                <button className="btn btn-secondary" onClick={() => handle(false)}>{state.cancelLabel || 'Annuler'}</button>
+                <button className="btn btn-danger" onClick={() => handle(true)}>{state.okLabel || 'Confirmer'}</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </ConfirmContext.Provider>
+    );
+  }
+  const useConfirm = () => useContext(ConfirmContext);
+
+  // ═══════════════════════════════════════════════════════════
+  // CUSTOM HOOKS
+  // ═══════════════════════════════════════════════════════════
+  function useI18n() {
+    const [lang, setLang] = useState(() => {
+      try { return localStorage.getItem('iiif_lang') || (navigator.language.startsWith('en') ? 'en' : 'fr'); }
+      catch { return 'fr'; }
+    });
+    useEffect(() => { try { localStorage.setItem('iiif_lang', lang); document.documentElement.lang = lang; } catch {} }, [lang]);
+    const t = (key) => TRANSLATIONS[lang]?.[key] || key;
+    return { lang, setLang, t };
+  }
+
+  function useLocalStorage(key, initial) {
+    const [state, setState] = useState(() => {
+      try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : initial; }
+      catch { return initial; }
+    });
+    useEffect(() => { try { localStorage.setItem(key, JSON.stringify(state)); } catch {} }, [key, state]);
+    return [state, setState];
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // IIIF v3 MANIFEST GENERATOR
+  // ═══════════════════════════════════════════════════════════
+  function buildManifestV3(manifest, githubConfig) {
+    const base = (githubConfig.username && githubConfig.repository)
+      ? `https://raw.githubusercontent.com/${githubConfig.username}/${githubConfig.repository}/${githubConfig.branch || 'main'}/${githubConfig.path || 'manifests'}/${manifest.letterId}`
+      : `https://example.org/iiif/${manifest.letterId}`;
+
+    const manifestId = `${base}.json`;
+
+    return {
+      "@context": "http://iiif.io/api/presentation/3/context.json",
+      "id": manifestId,
+      "type": "Manifest",
+      "label": { "fr": [manifest.letterId], "none": [manifest.title || manifest.letterId] },
+      "metadata": [
+        { "label": { "en": ["Identifier"], "fr": ["Identifiant"] }, "value": { "none": [manifest.letterId] } },
+        { "label": { "en": ["Title"], "fr": ["Titre"] },            "value": { "none": [manifest.title || ''] } },
+        { "label": { "en": ["Creator"], "fr": ["Créateur"] },       "value": { "none": [manifest.creator || ''] } },
+        { "label": { "en": ["Date"] },                              "value": { "none": [manifest.dateIssued || ''] } }
+      ],
+      "rights": manifest.license || "http://creativecommons.org/licenses/by-nc/4.0/",
+      "requiredStatement": {
+        "label": { "en": ["Attribution"] },
+        "value": { "en": [manifest.attribution || ''] }
+      },
+      "thumbnail": manifest.pages[0]?.hash ? [{
+        "id": `https://api.nakala.fr/iiif/${manifest.doi}/${manifest.pages[0].hash}/full/,150/0/default.jpg`,
+        "type": "Image", "format": "image/jpeg"
+      }] : undefined,
+      "items": manifest.pages.map((page, i) => {
+        const canvasId = `${base}/canvas/p${i + 1}`;
+        return {
+          "id": canvasId,
+          "type": "Canvas",
+          "label": { "none": [`p. ${i + 1}`] },
+          "width": page.width,
+          "height": page.height,
+          "thumbnail": [{
+            "id": `https://api.nakala.fr/iiif/${manifest.doi}/${page.hash}/full/,150/0/default.jpg`,
+            "type": "Image", "format": "image/jpeg",
+            "service": [{
+              "id": `https://api.nakala.fr/iiif/${manifest.doi}/${page.hash}`,
+              "type": "ImageService3", "profile": "level2"
+            }]
+          }],
+          "items": [{
+            "id": `${base}/page/p${i + 1}/1`,
+            "type": "AnnotationPage",
+            "items": [{
+              "id": `${base}/annotation/p${i + 1}-image`,
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": `https://api.nakala.fr/iiif/${manifest.doi}/${page.hash}/full/max/0/default.jpg`,
+                "type": "Image", "format": "image/jpeg",
+                "width": page.width, "height": page.height,
+                "service": [{
+                  "id": `https://api.nakala.fr/iiif/${manifest.doi}/${page.hash}`,
+                  "type": "ImageService3", "profile": "level2"
+                }]
+              },
+              "target": canvasId
+            }]
+          }]
+        };
+      })
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // GITHUB HELPERS
+  // ═══════════════════════════════════════════════════════════
+  async function githubGetFileSha(config, fileName) {
+    const path = `${config.path}/${fileName}`;
+    const res = await fetch(
+      `https://api.github.com/repos/${config.username}/${config.repository}/contents/${encodeURIComponent(path)}`,
+      { headers: { Authorization: `token ${config.token}` } }
+    );
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    return data.sha;
+  }
+
+  async function githubPutFile(config, fileName, content, sha) {
+    const path = `${config.path}/${fileName}`;
+    const payload = {
+      message: sha ? `Update IIIF manifest ${fileName}` : `Add IIIF manifest ${fileName}`,
+      content: btoa(unescape(encodeURIComponent(content))),
+      branch: config.branch || 'main'
+    };
+    if (sha) payload.sha = sha;
+    const res = await fetch(
+      `https://api.github.com/repos/${config.username}/${config.repository}/contents/${encodeURIComponent(path)}`,
+      { method: 'PUT', headers: { Authorization: `token ${config.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+    );
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message || JSON.stringify(e)); }
+    return await res.json();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // NAKALA HELPERS
+  // ═══════════════════════════════════════════════════════════
+  async function nakalaFetchFiles(doi) {
+    const res = await fetch(`https://api.nakala.fr/datas/${doi}`);
+    if (!res.ok) throw new Error(res.statusText);
+    const data = await res.json();
+    const files = data.files || [];
+    const imgExts = ['.jpg','.jpeg','.png','.tiff','.tif','.gif','.webp'];
+    let imgs = files.filter(f => f.mimetype?.startsWith('image/'));
+    if (!imgs.length) imgs = files.filter(f => imgExts.some(e => (f.name||'').toLowerCase().endsWith(e)));
+    if (!imgs.length) imgs = files.slice(0, 10);
+    return imgs;
+  }
+
+  async function nakalaFetchInfo(doi, hash) {
+    try {
+      const res = await fetch(`https://api.nakala.fr/iiif/${doi}/${hash}/info.json`);
+      if (!res.ok) return null;
+      const d = await res.json();
+      return { width: d.width, height: d.height };
+    } catch { return null; }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // VALIDATION STATUS
+  // ═══════════════════════════════════════════════════════════
+  function ValidationStatus({ value, validator, validText, invalidText }) {
+    if (!value) return null;
+    const ok = validator(value);
+    return <div className={`validation-status ${ok ? 'valid' : 'invalid'}`}>{ok ? '✅' : '❌'} {ok ? validText : invalidText}</div>;
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // THEME / LANG TOGGLES
+  // ═══════════════════════════════════════════════════════════
+  function ThemeToggle({ darkMode, setDarkMode }) {
+    return <button className="theme-toggle" onClick={() => { setDarkMode(!darkMode); document.body.classList.toggle('dark', !darkMode); }} title="Theme">{darkMode ? '☀️' : '🌙'}</button>;
+  }
+  function LanguageToggle({ lang, setLang }) {
+    return <button className="lang-toggle" onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}>{lang === 'fr' ? 'EN' : 'FR'}</button>;
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // WIZARD STEPS
+  // ═══════════════════════════════════════════════════════════
+  function WizardSteps({ currentStep, setStep, completedSteps, t }) {
+    const steps = [1,2,3,4].map(id => ({ id, label: t(`step${id}`) }));
+    return (
+      <div className="wizard-steps">
+        {steps.map(s => (
+          <div key={s.id} className={`step ${currentStep===s.id?'active':completedSteps.includes(s.id)?'completed':''}`} onClick={() => setStep(s.id)}>{s.label}</div>
+        ))}
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // DRAG-AND-DROP PAGE LIST
+  // ═══════════════════════════════════════════════════════════
+  function PagesList({ pages, setManifest, validateHash, t, doi }) {
+    const dragIdx = useRef(null);
+    const showToast = useToast();
+
+    const onDragStart = (i) => { dragIdx.current = i; };
+    const onDrop = (targetIdx) => {
+      if (dragIdx.current === null || dragIdx.current === targetIdx) return;
+      setManifest(m => {
+        const p = [...m.pages];
+        const [moved] = p.splice(dragIdx.current, 1);
+        p.splice(targetIdx, 0, moved);
+        return { ...m, pages: p };
+      });
+      dragIdx.current = null;
+    };
+
+    const updatePage = (i, field, value) => {
+      setManifest(m => { const p = [...m.pages]; p[i] = { ...p[i], [field]: value }; return { ...m, pages: p }; });
+    };
+
+    return (
+      <div>
+        <div className="meta" style={{marginBottom:8}}>{t('reorderTip')}</div>
+        <div className="pages-list">
+          {pages.map((page, i) => (
+            <div key={i} className="page-item"
+              draggable
+              onDragStart={() => onDragStart(i)}
+              onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }}
+              onDragLeave={e => e.currentTarget.classList.remove('drag-over')}
+              onDrop={e => { e.currentTarget.classList.remove('drag-over'); onDrop(i); }}
+            >
+              <div className="drag-handle" title="Glisser"><span/><span/><span/></div>
+              <span className="meta" style={{minWidth:22,textAlign:'center',fontWeight:700}}>{i+1}</span>
+              <div style={{flex:2}}>
+                <input placeholder="Hash (40 chars)" value={page.hash||''} onChange={e => updatePage(i,'hash',e.target.value)} />
+                <ValidationStatus value={page.hash} validator={validateHash} validText={t('validHash')} invalidText={t('invalidHash')} />
+              </div>
+              <input style={{width:90}} placeholder="W" type="number" value={page.width} onChange={e => updatePage(i,'width',Number(e.target.value)||0)} />
+              <input style={{width:90}} placeholder="H" type="number" value={page.height} onChange={e => updatePage(i,'height',Number(e.target.value)||0)} />
+              <button className="btn btn-danger small" disabled={pages.length===1}
+                onClick={() => { setManifest(m => ({ ...m, pages: m.pages.filter((_,idx) => idx!==i) })); showToast({message:t('pageRemoved'),level:'success'}); }}>
+                🗑️
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // MULTI-PAGE PREVIEW
+  // ═══════════════════════════════════════════════════════════
+  function MultiPagePreview({ manifest, t }) {
+    const [previews, setPreviews] = useState({});
+    const [loading, setLoading] = useState({});
+    const validateDoi = doi => /^10\.\d{4,}\/.*$/.test(doi);
+    const validateHash = hash => /^[a-f0-9]{40}$/i.test(hash);
+
+    useEffect(() => {
+      if (!manifest.doi || !validateDoi(manifest.doi)) { setPreviews({}); return; }
+      manifest.pages.forEach((page, i) => {
+        if (!page.hash || !validateHash(page.hash)) return;
+        const key = `${i}-${page.hash}`;
+        if (loading[key] || previews[key]) return;
+        setLoading(prev => ({ ...prev, [key]: true }));
+        const url = `https://api.nakala.fr/iiif/${manifest.doi}/${page.hash}/full/,200/0/default.jpg`;
+        const img = new Image();
+        img.onload = () => { setPreviews(p => ({ ...p, [key]: { url } })); setLoading(p => ({ ...p, [key]: false })); };
+        img.onerror = () => { setPreviews(p => ({ ...p, [key]: { error: true } })); setLoading(p => ({ ...p, [key]: false })); };
+        img.src = url;
+      });
+    }, [manifest.doi, manifest.pages]);
+
+    if (!manifest.doi || !validateDoi(manifest.doi) || !manifest.pages.length) return null;
+
+    return (
+      <div className="card" style={{marginTop:16}}>
+        <h4>📖 {t('previewPages')} ({manifest.pages.length})</h4>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:12,maxHeight:380,overflowY:'auto',padding:4,marginTop:12}}>
+          {manifest.pages.map((page, i) => {
+            const key = `${i}-${page.hash}`;
+            const valid = validateHash(page.hash||'');
+            const pr = previews[key];
+            return (
+              <div key={i} className="page-preview-item">
+                <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}>
+                  <span style={{fontWeight:600,fontSize:13}}>p.{i+1}</span>
+                  <span style={{width:8,height:8,borderRadius:'50%',background:!valid?'#6b7280':pr?.url?'#10b981':pr?.error?'#ef4444':'#f59e0b',display:'inline-block',marginTop:4}}/>
+                </div>
+                <div style={{aspectRatio:'3/4',background:'#f3f4f6',borderRadius:6,display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden',marginBottom:6}}>
+                  {!valid ? <span style={{fontSize:11,color:'#6b7280',textAlign:'center'}}>❌<br/>Hash invalide</span>
+                  : loading[key] ? <span className="spinner"/>
+                  : pr?.url ? <img src={pr.url} alt={`p${i+1}`} style={{maxWidth:'100%',maxHeight:'100%',objectFit:'contain'}}/>
+                  : pr?.error ? <span style={{fontSize:11,color:'#ef4444',textAlign:'center'}}>❌<br/>Erreur</span>
+                  : <span style={{fontSize:11,color:'#6b7280',textAlign:'center'}}>📄<br/>En attente</span>}
+                </div>
+                <div style={{fontSize:10,color:'#6b7280'}}>
+                  <div>{page.hash ? page.hash.slice(0,8)+'…' : 'N/A'}</div>
+                  <div>{page.width}×{page.height}</div>
+                  {pr?.url && <a href={`https://api.nakala.fr/iiif/${manifest.doi}/${page.hash}/full/max/0/default.jpg`} target="_blank" rel="noopener noreferrer" style={{color:'#4a8b8b',fontSize:10}}>↗ Full res</a>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="meta" style={{marginTop:10}}>
+          {manifest.pages.filter(p => validateHash(p.hash||'')).length}/{manifest.pages.length} hashes valides •{' '}
+          {Object.values(previews).filter(p => p?.url).length} aperçus chargés
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // MANIFEST STATUS CHECKER
+  // ═══════════════════════════════════════════════════════════
+  function ManifestStatusChecker({ manifest, githubConfig, t }) {
+    const [status, setStatus] = useState({ checking: false, exists: false, data: null, error: null });
+    const showToast = useToast();
+
+    const check = async () => {
+      if (!manifest.letterId || !githubConfig.username || !githubConfig.repository || !githubConfig.token) {
+        setStatus({ checking: false, exists: false, data: null, error: null }); return;
+      }
+      setStatus({ checking: true, exists: false, data: null, error: null });
+      try {
+        const fileName = `${manifest.letterId}.json`;
+        const path = `${githubConfig.path}/${fileName}`;
+        const res = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repository}/contents/${encodeURIComponent(path)}`,
+          { headers: { Authorization: `token ${githubConfig.token}` } });
+        if (res.ok) {
+          const data = await res.json();
+          setStatus({ checking: false, exists: true, data: { sha: data.sha, size: data.size, htmlUrl: data.html_url, downloadUrl: data.download_url }, error: null });
+        } else if (res.status === 404) {
+          setStatus({ checking: false, exists: false, data: null, error: null });
+        } else { throw new Error(`HTTP ${res.status}`); }
+      } catch (e) { setStatus({ checking: false, exists: false, data: null, error: e.message }); }
+    };
+
+    useEffect(() => { const t = setTimeout(check, 500); return () => clearTimeout(t); }, [manifest.letterId, githubConfig.username, githubConfig.repository, githubConfig.path]);
+
+    const viewExisting = async () => {
+      if (!status.data?.downloadUrl) return;
+      try {
+        const res = await fetch(status.data.downloadUrl);
+        const content = await res.text();
+        const w = window.open('', '_blank');
+        w.document.write(`<html><head><title>${manifest.letterId}</title></head><body style="font-family:monospace;padding:20px;background:#1e1e1e;color:#d4d4d4"><h2>${manifest.letterId}</h2><a href="${status.data.htmlUrl}" target="_blank" style="color:#4a8b8b">${status.data.htmlUrl}</a><pre style="background:#2d2d2d;padding:15px;border-radius:5px;overflow:auto;margin-top:16px">${content}</pre></body></html>`);
+      } catch { showToast({ message: 'Erreur de récupération', level: 'error' }); }
+    };
+
+    if (!manifest.letterId) return null;
+    return (
+      <div className="card" style={{marginTop:16}}>
+        <h4>🔍 {t('checkingGithub')}</h4>
+        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:12}}>
+          <div style={{flex:1}} className="meta"><strong>Fichier :</strong> {manifest.letterId}.json</div>
+          <button className="btn btn-secondary small" onClick={check} disabled={status.checking || !githubConfig.token}>
+            {status.checking ? <><span className="spinner" style={{width:12,height:12}}/> {t('checking')}</> : `🔄 ${t('checkFile')}`}
+          </button>
+        </div>
+        {status.error && <div className="status-indicator error">❌ {status.error}</div>}
+        {!status.checking && !status.error && (
+          status.exists ? (
+            <div>
+              <div className="status-indicator warning" style={{marginBottom:10}}>⚠️ {t('fileExists')}</div>
+              <div style={{fontSize:13,marginBottom:10}}><strong>Taille :</strong> {(status.data.size/1024).toFixed(2)} KB</div>
+              <div className="actions">
+                <button className="btn btn-secondary small" onClick={viewExisting}>👁️ {t('viewExisting')}</button>
+                <a href={status.data.htmlUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary small">🔗 {t('openOnGithub')}</a>
+              </div>
+              <div className="meta" style={{marginTop:8}}>💡 {t('willOverwrite')}</div>
+            </div>
+          ) : <div className="status-indicator success">✅ {t('fileNotExists')}</div>
+        )}
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // MANIFEST PREVIEW (OpenSeadragon inline)
+  // ═══════════════════════════════════════════════════════════
+  function ManifestPreviewViewer({ manifest, t }) {
+    const osdRef = useRef(null);
+    const containerRef = useRef(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [visible, setVisible] = useState(false);
+    const validateDoi = doi => /^10\.\d{4,}\/.*$/.test(doi);
+    const validateHash = hash => /^[a-f0-9]{40}$/i.test(hash);
+
+    const validPages = manifest.pages.filter(p => validateHash(p.hash||'') && validateDoi(manifest.doi));
+
+    useEffect(() => {
+      if (!visible || !validPages.length || !containerRef.current) return;
+      if (osdRef.current) { osdRef.current.destroy(); osdRef.current = null; }
+      const infoUrl = `https://api.nakala.fr/iiif/${manifest.doi}/${validPages[currentPage].hash}/info.json`;
+      fetch(infoUrl).then(r => r.json()).then(info => {
+        osdRef.current = OpenSeadragon({
+          element: containerRef.current, tileSources: info,
+          prefixUrl: 'https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/',
+          showNavigationControl: false, gestureSettingsMouse: { clickToZoom: false },
+          visibilityRatio: 0.5, defaultZoomLevel: 0, background: '#1a2837'
+        });
+      }).catch(() => {});
+      return () => { if (osdRef.current) { osdRef.current.destroy(); osdRef.current = null; } };
+    }, [visible, currentPage, manifest.doi]);
+
+    if (!validPages.length) return null;
+
+    return (
+      <div style={{marginTop:16}}>
+        <button className="btn btn-secondary" onClick={() => setVisible(v => !v)}>
+          🔭 {t('previewManifest')} {visible ? '▲' : '▼'}
+        </button>
+        {visible && (
+          <div style={{marginTop:12}}>
+            <div style={{display:'flex',gap:8,marginBottom:8,alignItems:'center'}}>
+              {validPages.map((_,i) => (
+                <button key={i} className={`btn small ${currentPage===i?'btn-primary':'btn-secondary'}`} onClick={() => setCurrentPage(i)}>p.{i+1}</button>
+              ))}
+              <span className="meta" style={{marginLeft:'auto'}}>IIIF Image API v3 — OpenSeadragon</span>
+            </div>
+            <div ref={containerRef} id="osd-preview" />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // TRANSKRIBUS INTEGRATION
+  // ═══════════════════════════════════════════════════════════
+  function TranskribusIntegration({ manifest, githubConfig, generatedManifest, t }) {
+    const showToast = useToast();
+    const manifestUrl = (manifest.letterId && githubConfig.username && githubConfig.repository && generatedManifest)
+      ? `https://raw.githubusercontent.com/${githubConfig.username}/${githubConfig.repository}/${githubConfig.branch||'main'}/${githubConfig.path||'manifests'}/${manifest.letterId}.json`
+      : '';
+
+    const copyAndOpen = async () => {
+      if (!manifestUrl) return;
+      try { await navigator.clipboard.writeText(manifestUrl); }
+      catch { const ta = document.createElement('textarea'); ta.value = manifestUrl; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+      setTimeout(() => { window.open('https://app.transkribus.org/upload?collId=190656', '_blank'); showToast({ message: t('urlCopiedTranskribus'), level: 'success', duration: 5000 }); }, 100);
+    };
+
+    if (!manifestUrl) return null;
+    return (
+      <div className="card" style={{marginTop:16}}>
+        <h4>🚀 Transkribus</h4>
+        <div className="meta" style={{marginBottom:12}}><strong>{t('manifestUrl')}</strong> <code style={{fontSize:11,wordBreak:'break-all'}}>{manifestUrl}</code></div>
+        <div className="actions">
+          <button className="btn transkribus" onClick={copyAndOpen}>🚀 {t('openTranskribus')}</button>
+          <button className="btn btn-secondary" onClick={async () => { try { await navigator.clipboard.writeText(manifestUrl); showToast({message:t('copyUrlOnly'),level:'success'}); } catch {} }}>📋 {t('copyUrlOnly')}</button>
+          <a href={manifestUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">🔗 {t('testManifest')}</a>
+        </div>
+        <div className="meta" style={{marginTop:10}}>💡 {t('proTip')}</div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // GITHUB EXPLORER MODAL
+  // ═══════════════════════════════════════════════════════════
+  function TreeNode({ owner, repo, token, item, depth=0, onChoose, onNavigate, t }) {
+    const [open, setOpen] = useState(false);
+    const [children, setChildren] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const load = async () => {
+      setLoading(true); setError(null);
+      try {
+        const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(item.path||'')}`;
+        const res = await fetch(url, { headers: token ? { Authorization: `token ${token}` } : {} });
+        if (res.status === 404) { setChildren([]); setLoading(false); return; }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setChildren(data.filter(i => i.type==='dir').map(d => ({ name: d.name, path: (item.path ? `${item.path}/` : '') + d.name })));
+      } catch (e) { setError(e.message); }
+      setLoading(false);
+    };
+
+    return (
+      <div style={{marginBottom:4}}>
+        <div className="node" style={{paddingLeft:depth*12}}>
+          <div style={{width:18}}>{open?'📂':'📁'}</div>
+          <div style={{flex:1,fontWeight:600,cursor:'pointer'}} onClick={() => onNavigate?.(item.path||'')}>{item.name||(item.path||repo)}</div>
+          <div style={{display:'flex',gap:6}}>
+            <button className="btn btn-secondary small" onClick={async e => { e.stopPropagation(); if (!open && !children) await load(); setOpen(o=>!o); }}>{open?t('close'):t('open')}</button>
+            <button className="btn btn-primary small" onClick={e => { e.stopPropagation(); onChoose(item.path||''); }}>{t('choose')}</button>
+          </div>
+        </div>
+        {loading && <div style={{paddingLeft:(depth+1)*12}} className="meta"><span className="spinner"/></div>}
+        {error && <div style={{paddingLeft:(depth+1)*12}} className="error">{error}</div>}
+        {open && children && (
+          <div className="children">
+            {children.length===0 && <div className="meta">{t('noSubfolders')}</div>}
+            {children.map(ch => <TreeNode key={ch.path} owner={owner} repo={repo} token={token} item={ch} depth={depth+1} onChoose={onChoose} onNavigate={onNavigate} t={t}/>)}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function GitHubExplorerModal({ open, onClose, config, onChoose, t }) {
+    const [path, setPath] = useState(config.path||'');
+    useEffect(() => { if (open) setPath(config.path||''); }, [open, config.path]);
+    if (!open) return null;
+    const parts = path.split('/').filter(Boolean);
+    return (
+      <div className="modal" onClick={onClose}>
+        <div className="dialog" style={{maxWidth:640}} onClick={e => e.stopPropagation()}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+            <div style={{fontWeight:700}}>{t('githubExplorer')} — {config.username}/{config.repository}</div>
+            <button className="btn btn-secondary small" onClick={onClose}>{t('close')}</button>
+          </div>
+          <div style={{display:'flex',gap:8,alignItems:'center',marginBottom:12,flexWrap:'wrap'}}>
+            <button className="btn btn-secondary small" onClick={() => setPath('')}>🏠 {config.repository}</button>
+            {parts.length>0 && <button className="btn btn-secondary small" onClick={() => setPath(parts.slice(0,-1).join('/'))}>⬆️ {t('parent')}</button>}
+            {parts.map((p,i) => <button key={i} className="btn btn-secondary small" onClick={() => setPath(parts.slice(0,i+1).join('/'))}>{p}</button>)}
+          </div>
+          <div style={{display:'flex',gap:16}}>
+            <div style={{flex:1,maxHeight:320,overflowY:'auto'}}>
+              <TreeNode owner={config.username} repo={config.repository} token={config.token} item={{name:path||config.repository,path}} onChoose={p => { onChoose(p); onClose(); }} onNavigate={setPath} t={t}/>
+            </div>
+            <div style={{width:200}}>
+              <div className="card">
+                <div className="meta" style={{marginBottom:8}}>{t('directPath')}</div>
+                <input type="text" placeholder="subfolder/…" value={path} onChange={e=>setPath(e.target.value)} style={{marginBottom:10}}/>
+                <div style={{display:'flex',gap:8}}>
+                  <button className="btn btn-primary small" onClick={() => { onChoose(path); onClose(); }}>{t('choose')}</button>
+                  <button className="btn btn-secondary small" onClick={onClose}>{t('close')}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // BATCH PROCESSOR
+  // ═══════════════════════════════════════════════════════════
+  function BatchProcessor({ csvData, githubConfig, manifest: currentManifest, t }) {
+    const showToast = useToast();
+    const confirm = useConfirm();
+    const [rows, setRows] = useState([]);
+    const [running, setRunning] = useState(false);
+    const [skipExisting, setSkipExisting] = useState(true);
+    const stopRef = useRef(false);
+
+    useEffect(() => {
+      setRows(csvData.map(row => ({ ...row, _status: 'pending', _error: '' })));
+    }, [csvData]);
+
+    const canRun = githubConfig.token && githubConfig.username && githubConfig.repository && rows.length > 0;
+    const done = rows.filter(r => r._status==='done').length;
+    const total = rows.length;
+
+    const startBatch = async () => {
+      if (!canRun) return;
+      const ok = await confirm({ title: t('batchTitle'), body: `${t('batchDesc')} (${total} lettres)`, okLabel: t('batchStart'), cancelLabel: t('confirmCancel') });
+      if (!ok) return;
+      stopRef.current = false;
+      setRunning(true);
+
+      for (let i = 0; i < rows.length; i++) {
+        if (stopRef.current) break;
+        const row = rows[i];
+        const letterId = row.letterId || row['http://nakala.fr/terms#title']?.match(/(SPA_\d+)/)?.[1] || '';
+        if (!letterId) { setRows(r => { const c=[...r]; c[i]={...c[i],_status:'skipped',_error:'ID manquant'}; return c; }); continue; }
+
+        setRows(r => { const c=[...r]; c[i]={...c[i],_status:'running'}; return c; });
+        try {
+          // Get DOI from row (use current manifest DOI as fallback)
+          const doi = currentManifest.doi;
+
+          // Check if exists and skip if needed
+          if (skipExisting) {
+            const sha = await githubGetFileSha(githubConfig, `${letterId}.json`).catch(() => null);
+            if (sha) { setRows(r => { const c=[...r]; c[i]={...c[i],_status:'skipped',_error:'Déjà existant'}; return c; }); continue; }
+          }
+
+          // Fetch files
+          const files = await nakalaFetchFiles(doi);
+          const pages = await Promise.all(files.map(async f => {
+            const hash = f.sha1 || f.hash || '';
+            const dims = await nakalaFetchInfo(doi, hash) || { width: 2692, height: 3430 };
+            return { hash, ...dims, combinedId: `${doi}/${hash}` };
+          }));
+
+          // Build manifest
+          const mData = { ...currentManifest, letterId, title: row['http://nakala.fr/terms#title']||letterId, creator: row['http://nakala.fr/terms#creator']||'', dateIssued: row['http://nakala.fr/terms#created']||'', doi, pages };
+          const mObj = buildManifestV3(mData, githubConfig);
+          const json = JSON.stringify(mObj, null, 2);
+
+          // Push
+          const sha = await githubGetFileSha(githubConfig, `${letterId}.json`).catch(() => null);
+          await githubPutFile(githubConfig, `${letterId}.json`, json, sha);
+
+          setRows(r => { const c=[...r]; c[i]={...c[i],_status:'done'}; return c; });
+        } catch (e) {
+          setRows(r => { const c=[...r]; c[i]={...c[i],_status:'error',_error:e.message}; return c; });
+        }
+      }
+      setRunning(false);
+      showToast({ message: `Lot terminé : ${rows.filter(r=>r._status==='done').length}/${total} réussis`, level: 'success', duration: 6000 });
+    };
+
+    const statusLabel = { pending:'En attente', running:'En cours…', done:'✅ OK', error:'❌ Erreur', skipped:'⏭ Ignoré' };
+
+    return (
+      <div className="card" style={{marginTop:16}}>
+        <h4>⚡ {t('batchTitle')}</h4>
+        <p className="meta" style={{marginBottom:12}}>{t('batchDesc')}</p>
+        <div className="actions" style={{marginBottom:12}}>
+          <button className="btn btn-primary" onClick={startBatch} disabled={!canRun || running}>{t('batchStart')}</button>
+          {running && <button className="btn btn-danger" onClick={() => { stopRef.current = true; }}>{t('batchStop')}</button>}
+          <label style={{display:'flex',alignItems:'center',gap:6,margin:0,fontSize:13,cursor:'pointer'}}>
+            <input type="checkbox" checked={skipExisting} onChange={e=>setSkipExisting(e.target.checked)}/> {t('batchSkip')}
+          </label>
+        </div>
+        {running && (
+          <div>
+            <div className="meta" style={{marginBottom:4}}>{t('batchProgress')} : {done}/{total}</div>
+            <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${total?done/total*100:0}%`}}/></div>
+          </div>
+        )}
+        {rows.length > 0 && (
+          <div style={{maxHeight:260,overflowY:'auto'}}>
+            <table className="batch-table">
+              <thead><tr><th>ID</th><th>Titre</th><th>Statut</th></tr></thead>
+              <tbody>
+                {rows.map((row, i) => (
+                  <tr key={i}>
+                    <td style={{fontWeight:600,fontSize:12}}>{row.letterId||'—'}</td>
+                    <td style={{maxWidth:200,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',fontSize:12}}>{row['http://nakala.fr/terms#title']||''}</td>
+                    <td><span className={`batch-status ${row._status}`}>{statusLabel[row._status]||row._status}{row._error?` — ${row._error}`:''}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // MAIN APP
+  // ═══════════════════════════════════════════════════════════
+  function App() {
+    const { lang, setLang, t } = useI18n();
+    const showToast = useToast();
+    const confirm = useConfirm();
+    const [darkMode, setDarkMode] = useLocalStorage('iiif_dark', false);
+    const [step, setStep] = useLocalStorage('iiif_step', 1);
+    const [completedSteps, setCompletedSteps] = useLocalStorage('iiif_completed', []);
+    const [csvData, setCsvData] = useState([]);
+    const [manifest, setManifest] = useLocalStorage('iiif_manifest', {
+      doi: '', letterId: '', title: '', creator: '', dateIssued: '',
+      pages: [{ hash: '', width: 2692, height: 3430, combinedId: '' }],
+      attribution: 'Nicolas Moron / NAKALA', license: 'http://creativecommons.org/licenses/by-nc/4.0/'
+    });
+    const [generatedManifest, setGeneratedManifest] = useState('');
+    const [githubConfig, setGithubConfig] = useLocalStorage('iiif_github', {
+      username: '', repository: '', token: '', path: 'manifests', branch: 'main'
+    });
+    const [openExplorer, setOpenExplorer] = useState(false);
+    const [history, setHistory] = useLocalStorage('iiif_history', []);
+    const fileRef = useRef();
+
+    const validateDoi = doi => /^10\.\d{4,}\/.*$/.test(doi);
+    const validateHash = hash => /^[a-f0-9]{40}$/i.test(hash);
+
+    useEffect(() => { document.body.classList.toggle('dark', darkMode); }, [darkMode]);
+
+    // CSV
+    const handleCSVUpload = (file) => {
+      Papa.parse(file, { header: true, skipEmptyLines: true, complete: (res) => {
+        const rows = res.data.map(row => { const m = (row['http://nakala.fr/terms#title']||'').match(/(SPA_\d+)/); return { ...row, letterId: m?m[1]:'' }; });
+        setCsvData(rows);
+        setCompletedSteps(prev => [...new Set([...prev, 1])]);
+        showToast({ message: `${rows.length} ${t('linesImported')}`, level: 'success' });
+      }});
+    };
+
+    const selectLetter = (item) => {
+      const d = csvData.find(r => r['Linked in item'] === item);
+      if (!d) return;
+      const letterId = d.letterId || d['http://nakala.fr/terms#title']?.match(/(SPA_\d+)/)?.[1] || '';
+      setManifest(m => ({ ...m, letterId, title: d['http://nakala.fr/terms#title']||'', creator: d['http://nakala.fr/terms#creator']||'', dateIssued: d['http://nakala.fr/terms#created']||'' }));
+      setCompletedSteps(prev => [...new Set([...prev, 2])]);
+      setStep(2);
+      showToast({ message: t('letterSelected'), level: 'success' });
+    };
+
+    // Auto-fetch
+    const fetchHashesFromDOI = async () => {
+      if (!validateDoi(manifest.doi)) { showToast({ message: t('invalidDoi'), level: 'error' }); return; }
+      showToast({ message: t('fetchingFiles'), level: 'info' });
+      try {
+        const files = await nakalaFetchFiles(manifest.doi);
+        const pages = files.map(f => ({ hash: f.sha1||f.hash||'', width: 2692, height: 3430, combinedId: `${manifest.doi}/${f.sha1||f.hash||''}` }));
+        setManifest(m => ({ ...m, pages }));
+        showToast({ message: `${pages.length} ${t('filesDetected')}`, level: 'success' });
+        // Fetch dimensions
+        for (let i = 0; i < pages.length; i++) {
+          const p = pages[i];
+          if (!validateHash(p.hash)) continue;
+          const dims = await nakalaFetchInfo(manifest.doi, p.hash);
+          if (dims) setManifest(m => { const np=[...m.pages]; np[i]={...np[i],...dims}; return {...m,pages:np}; });
+        }
+      } catch { showToast({ message: t('fetchError'), level: 'error' }); }
+    };
+
+    // Generate manifest
+    const isFormValid = () => manifest.letterId && validateDoi(manifest.doi) && manifest.pages.every(p => validateHash(p.hash||''));
+
+    const generateManifest = () => {
+      if (!isFormValid()) { showToast({ message: t('formIncomplete'), level: 'error' }); return; }
+      const obj = buildManifestV3(manifest, githubConfig);
+      const json = JSON.stringify(obj, null, 2);
+      setGeneratedManifest(json);
+      setCompletedSteps(prev => [...new Set([...prev, 3])]);
+      const entry = { id: Date.now(), letterId: manifest.letterId, doi: manifest.doi, created: new Date().toLocaleString(), pages: manifest.pages.length };
+      setHistory(prev => [entry, ...prev].slice(0, 20));
+      setStep(4);
+      showToast({ message: t('manifestGenerated'), level: 'success' });
+    };
+
+    // Push to GitHub
+    const pushToGitHub = async () => {
+      if (!githubConfig.token || !generatedManifest) { showToast({ message: t('githubMissing'), level: 'error' }); return; }
+      const fileName = `${manifest.letterId||'manifest'}.json`;
+      try {
+        const existingSha = await githubGetFileSha(githubConfig, fileName).catch(() => null);
+        if (existingSha) {
+          const ok = await confirm({ title: t('confirmTitle'), body: `${t('confirmOverwriteMsg')} : "${fileName}"\n\nCette action est irréversible.`, okLabel: t('confirmOk'), cancelLabel: t('confirmCancel') });
+          if (!ok) { showToast({ message: t('pushCancelled'), level: 'info' }); return; }
+        }
+        await githubPutFile(githubConfig, fileName, generatedManifest, existingSha);
+        setHistory(prev => [{ ...prev[0], url: `https://github.com/${githubConfig.username}/${githubConfig.repository}/blob/${githubConfig.branch}/${githubConfig.path}/${fileName}`, action: existingSha?'updated':'created' }, ...prev.slice(1)].slice(0,20));
+        showToast({ message: existingSha ? t('manifestUpdated') : t('pushSuccess'), level: 'success' });
+      } catch (e) { showToast({ message: `${t('pushError')}: ${e.message}`, level: 'error' }); }
+    };
+
+    // Restore from history
+    const restoreFromHistory = (item) => {
+      setManifest(m => ({ ...m, letterId: item.letterId, doi: item.doi }));
+      setStep(2);
+      showToast({ message: `Restauré : ${item.letterId}`, level: 'info' });
+    };
+
+    // Purge
+    const purgeData = async () => {
+      const ok = await confirm({ title: t('confirmTitle'), body: t('confirmPurgeMsg'), okLabel: t('purge'), cancelLabel: t('confirmCancel') });
+      if (ok) { localStorage.clear(); window.location.reload(); }
+    };
+
+    // Download
+    const downloadManifest = () => {
+      const blob = new Blob([generatedManifest], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `${manifest.letterId||'manifest'}.json`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+      showToast({ message: t('downloaded'), level: 'success' });
+    };
+
+    const copyManifest = async () => {
+      try { await navigator.clipboard.writeText(generatedManifest); }
+      catch { const ta = document.createElement('textarea'); ta.value = generatedManifest; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+      showToast({ message: t('copied'), level: 'success' });
+    };
+
+    return (
+      <div className="app">
+        {/* Header */}
+        <div className="header">
+          <div>
+            <h1>{t('title')}</h1>
+            <p className="lead">{t('subtitle')}</p>
+          </div>
+          <div className="controls">
+            <button className="btn btn-secondary small" onClick={() => {
+              const s = `Linked in item,http://nakala.fr/terms#title,http://nakala.fr/terms#creator,http://nakala.fr/terms#created\nitem1,SPA_1234 Example,Author,1900`;
+              const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([s],{type:'text/csv'})); a.download='example.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            }}>{t('csvExample')}</button>
+            <LanguageToggle lang={lang} setLang={setLang}/>
+            <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode}/>
+          </div>
+        </div>
+
+        {/* Token warning */}
+        {githubConfig.token && <div className="token-warning">🔒 {t('tokenWarning')}</div>}
+
+        <WizardSteps currentStep={step} setStep={setStep} completedSteps={completedSteps} t={t}/>
+
+        <div className="cols">
+          <div>
+            {/* ── Step 1 ── */}
+            {step===1 && (
+              <div>
+                {/* CSV import */}
+                <div className="card">
+                  <h3>{t('importCsv')}</h3>
+                  <div className="drag-zone" onClick={() => fileRef.current?.click()}
+                    onDrop={e => { e.preventDefault(); const f=e.dataTransfer.files[0]; if(f) handleCSVUpload(f); e.currentTarget.classList.remove('over'); }}
+                    onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add('over'); }}
+                    onDragLeave={e => e.currentTarget.classList.remove('over')}>
+                    <div style={{fontSize:24,marginBottom:12}}>📁</div>
+                    <div style={{fontWeight:600,marginBottom:8}}>{t('dragDropCsv')}</div>
+                    <div className="meta">{t('clickToBrowse')}</div>
+                    <input type="file" ref={fileRef} accept=".csv" style={{display:'none'}} onChange={e => { if(e.target.files[0]) handleCSVUpload(e.target.files[0]); }}/>
+                  </div>
+                  {csvData.length>0 && (
+                    <div>
+                      <div className="file-info">✅ {csvData.length} {t('linesImported')}</div>
+                      <div style={{marginTop:16}}>
+                        <label>{t('selectLetter')}</label>
+                        <select onChange={e => selectLetter(e.target.value)}>
+                          <option value="">{t('chooseLetter')}</option>
+                          {csvData.map((row,i) => <option key={i} value={row['Linked in item']}>{row['http://nakala.fr/terms#title']} {row.letterId&&`(${row.letterId})`}</option>)}
+                        </select>
+                      </div>
+                      <BatchProcessor csvData={csvData} githubConfig={githubConfig} manifest={manifest} t={t}/>
+                    </div>
+                  )}
+                </div>
+
+                {/* GitHub config — toujours visible en étape 1 */}
+                <div className="card">
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <h3>{t('githubIntegration')}</h3>
+                    <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                      {githubConfig.username&&githubConfig.repository
+                        ? <span className="status-indicator success" style={{fontSize:12,padding:'4px 10px'}}>✅ {githubConfig.username}/{githubConfig.repository}</span>
+                        : <span className="status-indicator error" style={{fontSize:12,padding:'4px 10px'}}>⚪ Non configuré</span>}
+                      <button className="btn btn-secondary small" onClick={() => setOpenExplorer(true)} disabled={!githubConfig.username||!githubConfig.repository}>{t('openExplorer')}</button>
+                    </div>
+                  </div>
+                  <div className="github-config">
+                    <div className="form-row">
+                      <div><label>{t('username')}</label><input type="text" value={githubConfig.username} placeholder="your-username" onChange={e=>setGithubConfig(c=>({...c,username:e.target.value}))}/></div>
+                      <div><label>{t('repository')}</label><input type="text" value={githubConfig.repository} placeholder="iiif-manifests" onChange={e=>setGithubConfig(c=>({...c,repository:e.target.value}))}/></div>
+                    </div>
+                    <div className="form-row">
+                      <div><label>{t('branch')}</label><input type="text" value={githubConfig.branch} placeholder="main" onChange={e=>setGithubConfig(c=>({...c,branch:e.target.value}))}/></div>
+                      <div><label>{t('path')}</label><input type="text" value={githubConfig.path} placeholder="manifests" onChange={e=>setGithubConfig(c=>({...c,path:e.target.value}))}/></div>
+                    </div>
+                    <div>
+                      <label>{t('token')}</label>
+                      <input type="password" value={githubConfig.token} placeholder="ghp_…" onChange={e=>setGithubConfig(c=>({...c,token:e.target.value}))}/>
+                      <div className="meta" style={{marginTop:4}}>{t('tokenHelp')}</div>
+                      {githubConfig.token && <div className="token-warning" style={{marginTop:8}}>{t('tokenWarning')}</div>}
+                    </div>
+                  </div>
+                  {githubConfig.token && githubConfig.username && githubConfig.repository && (
+                    <div style={{marginTop:12}} className="status-indicator success">
+                      ✅ Connexion GitHub configurée — toutes les fonctions sont disponibles.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ── Step 2 ── */}
+            {step===2 && (
+              <div className="card">
+                <h3>{t('metadataPages') || 'Métadonnées & Pages'}</h3>
+
+                {/* Combined ID shortcut */}
+                <div style={{marginBottom:20}}>
+                  <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+                    <label style={{margin:0}}>{t('doiCombined')}</label>
+                    <button className="btn btn-secondary small" onClick={() => window.open('https://nakala.fr','_blank')}>{t('openNakala')}</button>
+                  </div>
+                  <input type="text" value={manifest.combinedId||''} placeholder="10.34847/nkl.xxxx/sha1hash…"
+                    onChange={e => {
+                      const v = e.target.value; setManifest(m=>({...m,combinedId:v}));
+                      if (v.includes('/')) { try { const parts=v.trim().split('/'); const hash=parts.pop(); const doi=parts.join('/'); if(validateDoi(doi)&&validateHash(hash)) setManifest(p=>({...p,doi,combinedId:v,pages:[{...p.pages[0],hash,combinedId:v},...p.pages.slice(1)]})); } catch {} }
+                    }}/>
+                  <div className="meta" style={{marginTop:4}}>{t('workflowTip')}</div>
+                </div>
+
+                {/* DOI */}
+                <div style={{marginBottom:20}}>
+                  <label>{t('doiNakala')} *</label>
+                  <input type="text" value={manifest.doi} placeholder="10.34847/nkl.e68ch4qq"
+                    onChange={e => setManifest(m=>({...m,doi:e.target.value}))}
+                    onBlur={() => { if(validateDoi(manifest.doi)) fetchHashesFromDOI(); }}/>
+                  <ValidationStatus value={manifest.doi} validator={validateDoi} validText={t('validDoi')} invalidText={t('invalidDoi')}/>
+                </div>
+
+                <div className="form-row">
+                  <div><label>{t('letterId')} *</label><input type="text" value={manifest.letterId} placeholder="SPA_2490" onChange={e=>setManifest(m=>({...m,letterId:e.target.value}))}/></div>
+                  <div><label>{t('date')}</label><input type="text" value={manifest.dateIssued} placeholder="1924" onChange={e=>setManifest(m=>({...m,dateIssued:e.target.value}))}/></div>
+                </div>
+                <div className="form-row">
+                  <div><label>{t('title') || 'Titre'}</label><input type="text" value={manifest.title} onChange={e=>setManifest(m=>({...m,title:e.target.value}))}/></div>
+                  <div><label>{t('creator')}</label><input type="text" value={manifest.creator} onChange={e=>setManifest(m=>({...m,creator:e.target.value}))}/></div>
+                </div>
+                <div className="form-row">
+                  <div><label>Attribution</label><input type="text" value={manifest.attribution} onChange={e=>setManifest(m=>({...m,attribution:e.target.value}))}/></div>
+                  <div><label>Licence (URI)</label><input type="text" value={manifest.license} onChange={e=>setManifest(m=>({...m,license:e.target.value}))}/></div>
+                </div>
+
+                {/* Pages */}
+                <div style={{marginTop:20}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+                    <label style={{margin:0}}>{t('pages')}</label>
+                    <div className="actions">
+                      <button className="btn btn-secondary small" onClick={() => { setManifest(m=>({...m,pages:[...m.pages,{hash:'',width:2692,height:3430,combinedId:''}]})); showToast({message:t('pageAdded'),level:'success'}); }}>{t('addPage')}</button>
+                      <button className="btn btn-primary small" onClick={fetchHashesFromDOI} disabled={!validateDoi(manifest.doi)}>{t('autoFetch')}</button>
+                    </div>
+                  </div>
+                  <PagesList pages={manifest.pages} setManifest={setManifest} validateHash={validateHash} t={t} doi={manifest.doi}/>
+                </div>
+
+                <ManifestStatusChecker manifest={manifest} githubConfig={githubConfig} t={t}/>
+                <MultiPagePreview manifest={manifest} t={t}/>
+              </div>
+            )}
+
+            {/* ── Step 3 ── */}
+            {step===3 && (
+              <div className="card">
+                <h3>{t('generation')}</h3>
+                <div className={`status-indicator ${isFormValid()?'success':'error'}`} style={{marginBottom:16}}>
+                  {isFormValid() ? t('validForm') : t('invalidForm')}
+                </div>
+                <div className="actions" style={{marginBottom:16}}>
+                  <button className="btn btn-primary" onClick={generateManifest} disabled={!isFormValid()}>{t('generate')}</button>
+                  <button className="btn btn-secondary" onClick={() => { setGeneratedManifest(''); showToast({message:t('dataReset'),level:'info'}); }}>{t('reset')}</button>
+                  {generatedManifest && (
+                    <>
+                      <a href={`https://presentation-validator.iiif.io/validate?url=${encodeURIComponent(`data:application/json;charset=utf-8,${encodeURIComponent(generatedManifest)}`)}`}
+                         target="_blank" rel="noopener noreferrer" className="btn btn-secondary" title="Valider le manifest IIIF">
+                        {t('validateManifest')}
+                      </a>
+                    </>
+                  )}
+                </div>
+                {generatedManifest && (
+                  <div>
+                    <label>{t('manifestPreview')}</label>
+                    <textarea readOnly value={generatedManifest.slice(0,1200)+(generatedManifest.length>1200?'\n…':'') } style={{height:220,resize:'vertical',fontFamily:'monospace',fontSize:12}}/>
+                    <ManifestPreviewViewer manifest={manifest} t={t}/>
+                    <TranskribusIntegration manifest={manifest} githubConfig={githubConfig} generatedManifest={generatedManifest} t={t}/>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ── Step 4 ── */}
+            {step===4 && (
+              <div className="card">
+                <h3>{t('exportGithub')}</h3>
+                <div className="actions" style={{marginBottom:20}}>
+                  <button className="btn btn-primary" onClick={downloadManifest} disabled={!generatedManifest}>{t('download')}</button>
+                  <button className="btn btn-secondary" onClick={copyManifest} disabled={!generatedManifest}>{t('copyJson')}</button>
+                  <button className="btn btn-secondary" onClick={() => window.open(`data:application/json;charset=utf-8,${encodeURIComponent(generatedManifest)}`)} disabled={!generatedManifest}>{t('openJson')}</button>
+                </div>
+
+                {/* GitHub push */}
+                <div className="card">
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+                    <h4>{t('githubIntegration')}</h4>
+                    {githubConfig.username&&githubConfig.repository
+                      ? <span className="status-indicator success" style={{fontSize:12,padding:'4px 10px'}}>✅ {githubConfig.username}/{githubConfig.repository}/{githubConfig.path}</span>
+                      : <span className="status-indicator error" style={{fontSize:12,padding:'4px 10px'}}>⚠ GitHub non configuré — <button className="btn btn-secondary small" style={{marginLeft:6}} onClick={() => setStep(1)}>← Étape 1</button></span>}
+                  </div>
+                  <div className="actions">
+                    <button className="btn btn-primary" onClick={pushToGitHub} disabled={!generatedManifest||!githubConfig.token}>{t('pushGithub')}</button>
+                    {!githubConfig.token && <span className="meta">Token manquant — configurez-le à l'étape 1.</span>}
+                  </div>
+                </div>
+
+                <TranskribusIntegration manifest={manifest} githubConfig={githubConfig} generatedManifest={generatedManifest} t={t}/>
+              </div>
+            )}
+          </div>
+
+          {/* ── Sidebar ── */}
+          <div>
+            <div className="card">
+              <h4>{t('quickActions')}</h4>
+              <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                {[1,2,3,4].map(s => <button key={s} className="btn btn-secondary" onClick={() => setStep(s)}>{t(`step${s}`)}</button>)}
+                {generatedManifest && manifest.letterId && githubConfig.username && (
+                  <button className="btn transkribus" onClick={async () => {
+                    const url = `https://raw.githubusercontent.com/${githubConfig.username}/${githubConfig.repository}/${githubConfig.branch||'main'}/${githubConfig.path||'manifests'}/${manifest.letterId}.json`;
+                    try { await navigator.clipboard.writeText(url); } catch {}
+                    setTimeout(() => { window.open('https://app.transkribus.org/upload?collId=190656','_blank'); showToast({message:t('urlCopiedTranskribus'),level:'success',duration:5000}); }, 100);
+                  }}>Transkribus</button>
+                )}
+                <button className="btn btn-danger small" onClick={purgeData}>{t('purge')}</button>
+              </div>
+            </div>
+
+            {history.length>0 && (
+              <div className="card">
+                <h4>{t('history')}</h4>
+                <div className="history">
+                  {history.slice(0,10).map(item => (
+                    <div key={item.id} className="hist-item" onClick={() => restoreFromHistory(item)} title={t('restoreHistory')}>
+                      <div>
+                        <div style={{fontWeight:700,fontSize:13}}>{item.letterId||'—'}</div>
+                        <div className="meta">{item.doi} · {item.pages} p.</div>
+                      </div>
+                      <div style={{textAlign:'right'}}>
+                        <div className="meta">{item.created}</div>
+                        <div className="restore-hint">{t('restoreHistory')} ↩</div>
+                        {item.url && <a href={item.url} target="_blank" rel="noopener noreferrer" className="meta" style={{color:'#4a8b8b'}} onClick={e=>e.stopPropagation()}>GitHub ↗</a>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="card">
+              <h4>{t('help')}</h4>
+              <div className="meta">
+                <div style={{marginBottom:8}}><strong>{t('shortcuts')}</strong></div>
+                <div>• Ctrl/Cmd + S : Sauvegarder</div>
+                <div>• Enter : Étape suivante</div>
+                <div style={{marginTop:12}}><strong>{t('autoSave')}</strong></div>
+                <div style={{marginTop:12,padding:'8px 10px',background:'rgba(74,139,139,0.08)',borderRadius:6,fontSize:11}}>
+                  <strong>IIIF Presentation API v3</strong><br/>
+                  Manifest conforme au standard IIIF v3 avec ImageService3.
+                </div>
+                {generatedManifest && manifest.letterId && githubConfig.username && (
+                  <div style={{marginTop:12,padding:'8px 10px',background:'rgba(218,165,32,0.1)',borderRadius:6,border:'1px solid rgba(218,165,32,0.3)'}}>
+                    <div style={{fontSize:12,fontWeight:600,color:'#B8860B'}}>Transkribus Ready!</div>
+                    <div style={{fontSize:11,color:'#6b7280',marginTop:2}}>Manifest généré et URL disponible</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <GitHubExplorerModal open={openExplorer} onClose={() => setOpenExplorer(false)} config={githubConfig}
+          onChoose={p => { setGithubConfig(c=>({...c,path:p})); showToast({message:`${t('folderChosen')}: ${p}`,level:'success'}); }} t={t}/>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // ROOT
+  // ═══════════════════════════════════════════════════════════
+  function Root() {
+    return (
+      <ToastProvider>
+        <ConfirmProvider>
+          <App/>
+        </ConfirmProvider>
+      </ToastProvider>
+    );
+  }
+
+  ReactDOM.render(<Root/>, document.getElementById('root'));
+</script>
+</body>
+</html>
