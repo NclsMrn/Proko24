@@ -51,7 +51,7 @@ Le projet est mené par Nicolas Moron (Université de Rouen Normandie, UR 3229 C
 
 ## Sources et droits
 
-Les manuscrits sont conservés à la Serge Prokofiev Archive (Columbia University). Conditions de réutilisation des images et des transcriptions : à préciser.
+Les manuscrits sont conservés à la Serge Prokofiev Archive (Columbia University). Conditions de réutilisation des images et des transcriptions : à voir avec les Archives et la famille Prokofiev.
 
 ## Contact
 
