@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="assets/logo-p24.png" alt="Proko24" height="80">
-</p>
-
 # Proko24
 
 Édition numérique de la correspondance de Serge Prokofiev pour l’année 1924 : outils, conventions et fichiers TEI.
